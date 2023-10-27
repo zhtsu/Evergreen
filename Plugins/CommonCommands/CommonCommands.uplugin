@@ -1,0 +1,24 @@
+{
+	"FileVersion": 3,
+	"Version": 1,
+	"VersionName": "1.0",
+	"FriendlyName": "CommonCommands",
+	"Description": "Quickly execute common commands for debug",
+	"Category": "Other",
+	"CreatedBy": "zhtsu",
+	"CreatedByURL": "",
+	"DocsURL": "",
+	"MarketplaceURL": "",
+	"SupportURL": "",
+	"CanContainContent": false,
+	"IsBetaVersion": false,
+	"IsExperimentalVersion": false,
+	"Installed": false,
+	"Modules": [
+		{
+			"Name": "CommonCommands",
+			"Type": "Editor",
+			"LoadingPhase": "Default"
+		}
+	]
+}
