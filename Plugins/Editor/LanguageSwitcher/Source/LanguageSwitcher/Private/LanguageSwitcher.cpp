@@ -50,7 +50,6 @@ void FLanguageSwitcherModule::ShutdownModule()
 
 void FLanguageSwitcherModule::PluginButtonClicked()
 {
-	FString CurrentLanguage;
 	UInternationalizationSettingsModel* SettingsModel = NewObject<UInternationalizationSettingsModel>();
 	SettingsModel->GetEditorLanguage(CurrentLanguage);
 
@@ -86,6 +85,7 @@ void FLanguageSwitcherModule::RegisterMenus()
 						FSlateIcon(FLanguageSwitcherStyle::GetStyleSetName(), "LanguageSwitcher.PluginAction")
 					)
 				);
+
 				Entry.SetCommandList(PluginCommands);
 			}
 		}

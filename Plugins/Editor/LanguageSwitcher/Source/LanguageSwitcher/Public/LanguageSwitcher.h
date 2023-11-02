@@ -8,7 +8,7 @@
 class FToolBarBuilder;
 class FMenuBuilder;
 
-class FCommonCommandsModule : public IModuleInterface
+class FLanguageSwitcherModule : public IModuleInterface
 {
 public:
 
@@ -26,4 +26,6 @@ private:
 
 private:
 	TSharedPtr<class FUICommandList> PluginCommands;
+	
+	FString CurrentLanguage;
 };

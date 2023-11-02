@@ -4,6 +4,9 @@
 #include "CommonCommandsStyle.h"
 #include "CommonCommandsCommands.h"
 #include "Misc/MessageDialog.h"
+#include "Widgets/Docking/SDockTab.h"
+#include "Widgets/Layout/SBox.h"
+#include "Widgets/Text/STextBlock.h"
 #include "ToolMenus.h"
 
 static const FName CommonCommandsTabName("CommonCommands");
@@ -27,6 +30,10 @@ void FCommonCommandsModule::StartupModule()
 		FCanExecuteAction());
 
 	UToolMenus::RegisterStartupCallback(FSimpleMulticastDelegate::FDelegate::CreateRaw(this, &FCommonCommandsModule::RegisterMenus));
+
+	FGlobalTabmanager::Get()->RegisterNomadTabSpawner(CommonCommandsTabName, FOnSpawnTab::CreateRaw(this, &FCommonCommandsModule::OnSpawnPluginTab))
+		.SetDisplayName(LOCTEXT("FCommonCommandsTabTitle", "CommonCommands"))
+		.SetMenuType(ETabSpawnerMenuType::Hidden);
 }
 
 void FCommonCommandsModule::ShutdownModule()
@@ -45,13 +52,7 @@ void FCommonCommandsModule::ShutdownModule()
 
 void FCommonCommandsModule::PluginButtonClicked()
 {
-	// Put your "OnButtonClicked" stuff here
-	FText DialogText = FText::Format(
-							LOCTEXT("PluginButtonDialogText", "Add code to {0} in {1} to override this button's actions"),
-							FText::FromString(TEXT("FCommonCommandsModule::PluginButtonClicked()")),
-							FText::FromString(TEXT("CommonCommands.cpp"))
-					   );
-	FMessageDialog::Open(EAppMsgType::Ok, DialogText);
+	FGlobalTabmanager::Get()->TryInvokeTab(CommonCommandsTabName);
 }
 
 void FCommonCommandsModule::RegisterMenus()
@@ -76,6 +77,28 @@ void FCommonCommandsModule::RegisterMenus()
 			}
 		}
 	}
+}
+
+TSharedRef<class SDockTab> FCommonCommandsModule::OnSpawnPluginTab(const class FSpawnTabArgs& SpawnTabArgs)
+{
+	FText WidgetText = FText::Format(
+		LOCTEXT("WindowWidgetText", "Add code to {0} in {1} to override this window's contents"),
+		FText::FromString(TEXT("FTestModule::OnSpawnPluginTab")),
+		FText::FromString(TEXT("Test.cpp"))
+	);
+
+	return SNew(SDockTab)
+		.TabRole(ETabRole::NomadTab)
+		[
+			// Put your tab content here!
+			SNew(SBox)
+			.HAlign(HAlign_Center)
+			.VAlign(VAlign_Center)
+			[
+				SNew(STextBlock)
+				.Text(WidgetText)
+			]
+		];
 }
 
 #undef LOCTEXT_NAMESPACE

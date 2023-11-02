@@ -8,7 +8,7 @@
 class FToolBarBuilder;
 class FMenuBuilder;
 
-class FLanguageSwitcherModule : public IModuleInterface
+class FCommonCommandsModule : public IModuleInterface
 {
 public:
 
@@ -23,6 +23,7 @@ private:
 
 	void RegisterMenus();
 
+	TSharedRef<class SDockTab> OnSpawnPluginTab(const class FSpawnTabArgs& SpawnTabArgs);
 
 private:
 	TSharedPtr<class FUICommandList> PluginCommands;
