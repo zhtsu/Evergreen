@@ -3,11 +3,9 @@
 #include "CommonCommands.h"
 #include "CommonCommandsStyle.h"
 #include "CommonCommandsCommands.h"
-#include "Misc/MessageDialog.h"
 #include "Widgets/Docking/SDockTab.h"
-#include "Widgets/Layout/SBox.h"
-#include "Widgets/Text/STextBlock.h"
 #include "ToolMenus.h"
+#include "SCommandButton.h"
 
 static const FName CommonCommandsTabName("CommonCommands");
 
@@ -87,18 +85,33 @@ TSharedRef<class SDockTab> FCommonCommandsModule::OnSpawnPluginTab(const class F
 		FText::FromString(TEXT("Test.cpp"))
 	);
 
-	return SNew(SDockTab)
-		.TabRole(ETabRole::NomadTab)
+	TSharedRef<SVerticalBox> VBox = SNew(SVerticalBox);
+	for (int32 i = 0; i < 10; i++)
+	{
+		VBox->AddSlot()
 		[
-			// Put your tab content here!
-			SNew(SBox)
-			.HAlign(HAlign_Center)
-			.VAlign(VAlign_Center)
-			[
-				SNew(STextBlock)
-				.Text(WidgetText)
-			]
+			SNew(SCommandButton)
+			.CommandText(FText::FromString("Stat FPS"))
 		];
+	}
+	
+	TSharedRef<SDockTab> TabWidget = SNew(SDockTab).TabRole(ETabRole::NomadTab)
+	[
+		// Put your tab content here!
+		VBox
+	];
+	
+	// OverlayWidget->AddSlot()
+	// .HAlign(ColorStripOrientation == EThumbnailColorStripOrientation::HorizontalBottomEdge ? HAlign_Fill : HAlign_Right)
+	// .VAlign(ColorStripOrientation == EThumbnailColorStripOrientation::HorizontalBottomEdge ? VAlign_Bottom : VAlign_Fill)
+	// [
+	// 	SAssignNew(AssetColorStripWidget, SBorder)
+	// 	.BorderImage(FEditorStyle::GetBrush("WhiteBrush"))
+	// 	.BorderBackgroundColor(AssetColor)
+	// 	.Padding(this, &SAssetThumbnail::GetAssetColorStripPadding)
+	// ];
+
+	return TabWidget;
 }
 
 #undef LOCTEXT_NAMESPACE
