@@ -5,7 +5,8 @@
 #include "CommonCommandsCommands.h"
 #include "Widgets/Docking/SDockTab.h"
 #include "ToolMenus.h"
-#include "SCommandButton.h"
+#include "SCommandButtonWidget.h"
+#include "Widgets/Layout/SScrollBox.h"
 
 static const FName CommonCommandsTabName("CommonCommands");
 
@@ -79,37 +80,25 @@ void FCommonCommandsModule::RegisterMenus()
 
 TSharedRef<class SDockTab> FCommonCommandsModule::OnSpawnPluginTab(const class FSpawnTabArgs& SpawnTabArgs)
 {
-	FText WidgetText = FText::Format(
-		LOCTEXT("WindowWidgetText", "Add code to {0} in {1} to override this window's contents"),
-		FText::FromString(TEXT("FTestModule::OnSpawnPluginTab")),
-		FText::FromString(TEXT("Test.cpp"))
-	);
-
 	TSharedRef<SVerticalBox> VBox = SNew(SVerticalBox);
 	for (int32 i = 0; i < 10; i++)
 	{
 		VBox->AddSlot()
+		.AutoHeight()
 		[
-			SNew(SCommandButton)
-			.CommandText(FText::FromString("Stat FPS"))
+			SNew(SCommandButtonWidget)
+			.CommandText(FText::FromString("Stat FPS adfasdfffffsadfasdfsadfs"))
 		];
 	}
 	
 	TSharedRef<SDockTab> TabWidget = SNew(SDockTab).TabRole(ETabRole::NomadTab)
 	[
-		// Put your tab content here!
-		VBox
+		SNew(SScrollBox)
+		+ SScrollBox::Slot()
+		[
+			VBox
+		]
 	];
-	
-	// OverlayWidget->AddSlot()
-	// .HAlign(ColorStripOrientation == EThumbnailColorStripOrientation::HorizontalBottomEdge ? HAlign_Fill : HAlign_Right)
-	// .VAlign(ColorStripOrientation == EThumbnailColorStripOrientation::HorizontalBottomEdge ? VAlign_Bottom : VAlign_Fill)
-	// [
-	// 	SAssignNew(AssetColorStripWidget, SBorder)
-	// 	.BorderImage(FEditorStyle::GetBrush("WhiteBrush"))
-	// 	.BorderBackgroundColor(AssetColor)
-	// 	.Padding(this, &SAssetThumbnail::GetAssetColorStripPadding)
-	// ];
 
 	return TabWidget;
 }

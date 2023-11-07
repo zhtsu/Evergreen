@@ -3,26 +3,24 @@
 #pragma once
 
 #include "Framework/SlateDelegates.h"
-#include "Widgets/DeclarativeSyntaxSupport.h"
-#include "Widgets/Input/SButton.h"
+#include "Widgets/SCompoundWidget.h"
 
 /**
  * 
  */
-class COMMONCOMMANDS_API SCommandButton : public SButton
+class COMMONCOMMANDS_API SCommandButtonWidget : public SCompoundWidget
 {
 public:
-	SLATE_BEGIN_ARGS(SCommandButton)
+	SLATE_BEGIN_ARGS(SCommandButtonWidget)
 	{}
 	
 	SLATE_ATTRIBUTE(FText, CommandText)
 
-	/** The clicked handler. */
 	SLATE_EVENT(FOnClicked, OnClicked)
 	
 	SLATE_END_ARGS()
 
-	SCommandButton() {}
+	SCommandButtonWidget() {}
 
 	/** Constructs this widget with InArgs */
 	void Construct(const FArguments& InArgs);
