@@ -15,13 +15,14 @@ public:
 	{}
 	
 	SLATE_ATTRIBUTE(FText, CommandText)
-
-	SLATE_EVENT(FOnClicked, OnClicked)
 	
 	SLATE_END_ARGS()
 
-	SCommandButtonWidget() {}
-
-	/** Constructs this widget with InArgs */
+	FReply ExecCommand();
+	
 	void Construct(const FArguments& InArgs);
+
+private:
+	FText Command;
+	TSharedPtr<SBorder> ColorStrip;
 };

@@ -6,6 +6,8 @@
 #include "Widgets/Docking/SDockTab.h"
 #include "ToolMenus.h"
 #include "SCommandButtonWidget.h"
+#include "HAL/FileManagerGeneric.h"
+#include "Misc/FileHelper.h"
 #include "Widgets/Layout/SScrollBox.h"
 
 static const FName CommonCommandsTabName("CommonCommands");
@@ -33,6 +35,8 @@ void FCommonCommandsModule::StartupModule()
 	FGlobalTabmanager::Get()->RegisterNomadTabSpawner(CommonCommandsTabName, FOnSpawnTab::CreateRaw(this, &FCommonCommandsModule::OnSpawnPluginTab))
 		.SetDisplayName(LOCTEXT("FCommonCommandsTabTitle", "CommonCommands"))
 		.SetMenuType(ETabSpawnerMenuType::Hidden);
+
+	LoadCommands();
 }
 
 void FCommonCommandsModule::ShutdownModule()
@@ -51,6 +55,7 @@ void FCommonCommandsModule::ShutdownModule()
 
 void FCommonCommandsModule::PluginButtonClicked()
 {
+	LoadCommands();
 	FGlobalTabmanager::Get()->TryInvokeTab(CommonCommandsTabName);
 }
 
@@ -78,16 +83,24 @@ void FCommonCommandsModule::RegisterMenus()
 	}
 }
 
+void FCommonCommandsModule::LoadCommands()
+{
+	if (FFileManagerGeneric::Get().FileExists(*CommandsFilePath))
+	{
+		FFileHelper::LoadFileToStringArray(Commands, *CommandsFilePath);
+	}
+}
+
 TSharedRef<class SDockTab> FCommonCommandsModule::OnSpawnPluginTab(const class FSpawnTabArgs& SpawnTabArgs)
 {
 	TSharedRef<SVerticalBox> VBox = SNew(SVerticalBox);
-	for (int32 i = 0; i < 10; i++)
+	for (const FString& Command : Commands)
 	{
 		VBox->AddSlot()
 		.AutoHeight()
 		[
 			SNew(SCommandButtonWidget)
-			.CommandText(FText::FromString("Stat FPS adfasdfffffsadfasdfsadfs"))
+			.CommandText(FText::FromString(Command))
 		];
 	}
 	

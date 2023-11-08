@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Modules/ModuleManager.h"
+#include "Interfaces/IPluginManager.h"
 
 class FToolBarBuilder;
 class FMenuBuilder;
@@ -24,7 +24,12 @@ private:
 	void RegisterMenus();
 
 	TSharedRef<class SDockTab> OnSpawnPluginTab(const class FSpawnTabArgs& SpawnTabArgs);
-
+	
+	void LoadCommands();
+	
 private:
 	TSharedPtr<class FUICommandList> PluginCommands;
+	
+	const FString CommandsFilePath = IPluginManager::Get().FindPlugin("CommonCommands")->GetBaseDir() / TEXT("Resources/Commands.txt");
+	TArray<FString> Commands;
 };

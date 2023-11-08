@@ -8,11 +8,37 @@
 
 BEGIN_SLATE_FUNCTION_BUILD_OPTIMIZATION
 
-const FSlateColorBrush BlueBrush = FSlateColorBrush(FColor(60.0f,53.0f,216.0f,255.0f));
+const FSlateColorBrush BlueBrush = FSlateColorBrush(FColor(
+	0.023529 * 255.0f,
+	0.207843 * 255.0f,
+	0.847059 * 255.0f,
+	255.0f));
 
+const FSlateColorBrush GreenBrush = FSlateColorBrush(FColor(
+	0.135633 * 255.0f,
+	0.396755 * 255.0f,
+	0.0f,
+	255.0f));
+
+
+FReply SCommandButtonWidget::ExecCommand()
+{
+	if (Command.EqualTo(FText::FromString("Stat FPS")))
+	{
+		ColorStrip->SetBorderImage(&GreenBrush);
+	}
+	else
+	{
+		ColorStrip->SetBorderImage(&BlueBrush);
+	}
+
+	return FReply::Handled();
+}
 
 void SCommandButtonWidget::Construct(const FArguments& InArgs)
 {
+	Command = InArgs._CommandText.Get();
+	
 	ChildSlot
 	[
 		SNew(SBox)
@@ -22,7 +48,7 @@ void SCommandButtonWidget::Construct(const FArguments& InArgs)
 			+ SOverlay::Slot()
 			[
 				SNew(SButton)
-				.OnClicked(InArgs._OnClicked)
+				.OnClicked(this, &SCommandButtonWidget::ExecCommand)
 			]
 			+ SOverlay::Slot()
 			.Padding(4.0f)
@@ -34,7 +60,7 @@ void SCommandButtonWidget::Construct(const FArguments& InArgs)
 				[
 					SNew(SBox)
 					[
-						SNew(SBorder)
+						SAssignNew(ColorStrip, SBorder)
 						.BorderImage(&BlueBrush)
 					]
 				]
