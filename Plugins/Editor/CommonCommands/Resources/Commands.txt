@@ -1,3 +1,2 @@
 Stat FPS
 Stat Unit
-Stat UnitGraph

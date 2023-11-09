@@ -21,8 +21,9 @@ public:
 	FReply ExecCommand();
 	
 	void Construct(const FArguments& InArgs);
-
+	
 private:
-	FText Command;
+	bool Enable = false;
+	FString Command;
 	TSharedPtr<SBorder> ColorStrip;
 };

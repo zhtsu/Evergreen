@@ -4,6 +4,7 @@
 #include "SCommandButtonWidget.h"
 #include "SlateOptMacros.h"
 #include "Brushes/SlateColorBrush.h"
+#include "Engine/GameEngine.h"
 #include "Util/ColorConstants.h"
 
 BEGIN_SLATE_FUNCTION_BUILD_OPTIMIZATION
@@ -23,21 +24,31 @@ const FSlateColorBrush GreenBrush = FSlateColorBrush(FColor(
 
 FReply SCommandButtonWidget::ExecCommand()
 {
-	if (Command.EqualTo(FText::FromString("Stat FPS")))
+	UWorld* World = GEditor->GetEditorWorldContext().World();
+	if (World)
 	{
-		ColorStrip->SetBorderImage(&GreenBrush);
+		GEngine->Exec(World, *Command);
+		Enable = !Enable;
+		if (Enable)
+		{
+			ColorStrip->SetBorderImage(&GreenBrush);
+		}
+		else
+		{
+			ColorStrip->SetBorderImage(&BlueBrush);
+		}
 	}
 	else
 	{
-		ColorStrip->SetBorderImage(&BlueBrush);
+		GLog->Log("LogCommonCommands: Failed to access World point!");
 	}
-
+	
 	return FReply::Handled();
 }
 
 void SCommandButtonWidget::Construct(const FArguments& InArgs)
 {
-	Command = InArgs._CommandText.Get();
+	Command = InArgs._CommandText.Get().ToString();
 	
 	ChildSlot
 	[
@@ -76,4 +87,5 @@ void SCommandButtonWidget::Construct(const FArguments& InArgs)
 		]
 	];
 }
+
 END_SLATE_FUNCTION_BUILD_OPTIMIZATION

@@ -29,6 +29,8 @@ private:
 	
 private:
 	TSharedPtr<class FUICommandList> PluginCommands;
+
+	TSharedPtr<SVerticalBox> CommandButtonContainer;
 	
 	const FString CommandsFilePath = IPluginManager::Get().FindPlugin("CommonCommands")->GetBaseDir() / TEXT("Resources/Commands.txt");
 	TArray<FString> Commands;

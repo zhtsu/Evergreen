@@ -16,7 +16,7 @@ static const FName CommonCommandsTabName("CommonCommands");
 
 void FCommonCommandsModule::StartupModule()
 {
-	// This code will execute after your module is loaded into memory; the exact timing is specified in the .uplugin file per-module
+	LoadCommands();
 	
 	FCommonCommandsStyle::Initialize();
 	FCommonCommandsStyle::ReloadTextures();
@@ -35,8 +35,6 @@ void FCommonCommandsModule::StartupModule()
 	FGlobalTabmanager::Get()->RegisterNomadTabSpawner(CommonCommandsTabName, FOnSpawnTab::CreateRaw(this, &FCommonCommandsModule::OnSpawnPluginTab))
 		.SetDisplayName(LOCTEXT("FCommonCommandsTabTitle", "CommonCommands"))
 		.SetMenuType(ETabSpawnerMenuType::Hidden);
-
-	LoadCommands();
 }
 
 void FCommonCommandsModule::ShutdownModule()
@@ -56,6 +54,18 @@ void FCommonCommandsModule::ShutdownModule()
 void FCommonCommandsModule::PluginButtonClicked()
 {
 	LoadCommands();
+	
+	CommandButtonContainer->ClearChildren();
+	for (const FString& Command : Commands)
+	{
+		CommandButtonContainer->AddSlot()
+		.AutoHeight()
+		[
+			SNew(SCommandButtonWidget)
+			.CommandText(FText::FromString(Command))
+		];
+	}
+
 	FGlobalTabmanager::Get()->TryInvokeTab(CommonCommandsTabName);
 }
 
@@ -73,7 +83,7 @@ void FCommonCommandsModule::RegisterMenus()
 					FToolMenuEntry::InitToolBarButton(
 						FCommonCommandsCommands::Get().PluginAction,
 						FText::FromString("CommonCommands"),
-						FText::FromString("Quickly execute common commands for debug"),
+						FText::FromString("Quickly execute common console commands for debug"),
 						FSlateIcon(FCommonCommandsStyle::GetStyleSetName(), "CommonCommands.PluginAction")
 					)
 				);
@@ -93,10 +103,10 @@ void FCommonCommandsModule::LoadCommands()
 
 TSharedRef<class SDockTab> FCommonCommandsModule::OnSpawnPluginTab(const class FSpawnTabArgs& SpawnTabArgs)
 {
-	TSharedRef<SVerticalBox> VBox = SNew(SVerticalBox);
+	SAssignNew(CommandButtonContainer, SVerticalBox);
 	for (const FString& Command : Commands)
 	{
-		VBox->AddSlot()
+		CommandButtonContainer->AddSlot()
 		.AutoHeight()
 		[
 			SNew(SCommandButtonWidget)
@@ -109,7 +119,7 @@ TSharedRef<class SDockTab> FCommonCommandsModule::OnSpawnPluginTab(const class F
 		SNew(SScrollBox)
 		+ SScrollBox::Slot()
 		[
-			VBox
+			CommandButtonContainer.ToSharedRef()
 		]
 	];
 
