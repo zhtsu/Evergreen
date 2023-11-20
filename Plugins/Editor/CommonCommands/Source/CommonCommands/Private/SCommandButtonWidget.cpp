@@ -5,7 +5,6 @@
 #include "SlateOptMacros.h"
 #include "Brushes/SlateColorBrush.h"
 #include "Engine/GameEngine.h"
-#include "Util/ColorConstants.h"
 
 BEGIN_SLATE_FUNCTION_BUILD_OPTIMIZATION
 
@@ -82,6 +81,9 @@ void SCommandButtonWidget::Construct(const FArguments& InArgs)
 					SNew(STextBlock)
 					.Text(InArgs._CommandText)
 					.Visibility(EVisibility::HitTestInvisible)
+#if ENGINE_MAJOR_VERSION == 4
+					.ColorAndOpacity(FLinearColor::Black)
+#endif
 				]
 			]
 		]

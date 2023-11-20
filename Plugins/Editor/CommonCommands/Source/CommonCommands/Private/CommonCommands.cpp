@@ -54,16 +54,19 @@ void FCommonCommandsModule::ShutdownModule()
 void FCommonCommandsModule::PluginButtonClicked()
 {
 	LoadCommands();
-	
-	CommandButtonContainer->ClearChildren();
-	for (const FString& Command : Commands)
+
+	if (CommandButtonContainer)
 	{
-		CommandButtonContainer->AddSlot()
-		.AutoHeight()
-		[
-			SNew(SCommandButtonWidget)
-			.CommandText(FText::FromString(Command))
-		];
+		CommandButtonContainer->ClearChildren();
+		for (const FString& Command : Commands)
+		{
+			CommandButtonContainer->AddSlot()
+			.AutoHeight()
+			[
+				SNew(SCommandButtonWidget)
+				.CommandText(FText::FromString(Command))
+			];
+		}
 	}
 
 	FGlobalTabmanager::Get()->TryInvokeTab(CommonCommandsTabName);
@@ -75,15 +78,23 @@ void FCommonCommandsModule::RegisterMenus()
 	FToolMenuOwnerScoped OwnerScoped(this);
 
 	{
-		UToolMenu* ToolbarMenu = UToolMenus::Get()->ExtendMenu("LevelEditor.LevelEditorToolBar.PlayToolBar");
+#if ENGINE_MAJOR_VERSION == 5
+		FName MenuName = "LevelEditor.LevelEditorToolBar.PlayToolBar";
+#endif
+
+#if ENGINE_MAJOR_VERSION == 4
+		FName MenuName = "LevelEditor.LevelEditorToolBar";
+#endif
+		
+		UToolMenu* ToolbarMenu = UToolMenus::Get()->ExtendMenu(MenuName);
 		{
 			FToolMenuSection& Section = ToolbarMenu->FindOrAddSection("CommonCommands");
 			{
 				FToolMenuEntry& Entry = Section.AddEntry(
 					FToolMenuEntry::InitToolBarButton(
 						FCommonCommandsCommands::Get().PluginAction,
-						FText::FromString("CommonCommands"),
-						FText::FromString("Quickly execute common console commands for debug"),
+						FText::FromString("CC"),
+						FText::FromString("CommonCommands: Quickly execute common console commands for debug"),
 						FSlateIcon(FCommonCommandsStyle::GetStyleSetName(), "CommonCommands.PluginAction")
 					)
 				);

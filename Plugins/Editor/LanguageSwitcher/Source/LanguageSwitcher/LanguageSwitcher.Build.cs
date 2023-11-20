@@ -36,7 +36,6 @@ public class LanguageSwitcher : ModuleRules
 			{
 				"Projects",
 				"InputCore",
-				"EditorFramework",
 				"UnrealEd",
 				"ToolMenus",
 				"CoreUObject",
@@ -55,5 +54,16 @@ public class LanguageSwitcher : ModuleRules
 				// ... add any modules that your module loads dynamically here ...
 			}
 			);
-	}
+
+
+        if (Target.Version.MajorVersion == 5)
+        {
+            PrivateDependencyModuleNames.AddRange(
+                new string[]
+                {
+                    "EditorFramework",
+                }
+            );
+        }
+    }
 }

@@ -7,7 +7,7 @@ public class CommonCommands : ModuleRules
 	public CommonCommands(ReadOnlyTargetRules Target) : base(Target)
 	{
 		PCHUsage = ModuleRules.PCHUsageMode.UseExplicitOrSharedPCHs;
-		
+
 		PublicIncludePaths.AddRange(
 			new string[] {
 				// ... add public include paths required here ...
@@ -36,7 +36,6 @@ public class CommonCommands : ModuleRules
 			{
 				"Projects",
 				"InputCore",
-				"EditorFramework",
 				"UnrealEd",
 				"ToolMenus",
 				"CoreUObject",
@@ -54,5 +53,16 @@ public class CommonCommands : ModuleRules
 				// ... add any modules that your module loads dynamically here ...
 			}
 			);
-	}
+
+
+        if (Target.Version.MajorVersion == 5)
+        {
+            PrivateDependencyModuleNames.AddRange(
+                new string[]
+                {
+                    "EditorFramework",
+                }
+            );
+        }
+    }
 }

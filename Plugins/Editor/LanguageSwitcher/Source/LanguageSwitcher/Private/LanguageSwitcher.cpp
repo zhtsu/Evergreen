@@ -73,15 +73,23 @@ void FLanguageSwitcherModule::RegisterMenus()
 	FToolMenuOwnerScoped OwnerScoped(this);
 
 	{
-		UToolMenu* ToolbarMenu = UToolMenus::Get()->ExtendMenu("LevelEditor.LevelEditorToolBar.PlayToolBar");
+#if ENGINE_MAJOR_VERSION == 5
+		FName MenuName = "LevelEditor.LevelEditorToolBar.PlayToolBar";
+#endif
+
+#if ENGINE_MAJOR_VERSION == 4
+		FName MenuName = "LevelEditor.LevelEditorToolBar";
+#endif
+		
+		UToolMenu* ToolbarMenu = UToolMenus::Get()->ExtendMenu(MenuName);
 		{
 			FToolMenuSection& Section = ToolbarMenu->FindOrAddSection("LanguageSwitcher");
 			{
 				FToolMenuEntry& Entry = Section.AddEntry(
 					FToolMenuEntry::InitToolBarButton(
 						FLanguageSwitcherCommands::Get().PluginAction,
-						FText::FromString("LanguageSwitcher"),
-						FText::FromString("Switch editor language between Chinese and English"),
+						FText::FromString("LS"),
+						FText::FromString("LanguageSwitcher: Switch editor language between Chinese and English"),
 						FSlateIcon(FLanguageSwitcherStyle::GetStyleSetName(), "LanguageSwitcher.PluginAction")
 					)
 				);
