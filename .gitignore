@@ -1,7 +1,10 @@
 .vs
 .vsconfig
+.idea
 Binaries
-Content
+Content/Collections
+Content/Developers
+Content/ControlRig
 DerivedDataCache
 Intermediate
 Saved
