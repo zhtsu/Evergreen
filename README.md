@@ -6,5 +6,5 @@ A Souls like game made with Unreal Engine
 - UE 5.2.1
 
 ## Content
-Add these assets to the project manually from EPIC marketplace
+Add these assets to the project from EPIC marketplace
 - [Paragon: Minions](https://www.unrealengine.com/marketplace/en-US/product/paragon-minions)
