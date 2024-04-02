@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "SCommandButtonWidget.h"
+#include "..\Public\CommandButtonWidget.h"
 #include "SlateOptMacros.h"
 #include "Brushes/SlateColorBrush.h"
 #include "Engine/GameEngine.h"

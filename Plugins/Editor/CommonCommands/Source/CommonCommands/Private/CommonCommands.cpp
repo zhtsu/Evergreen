@@ -5,7 +5,7 @@
 #include "CommonCommandsCommands.h"
 #include "Widgets/Docking/SDockTab.h"
 #include "ToolMenus.h"
-#include "SCommandButtonWidget.h"
+#include "..\Public\CommandButtonWidget.h"
 #include "HAL/FileManagerGeneric.h"
 #include "Misc/FileHelper.h"
 #include "Widgets/Layout/SScrollBox.h"
