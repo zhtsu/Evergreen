@@ -24,11 +24,11 @@ class COLOSSUSCHALLENGE_API AMyPlayer : public ACharacter, public IAbilitySystem
 	UPROPERTY()
 	class UBaseAttributeSet* AttributeSet;
 
-	UPROPERTY(EditDefaultsOnly, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "GAS", meta = (AllowPrivateAccess = "true"))
 	TSubclassOf<class UGameplayEffect> DefaultAttributeEffect;
 	
-	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, meta = (AllowPrivateAccess = "true"))
-	TArray<TSubclassOf<class UGameplayAbility>> Abilities;
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "GAS", meta = (AllowPrivateAccess = "true"))
+	TArray<TSubclassOf<class UGameplayAbility>> DefaultAbilities;
 	
 public:
 	// Sets default values for this character's properties
@@ -46,5 +46,7 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	virtual class UAbilitySystemComponent* GetAbilitySystemComponent() const override;
-	virtual void InitializeAttributes();
+	
+	virtual void InitializeAttributeSet();
+	virtual void GiveDefaultAbility();
 };

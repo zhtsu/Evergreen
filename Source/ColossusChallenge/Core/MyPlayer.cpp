@@ -25,19 +25,6 @@ AMyPlayer::AMyPlayer()
 	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Minimal);
 	
 	AttributeSet = CreateDefaultSubobject<UBaseAttributeSet>("AttributeSet");
-	
-	if (Abilities.Num() > 0)
-	{
-		for (const TSubclassOf<UGameplayAbility>& Ability : Abilities)
-		{
-			if (Ability == nullptr)
-			{
-				continue;
-			}
-
-			AbilitySystemComponent->GiveAbility(FGameplayAbilitySpec(Ability.GetDefaultObject(), 1, 0));
-		}
-	}
 }
 
 UAbilitySystemComponent* AMyPlayer::GetAbilitySystemComponent() const
@@ -45,7 +32,7 @@ UAbilitySystemComponent* AMyPlayer::GetAbilitySystemComponent() const
 	return Cast<UAbilitySystemComponent>(AbilitySystemComponent);
 }
 
-void AMyPlayer::InitializeAttributes()
+void AMyPlayer::InitializeAttributeSet()
 {
 	if (AbilitySystemComponent && DefaultAttributeEffect)
 	{
@@ -60,11 +47,30 @@ void AMyPlayer::InitializeAttributes()
 	}
 }
 
+void AMyPlayer::GiveDefaultAbility()
+{
+	if (DefaultAbilities.Num() > 0)
+	{
+		for (const TSubclassOf<UGameplayAbility>& Ability : DefaultAbilities)
+		{
+			if (Ability == nullptr)
+			{
+				continue;
+			}
+
+			AbilitySystemComponent->GiveAbility(FGameplayAbilitySpec(Ability.GetDefaultObject(), 1, 0));
+		}
+		AbilitySystemComponent->InitAbilityActorInfo(this, this);
+	}
+}
+
 // Called when the game starts or when spawned
 void AMyPlayer::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	InitializeAttributeSet();
+	GiveDefaultAbility();
 }
 
 // Called every frame
