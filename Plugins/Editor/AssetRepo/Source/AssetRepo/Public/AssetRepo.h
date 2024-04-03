@@ -3,7 +3,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "AssetBean.h"
 #include "Interfaces/IPluginManager.h"
 
 class FToolBarBuilder;
@@ -28,12 +27,12 @@ private:
 	
 	void LoadAllAsset();
 	
+	
+	
 private:
 	TSharedPtr<class FUICommandList> PluginCommands;
-
-	TSharedPtr<SVerticalBox> CommandButtonContainer;
 	
-	const FString AssetRepoPathFile = IPluginManager::Get().FindPlugin("CommonCommands")->GetBaseDir() / TEXT("Resources/AssetRepoPath");
-	FString AssetRepoPath;
-	TArray<FAssetBean> AssetList = { FAssetBean(), FAssetBean() };
+	const FString AssetRepoRootPathFile = IPluginManager::Get().FindPlugin("CommonCommands")->GetBaseDir() / TEXT("Resources/AssetRepoPath");
+
+	FString AssetRepoRootPath;
 };

@@ -5,7 +5,8 @@
 #include "AssetRepoCommands.h"
 #include "Widgets/Docking/SDockTab.h"
 #include "ToolMenus.h"
-#include "AssetRepoCardWidget.h"
+#include "..\Public\SAssetRepoTileView.h"
+#include "AssetViewWidgets.h"
 #include "HAL/FileManagerGeneric.h"
 #include "Misc/FileHelper.h"
 #include "Widgets/Layout/SScrollBox.h"
@@ -90,31 +91,20 @@ void FAssetRepoModule::RegisterMenus()
 
 void FAssetRepoModule::LoadAllAsset()
 {
-	if (FFileManagerGeneric::Get().FileExists(*AssetRepoPathFile))
+	if (FFileManagerGeneric::Get().FileExists(*AssetRepoRootPathFile))
 	{
-		FFileHelper::LoadFileToString(AssetRepoPath, *AssetRepoPathFile);
+		FFileHelper::LoadFileToString(AssetRepoRootPath, *AssetRepoRootPathFile);
 	}
 }
 
 TSharedRef<class SDockTab> FAssetRepoModule::OnSpawnPluginTab(const class FSpawnTabArgs& SpawnTabArgs)
 {
-	SAssignNew(CommandButtonContainer, SVerticalBox);
-	for (const FAssetBean& Asset : AssetList)
-	{
-		CommandButtonContainer->AddSlot()
-		.AutoHeight()
-		[
-			SNew(AssetRepoCardWidget)
-			.Asset(Asset)
-		];
-	}
-	
 	TSharedRef<SDockTab> TabWidget = SNew(SDockTab).TabRole(ETabRole::NomadTab)
 	[
 		SNew(SScrollBox)
 		+ SScrollBox::Slot()
 		[
-			CommandButtonContainer.ToSharedRef()
+			SNew(SAssetRepoTileView)
 		]
 	];
 

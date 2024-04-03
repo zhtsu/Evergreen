@@ -3,12 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "AssetBean.generated.h"
+#include "AssetInstanceData.generated.h"
 
-USTRUCT()
-struct FAssetBean
+UCLASS()
+class UAssetInstanceData : public UObject
 {
 	GENERATED_BODY()
+
+public:
 	
 	UPROPERTY()
 	FString Name;
