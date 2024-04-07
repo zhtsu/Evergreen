@@ -5,6 +5,7 @@
 #include "AssetInstanceData.h"
 #include "Framework/SlateDelegates.h"
 #include "Widgets/SCompoundWidget.h"
+#include "Widgets/Layout/SScrollBox.h"
 #include "WIdgets/Views/STileView.h"
 
 /**
@@ -16,18 +17,30 @@ public:
 	
 	SLATE_BEGIN_ARGS(SAssetRepoTileView)
 	{}
+
 	SLATE_ATTRIBUTE(FString, AssetRepoRootPath)
+	
 	SLATE_END_ARGS()
-
-	FReply ExecCommand();
-
-	void Initialize(FString InAssetRepoRootPath);
 	
 	void Construct(const FArguments& InArg);
-
-	TSharedRef<ITableRow> MakeTileViewWidget(TSharedPtr<UAssetInstanceData> ClientItem, const TSharedRef<STableViewBase>& OwnerTable);
 	
 private:
+	FReply OpenAssetPath();
+	FReply FlushAssetTileView();
+	
 	TSharedPtr<STileView<TSharedPtr<UAssetInstanceData>>> TileViewPtr;
 	TArray<TSharedPtr<UAssetInstanceData>> AssetList;
+
+	TSharedRef<ITableRow> MakeTileViewWidget(TSharedPtr<UAssetInstanceData> ClientItem, const TSharedRef<STableViewBase>& OwnerTable);
+	void InitializeAssetList(FString InAssetRepoRootPath);
+	void OnListMouseButtonLeftClick(TSharedPtr<UAssetInstanceData> Item);
+	void OnAssetRepoRootPathChanged(const FText& Text);
+	
+	TSharedPtr<STextBlock> SelectedAssetNameText;
+	TSharedPtr<STextBlock> SelectedAssetUploaderText;
+	TSharedPtr<STextBlock> SelectedAssetDateText;
+	TSharedPtr<STextBlock> SelectedAssetPathText;
+	TSharedPtr<SScrollBox> TileViewBox;
+
+	FString AssetRepoRootPath;
 };

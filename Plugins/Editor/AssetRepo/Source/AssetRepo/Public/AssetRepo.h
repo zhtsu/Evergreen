@@ -25,14 +25,12 @@ private:
 
 	TSharedRef<class SDockTab> OnSpawnPluginTab(const class FSpawnTabArgs& SpawnTabArgs);
 	
-	void LoadAllAsset();
-	
-	
-	
 private:
+	void LoadConfig();
+	
 	TSharedPtr<class FUICommandList> PluginCommands;
 	
-	const FString AssetRepoRootPathFile = IPluginManager::Get().FindPlugin("CommonCommands")->GetBaseDir() / TEXT("Resources/AssetRepoPath");
+	const FString ConfigFilePath = IPluginManager::Get().FindPlugin("AssetRepo")->GetBaseDir() / TEXT("Resources/Config");
 
 	FString AssetRepoRootPath;
 };

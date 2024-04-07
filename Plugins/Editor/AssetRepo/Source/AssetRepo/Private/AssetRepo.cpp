@@ -5,11 +5,9 @@
 #include "AssetRepoCommands.h"
 #include "Widgets/Docking/SDockTab.h"
 #include "ToolMenus.h"
-#include "..\Public\SAssetRepoTileView.h"
-#include "AssetViewWidgets.h"
+#include "../Public/SAssetRepoTileView.h"
 #include "HAL/FileManagerGeneric.h"
 #include "Misc/FileHelper.h"
-#include "Widgets/Layout/SScrollBox.h"
 
 static const FName AssetRepoTabName("AssetRepo");
 
@@ -17,8 +15,6 @@ static const FName AssetRepoTabName("AssetRepo");
 
 void FAssetRepoModule::StartupModule()
 {
-	LoadAllAsset();
-	
 	FAssetRepoStyle::Initialize();
 	FAssetRepoStyle::ReloadTextures();
 
@@ -36,6 +32,8 @@ void FAssetRepoModule::StartupModule()
 	FGlobalTabmanager::Get()->RegisterNomadTabSpawner(AssetRepoTabName, FOnSpawnTab::CreateRaw(this, &FAssetRepoModule::OnSpawnPluginTab))
 		.SetDisplayName(LOCTEXT("FAssetRepoTabTitle", "AssetRepo"))
 		.SetMenuType(ETabSpawnerMenuType::Hidden);
+
+	LoadConfig();
 }
 
 void FAssetRepoModule::ShutdownModule()
@@ -89,23 +87,27 @@ void FAssetRepoModule::RegisterMenus()
 	}
 }
 
-void FAssetRepoModule::LoadAllAsset()
+void FAssetRepoModule::LoadConfig()
 {
-	if (FFileManagerGeneric::Get().FileExists(*AssetRepoRootPathFile))
+	if (FFileManagerGeneric::Get().FileExists(*ConfigFilePath))
 	{
-		FFileHelper::LoadFileToString(AssetRepoRootPath, *AssetRepoRootPathFile);
+		FFileHelper::LoadFileToString(AssetRepoRootPath, *ConfigFilePath);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Failed to load file: %s"), *ConfigFilePath);
 	}
 }
 
 TSharedRef<class SDockTab> FAssetRepoModule::OnSpawnPluginTab(const class FSpawnTabArgs& SpawnTabArgs)
 {
+	TSharedRef<SAssetRepoTileView> AssetRepoTileView =
+		SNew(SAssetRepoTileView)
+		.AssetRepoRootPath(AssetRepoRootPath);
+	
 	TSharedRef<SDockTab> TabWidget = SNew(SDockTab).TabRole(ETabRole::NomadTab)
 	[
-		SNew(SScrollBox)
-		+ SScrollBox::Slot()
-		[
-			SNew(SAssetRepoTileView)
-		]
+		AssetRepoTileView
 	];
 
 	return TabWidget;

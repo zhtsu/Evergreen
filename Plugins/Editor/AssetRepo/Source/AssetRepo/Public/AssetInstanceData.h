@@ -22,7 +22,7 @@ public:
 	FString Date;
 
 	UPROPERTY()
-	UTexture2D* Thumbnail = nullptr;
+	FSlateBrush ThumbnailBrush;
 
 	UPROPERTY()
 	FString Path;
