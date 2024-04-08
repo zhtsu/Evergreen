@@ -14,9 +14,9 @@ BEGIN_SLATE_FUNCTION_BUILD_OPTIMIZATION
 
 struct DirectoryVisitor : public IPlatformFile::FDirectoryVisitor
 {
-	TArray<TSharedPtr<UAssetInstanceData>>& AssetList;
+	TArray<TSharedPtr<FAssetInstanceData>>& AssetList;
 
-	DirectoryVisitor(TArray<TSharedPtr<UAssetInstanceData>>& OutAssetList) : AssetList(OutAssetList)
+	DirectoryVisitor(TArray<TSharedPtr<FAssetInstanceData>>& OutAssetList) : AssetList(OutAssetList)
 	{
 		
 	}
@@ -25,7 +25,7 @@ struct DirectoryVisitor : public IPlatformFile::FDirectoryVisitor
 	{
 		if (bIsDirectory)
 		{
-			UAssetInstanceData* AssetInstanceData = NewObject<UAssetInstanceData>();
+			TSharedPtr<FAssetInstanceData> AssetInstanceData = MakeShared<FAssetInstanceData>();
 			AssetInstanceData->Path = FString(FilenameOrDirectory);
 			
 			const FString AssetConfigFilePath = FString(FilenameOrDirectory) / "Asset.config";
@@ -76,7 +76,7 @@ struct DirectoryVisitor : public IPlatformFile::FDirectoryVisitor
 			AssetInstanceData->ThumbnailBrush.SetResourceObject(Thumbnail);
 			AssetInstanceData->ThumbnailBrush.DrawAs = ESlateBrushDrawType::Image;
 			
-			AssetList.Add(MakeShareable<UAssetInstanceData>(AssetInstanceData));
+			AssetList.Emplace(AssetInstanceData);
 		}
 
 		return true;
@@ -92,7 +92,7 @@ void SAssetRepoTileView::InitializeAssetList(FString InAssetRepoRootPath)
 	}
 }
 
-void SAssetRepoTileView::OnListMouseButtonLeftClick(TSharedPtr<UAssetInstanceData> Item)
+void SAssetRepoTileView::OnListMouseButtonLeftClick(TSharedPtr<FAssetInstanceData> Item)
 {
 	SelectedAssetNameText->SetText(FText::FromString(Item->Name));
 	SelectedAssetUploaderText->SetText(FText::FromString(Item->Uploader));
@@ -129,10 +129,11 @@ FReply SAssetRepoTileView::FlushAssetTileView()
 
 	TileViewBox->RemoveSlot(TileViewPtr.ToSharedRef());
 	TileViewPtr.Reset();
-	
+
+	AssetList.Reset();
 	InitializeAssetList(AssetRepoRootPath);
 	
-	SAssignNew(TileViewPtr, STileView<TSharedPtr<UAssetInstanceData>>)
+	SAssignNew(TileViewPtr, STileView<TSharedPtr<FAssetInstanceData>>)
 	.ListItemsSource(&AssetList)
 	.OnGenerateTile(this, &SAssetRepoTileView::MakeTileViewWidget)
 	.OnMouseButtonClick(this, &SAssetRepoTileView::OnListMouseButtonLeftClick);
@@ -159,7 +160,7 @@ void SAssetRepoTileView::Construct(const FArguments& InArgs)
 	SAssignNew(SelectedAssetPathText, STextBlock);
 	SelectedAssetPathText->SetText(FText::FromString(TEXT("未选中")));
 	
-	SAssignNew(TileViewPtr, STileView<TSharedPtr<UAssetInstanceData>>)
+	SAssignNew(TileViewPtr, STileView<TSharedPtr<FAssetInstanceData>>)
 	.ListItemsSource(&AssetList)
 	.OnGenerateTile(this, &SAssetRepoTileView::MakeTileViewWidget)
 	.OnMouseButtonClick(this, &SAssetRepoTileView::OnListMouseButtonLeftClick);
@@ -280,10 +281,10 @@ void SAssetRepoTileView::Construct(const FArguments& InArgs)
 	];
 }
 
-TSharedRef<ITableRow> SAssetRepoTileView::MakeTileViewWidget(TSharedPtr<UAssetInstanceData> ClientItem, const TSharedRef<STableViewBase>& OwnerTable)
+TSharedRef<ITableRow> SAssetRepoTileView::MakeTileViewWidget(TSharedPtr<FAssetInstanceData> ClientItem, const TSharedRef<STableViewBase>& OwnerTable)
 {
 	check(ClientItem.IsValid());
-	return SNew(STableRow<TSharedPtr<UAssetInstanceData>>, OwnerTable)
+	return SNew(STableRow<TSharedPtr<FAssetInstanceData>>, OwnerTable)
 		[
 			SNew(SBox)
 			.MinDesiredHeight(160.0f)

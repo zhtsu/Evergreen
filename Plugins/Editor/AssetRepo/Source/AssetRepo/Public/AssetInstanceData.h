@@ -3,27 +3,13 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "AssetInstanceData.generated.h"
 
-UCLASS()
-class UAssetInstanceData : public UObject
+class FAssetInstanceData
 {
-	GENERATED_BODY()
-
 public:
-	
-	UPROPERTY()
 	FString Name;
-
-	UPROPERTY()
 	FString Uploader;
-
-	UPROPERTY()
 	FString Date;
-
-	UPROPERTY()
 	FSlateBrush ThumbnailBrush;
-
-	UPROPERTY()
 	FString Path;
 };

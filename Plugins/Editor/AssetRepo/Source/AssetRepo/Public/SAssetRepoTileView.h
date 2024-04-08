@@ -28,12 +28,12 @@ private:
 	FReply OpenAssetPath();
 	FReply FlushAssetTileView();
 	
-	TSharedPtr<STileView<TSharedPtr<UAssetInstanceData>>> TileViewPtr;
-	TArray<TSharedPtr<UAssetInstanceData>> AssetList;
+	TSharedPtr<STileView<TSharedPtr<FAssetInstanceData>>> TileViewPtr;
+	TArray<TSharedPtr<FAssetInstanceData>> AssetList;
 
-	TSharedRef<ITableRow> MakeTileViewWidget(TSharedPtr<UAssetInstanceData> ClientItem, const TSharedRef<STableViewBase>& OwnerTable);
+	TSharedRef<ITableRow> MakeTileViewWidget(TSharedPtr<FAssetInstanceData> ClientItem, const TSharedRef<STableViewBase>& OwnerTable);
 	void InitializeAssetList(FString InAssetRepoRootPath);
-	void OnListMouseButtonLeftClick(TSharedPtr<UAssetInstanceData> Item);
+	void OnListMouseButtonLeftClick(TSharedPtr<FAssetInstanceData> Item);
 	void OnAssetRepoRootPathChanged(const FText& Text);
 	
 	TSharedPtr<STextBlock> SelectedAssetNameText;
