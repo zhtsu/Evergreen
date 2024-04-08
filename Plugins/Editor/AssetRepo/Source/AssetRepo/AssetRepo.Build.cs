@@ -25,7 +25,7 @@ public class AssetRepo : ModuleRules
 		PublicDependencyModuleNames.AddRange(
 			new string[]
 			{
-				"Core", "Slate",
+				"Core", "Slate"
 				// ... add other public dependencies that you statically link with here ...
 			}
 			);

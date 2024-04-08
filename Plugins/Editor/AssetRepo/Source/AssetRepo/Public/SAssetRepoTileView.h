@@ -3,14 +3,10 @@
 #pragma once
 
 #include "AssetInstanceData.h"
-#include "Framework/SlateDelegates.h"
 #include "Widgets/SCompoundWidget.h"
 #include "Widgets/Layout/SScrollBox.h"
 #include "WIdgets/Views/STileView.h"
 
-/**
- * 
- */
 class ASSETREPO_API SAssetRepoTileView : public SCompoundWidget
 {
 public:

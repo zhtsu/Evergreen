@@ -1,8 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "..\Public\SAssetRepoTileView.h"
-
+#include "../Public/SAssetRepoTileView.h"
 #include "ImageUtils.h"
 #include "SlateOptMacros.h"
 #include "Misc/FileHelper.h"
@@ -25,7 +24,7 @@ struct DirectoryVisitor : public IPlatformFile::FDirectoryVisitor
 	{
 		if (bIsDirectory)
 		{
-			TSharedPtr<FAssetInstanceData> AssetInstanceData = MakeShared<FAssetInstanceData>();
+			TSharedPtr<FAssetInstanceData> AssetInstanceData = FAssetInstanceData::New();
 			AssetInstanceData->Path = FString(FilenameOrDirectory);
 			
 			const FString AssetConfigFilePath = FString(FilenameOrDirectory) / "Asset.config";
@@ -34,6 +33,7 @@ struct DirectoryVisitor : public IPlatformFile::FDirectoryVisitor
 				UE_LOG(LogTemp, Warning, TEXT("Invalid asset config file path: %s"), *AssetConfigFilePath);
 				return true;
 			}
+			
 			FString JsonStr;
 			FFileHelper::LoadFileToString(JsonStr, *AssetConfigFilePath);
 			TSharedRef<TJsonReader<>> JsonReader = TJsonReaderFactory<>::Create(JsonStr);
@@ -72,9 +72,11 @@ struct DirectoryVisitor : public IPlatformFile::FDirectoryVisitor
 			
 			const FString ThumbnailFilePath = FString(FilenameOrDirectory) / "Thumbnail.png";
 			UTexture2D* Thumbnail = FImageUtils::ImportFileAsTexture2D(ThumbnailFilePath);
-			AssetInstanceData->ThumbnailBrush = FSlateBrush();
-			AssetInstanceData->ThumbnailBrush.SetResourceObject(Thumbnail);
-			AssetInstanceData->ThumbnailBrush.DrawAs = ESlateBrushDrawType::Image;
+			Thumbnail->AddToRoot();
+			
+			AssetInstanceData->ThumbnailBrush = new FSlateBrush();
+			AssetInstanceData->ThumbnailBrush->DrawAs = ESlateBrushDrawType::Image;
+			AssetInstanceData->ThumbnailBrush->SetResourceObject(Thumbnail);
 			
 			AssetList.Emplace(AssetInstanceData);
 		}
@@ -283,7 +285,23 @@ void SAssetRepoTileView::Construct(const FArguments& InArgs)
 
 TSharedRef<ITableRow> SAssetRepoTileView::MakeTileViewWidget(TSharedPtr<FAssetInstanceData> ClientItem, const TSharedRef<STableViewBase>& OwnerTable)
 {
-	check(ClientItem.IsValid());
+	if (ClientItem.IsValid() == false)
+	{
+		return SNew(STableRow<TSharedPtr<FAssetInstanceData>>, OwnerTable)
+		[
+			SNew(SBox)
+			.MinDesiredHeight(160.0f)
+			.MinDesiredWidth(160.0f)
+			.Padding(4.0f)
+			.Padding(4.0f)
+			[
+				SNew(STextBlock)
+				.Justification(HAlign_Center)
+				.Text(FText::FromString(TEXT("加载错误")))
+			]
+		];
+	}
+	
 	return SNew(STableRow<TSharedPtr<FAssetInstanceData>>, OwnerTable)
 		[
 			SNew(SBox)
@@ -307,7 +325,7 @@ TSharedRef<ITableRow> SAssetRepoTileView::MakeTileViewWidget(TSharedPtr<FAssetIn
 						SNew(SBox)
 						[
 							SNew(SImage)
-							.Image(&ClientItem->ThumbnailBrush)
+							.Image(ClientItem->ThumbnailBrush)
 						]
 					]
 				]
