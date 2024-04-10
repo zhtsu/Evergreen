@@ -71,6 +71,12 @@ struct DirectoryVisitor : public IPlatformFile::FDirectoryVisitor
 			}
 			
 			const FString ThumbnailFilePath = FString(FilenameOrDirectory) / "Thumbnail.png";
+			if (!FPlatformFileManager::Get().GetPlatformFile().FileExists(*AssetConfigFilePath))
+            {
+            	UE_LOG(LogTemp, Warning, TEXT("Invalid asset thumbnail image file path: %s"), *ThumbnailFilePath);
+            	return true;
+            }
+			
 			UTexture2D* Thumbnail = FImageUtils::ImportFileAsTexture2D(ThumbnailFilePath);
 			Thumbnail->AddToRoot();
 			
