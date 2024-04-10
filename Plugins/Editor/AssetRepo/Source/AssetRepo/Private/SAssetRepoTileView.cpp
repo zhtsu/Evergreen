@@ -71,7 +71,7 @@ struct DirectoryVisitor : public IPlatformFile::FDirectoryVisitor
 			}
 			
 			const FString ThumbnailFilePath = FString(FilenameOrDirectory) / "Thumbnail.png";
-			if (!FPlatformFileManager::Get().GetPlatformFile().FileExists(*AssetConfigFilePath))
+			if (!FPlatformFileManager::Get().GetPlatformFile().FileExists(*ThumbnailFilePath))
             {
             	UE_LOG(LogTemp, Warning, TEXT("Invalid asset thumbnail image file path: %s"), *ThumbnailFilePath);
             	return true;
