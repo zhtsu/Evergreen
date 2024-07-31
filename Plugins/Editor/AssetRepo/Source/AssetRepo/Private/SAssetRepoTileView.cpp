@@ -42,7 +42,7 @@ struct DirectoryVisitor : public IPlatformFile::FDirectoryVisitor
 			{
 				if (JsonObject->HasField(TEXT("Name")))
 				{
-					AssetInstanceData->Name = JsonObject->GetStringField("Name");
+					AssetInstanceData->Name = JsonObject->GetStringField(TEXT("Name"));
 				}
 				else
 				{
@@ -50,7 +50,7 @@ struct DirectoryVisitor : public IPlatformFile::FDirectoryVisitor
 				}
 				if (JsonObject->HasField(TEXT("Uploader")))
 				{
-					AssetInstanceData->Uploader = JsonObject->GetStringField("Uploader");
+					AssetInstanceData->Uploader = JsonObject->GetStringField(TEXT("Uploader"));
 				}
 				else
 				{
@@ -58,7 +58,7 @@ struct DirectoryVisitor : public IPlatformFile::FDirectoryVisitor
 				}
 				if (JsonObject->HasField(TEXT("Date")))
 				{
-					AssetInstanceData->Date = JsonObject->GetStringField("Date");
+					AssetInstanceData->Date = JsonObject->GetStringField(TEXT("Date"));
 				}
 				else
 				{
