@@ -4,23 +4,22 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Interface/ClickableItemInterface.h"
 #include "ClickableItem.generated.h"
 
 UCLASS()
-class EVERGREEN_API AClickableItem : public AActor
+class EVERGREEN_API AClickableItem : public AActor, public IClickableItemInterface
 {
 	GENERATED_BODY()
-	
-public:	
-	// Sets default values for this actor's properties
+
+public:
 	AClickableItem();
 
 protected:
-	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-
+public:
+	virtual void OnClicked_Implementation() override;
+	virtual void OnHovered_Implementation() override;
+	virtual void OnUnhovered_Implementation() override;
 };

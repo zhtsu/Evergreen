@@ -3,25 +3,30 @@
 
 #include "Item/ClickableItem.h"
 
-// Sets default values
+#include "Evergreen/Evergreen.h"
+
 AClickableItem::AClickableItem()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
-
+	
 }
 
-// Called when the game starts or when spawned
 void AClickableItem::BeginPlay()
 {
 	Super::BeginPlay();
 	
 }
 
-// Called every frame
-void AClickableItem::Tick(float DeltaTime)
+void AClickableItem::OnClicked_Implementation()
 {
-	Super::Tick(DeltaTime);
-
+	FAST_PRINT("OnClicked")
 }
 
+void AClickableItem::OnHovered_Implementation()
+{
+	FAST_PRINT("OnHovered")
+}
+
+void AClickableItem::OnUnhovered_Implementation()
+{
+	FAST_PRINT("OnUnhovered")
+}
