@@ -5,6 +5,7 @@
 
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "Game/EvergreenGameInstance.h"
 
 AEvergreenPawn::AEvergreenPawn()
 {
@@ -39,21 +40,37 @@ void AEvergreenPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 
 void AEvergreenPawn::Move(const FInputActionValue& InputActionValue)
 {
-	if (!DebugModeEnabled) return;
+	UEvergreenGameInstance* EGI = Cast<UEvergreenGameInstance>(GetGameInstance());
+	if (EGI != nullptr && !EGI->IsDebugModeEnabled()) return;
 
-	
+	const FVector2D MovementVector = InputActionValue.Get<FVector2D>();
+
+	if (Controller != nullptr)
+	{
+		const FRotator ControlRotation = Controller->GetControlRotation();
+		
+		const FRotator YawRotation(0, ControlRotation.Yaw, 0);
+		
+		const FVector ForwardDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
+		const FVector RightDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
+		
+		AddMovementInput(ForwardDirection, MovementVector.Y);
+		AddMovementInput(RightDirection, MovementVector.X);
+	}
 }
 
 void AEvergreenPawn::UpDown(const FInputActionValue& InputActionValue)
 {
-	if (!DebugModeEnabled) return;
+	UEvergreenGameInstance* EGI = Cast<UEvergreenGameInstance>(GetGameInstance());
+	if (EGI != nullptr && !EGI->IsDebugModeEnabled()) return;
 
 	
 }
 
 void AEvergreenPawn::Rotate(const FInputActionValue& InputActionValue)
 {
-	if (!DebugModeEnabled) return;
+	UEvergreenGameInstance* EGI = Cast<UEvergreenGameInstance>(GetGameInstance());
+	if (EGI != nullptr && !EGI->IsDebugModeEnabled()) return;
 
 	
 }
