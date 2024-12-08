@@ -3,30 +3,59 @@
 
 #include "Item/ClickableItem.h"
 
+#include "Components/BoxComponent.h"
 #include "Evergreen/Evergreen.h"
 
 AClickableItem::AClickableItem()
 {
+	RootScene = CreateDefaultSubobject<USceneComponent>(TEXT("RootScene"));
+	RootScene->Mobility = EComponentMobility::Static;
+	RootComponent = RootScene;
 	
+	InteractionVolume = CreateDefaultSubobject<UBoxComponent>(TEXT("InteractionVolume"));
+	InteractionVolume->Mobility = EComponentMobility::Static;
+	InteractionVolume->SetupAttachment(RootScene);
+	
+	StaticMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMesh"));
+	StaticMesh->Mobility = EComponentMobility::Static;
+	StaticMesh->SetupAttachment(RootScene);
 }
 
 void AClickableItem::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	InteractionVolume->OnClicked.AddUniqueDynamic(this, &AClickableItem::OnClickNative);
+	InteractionVolume->OnBeginCursorOver.AddUniqueDynamic(this, &AClickableItem::OnHoverNative);
+	InteractionVolume->OnEndCursorOver.AddUniqueDynamic(this, &AClickableItem::OnUnhoverNative);
 }
 
-void AClickableItem::OnClicked_Implementation()
+void AClickableItem::OnClickNative(UPrimitiveComponent* TouchedComponent, FKey ButtonReleased)
 {
-	FAST_PRINT("OnClicked")
+	Execute_OnClick(this);
 }
 
-void AClickableItem::OnHovered_Implementation()
+void AClickableItem::OnHoverNative(UPrimitiveComponent* TouchedComponent)
 {
-	FAST_PRINT("OnHovered")
+	Execute_OnHover(this);
 }
 
-void AClickableItem::OnUnhovered_Implementation()
+void AClickableItem::OnUnhoverNative(UPrimitiveComponent* TouchedComponent)
 {
-	FAST_PRINT("OnUnhovered")
+	Execute_OnUnhover(this);
+}
+
+void AClickableItem::OnClick_Implementation()
+{
+	FAST_PRINT("Default OnClick")
+}
+
+void AClickableItem::OnHover_Implementation()
+{
+	FAST_PRINT("Default OnHover")
+}
+
+void AClickableItem::OnUnhover_Implementation()
+{
+	FAST_PRINT("Default OnUnhover")
 }

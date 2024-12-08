@@ -4,29 +4,29 @@
 
 #include "CoreMinimal.h"
 #include "UObject/Interface.h"
-#include "ClickableItemInterface.generated.h"
+#include "ClickableInterface.generated.h"
 
 // This class does not need to be modified.
 UINTERFACE(MinimalAPI)
-class UClickableItemInterface : public UInterface
+class UClickableInterface : public UInterface
 {
 	GENERATED_BODY()
 };
 
-class EVERGREEN_API IClickableItemInterface
+class EVERGREEN_API IClickableInterface
 {
 	GENERATED_BODY()
 
 public:
 	UFUNCTION(BlueprintNativeEvent, Category = "ClickableItem")
-	void OnClicked();
-	virtual void OnClicked_Implementation() = 0;
+	void OnClick();
+	virtual void OnClick_Implementation() = 0;
 	
 	UFUNCTION(BlueprintNativeEvent, Category = "ClickableItem")
-	void OnHovered();
-	virtual void OnHovered_Implementation() = 0;
+	void OnHover();
+	virtual void OnHover_Implementation() = 0;
 
 	UFUNCTION(BlueprintNativeEvent, Category = "ClickableItem")
-	void OnUnhovered();
-	virtual void OnUnhovered_Implementation() = 0;
+	void OnUnhover();
+	virtual void OnUnhover_Implementation() = 0;
 };

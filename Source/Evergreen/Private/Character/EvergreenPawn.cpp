@@ -16,7 +16,12 @@ AEvergreenPawn::AEvergreenPawn()
 void AEvergreenPawn::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
+	{
+		PlayerController->bEnableClickEvents = true;
+		PlayerController->bEnableMouseOverEvents = true;
+	}
 }
 
 void AEvergreenPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
