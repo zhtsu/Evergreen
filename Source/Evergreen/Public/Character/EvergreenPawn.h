@@ -28,14 +28,11 @@ private:
 	class UInputAction* MoveAction;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
-	class UInputAction* UpDownAction;
+	class UInputAction* LookAction;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
-	class UInputAction* RotateAction;
+	UPROPERTY(VisibleAnywhere, Category = "Movement")
+	class UFloatingPawnMovement* FloatingPawnMovement;
 
 	void Move(const struct FInputActionValue& InputActionValue);
-	
-	void UpDown(const struct FInputActionValue& InputActionValue);
-
-	void Rotate(const struct FInputActionValue& InputActionValue);
+	void Look(const struct FInputActionValue& InputActionValue);
 };

@@ -18,7 +18,7 @@ AEvergreenCharacter::AEvergreenCharacter()
 	SpringArm->SetRelativeRotation(FRotator(-25, 0, 0));
 	SpringArm->SetRelativeLocation(FVector(0, 0, 40));
 
-	Camera = CreateDefaultSubobject<UCameraComponent>("Camera");
+	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	Camera->SetupAttachment(SpringArm, USpringArmComponent::SocketName);
 
 	bUseControllerRotationPitch = false;

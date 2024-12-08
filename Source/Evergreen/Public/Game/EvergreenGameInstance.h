@@ -22,7 +22,7 @@ class EVERGREEN_API UEvergreenGameInstance : public UGameInstance
 	
 private:
 	EEvergreenGameMode GameMode = EEvergreenGameMode::ThirdPerson;
-	bool DebugModeEnabled = false;
+	bool bTestModeEnabled = false;
 	
 public:
 	UPROPERTY(BlueprintAssignable)
@@ -35,8 +35,8 @@ public:
 	FORCEINLINE EEvergreenGameMode GetEvergreenGameMode() const { return GameMode; }
 
 	UFUNCTION(BlueprintCallable)
-	FORCEINLINE void SetDebugMode(bool Enabled) { DebugModeEnabled = Enabled; }
+	FORCEINLINE void SetTestModeEnabled(bool Enabled) { bTestModeEnabled = Enabled; }
 
 	UFUNCTION(BlueprintCallable)
-	FORCEINLINE bool IsDebugModeEnabled() const { return DebugModeEnabled; }
+	FORCEINLINE bool IsTestModeEnabled() const { return bTestModeEnabled; }
 };

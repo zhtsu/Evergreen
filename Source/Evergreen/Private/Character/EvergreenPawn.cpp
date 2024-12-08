@@ -6,10 +6,11 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "Game/EvergreenGameInstance.h"
+#include "GameFramework/FloatingPawnMovement.h"
 
 AEvergreenPawn::AEvergreenPawn()
 {
-	
+	FloatingPawnMovement = CreateDefaultSubobject<UFloatingPawnMovement>(TEXT("Movement"));
 }
 
 void AEvergreenPawn::BeginPlay()
@@ -33,45 +34,42 @@ void AEvergreenPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent))
 	{
 		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AEvergreenPawn::Move);
-		EnhancedInputComponent->BindAction(UpDownAction, ETriggerEvent::Triggered, this, &AEvergreenPawn::UpDown);
-		EnhancedInputComponent->BindAction(RotateAction, ETriggerEvent::Triggered, this, &AEvergreenPawn::Rotate);
+		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AEvergreenPawn::Look);
 	}
 }
 
 void AEvergreenPawn::Move(const FInputActionValue& InputActionValue)
 {
 	UEvergreenGameInstance* EGI = Cast<UEvergreenGameInstance>(GetGameInstance());
-	if (EGI != nullptr && !EGI->IsDebugModeEnabled()) return;
+	if (EGI != nullptr && !EGI->IsTestModeEnabled()) return;
 
-	const FVector2D MovementVector = InputActionValue.Get<FVector2D>();
+	const FVector MovementVector = InputActionValue.Get<FVector>();
 
 	if (Controller != nullptr)
 	{
 		const FRotator ControlRotation = Controller->GetControlRotation();
 		
-		const FRotator YawRotation(0, ControlRotation.Yaw, 0);
-		
-		const FVector ForwardDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
-		const FVector RightDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
+		const FVector ForwardDirection = FRotationMatrix(ControlRotation).GetUnitAxis(EAxis::X);
+		const FVector RightDirection = FRotationMatrix(ControlRotation).GetUnitAxis(EAxis::Y);
+		const FVector UpVector = FRotationMatrix(ControlRotation).GetUnitAxis(EAxis::Z);
 		
 		AddMovementInput(ForwardDirection, MovementVector.Y);
 		AddMovementInput(RightDirection, MovementVector.X);
+		AddMovementInput(UpVector, MovementVector.Z);
 	}
 }
 
-void AEvergreenPawn::UpDown(const FInputActionValue& InputActionValue)
+void AEvergreenPawn::Look(const FInputActionValue& InputActionValue)
 {
 	UEvergreenGameInstance* EGI = Cast<UEvergreenGameInstance>(GetGameInstance());
-	if (EGI != nullptr && !EGI->IsDebugModeEnabled()) return;
+	if (EGI != nullptr && !EGI->IsTestModeEnabled()) return;
 
-	
+	const FVector LookVector = InputActionValue.Get<FVector>();
+
+	if (Controller != nullptr)
+	{
+		AddControllerYawInput(LookVector.X);
+		AddControllerPitchInput(LookVector.Y);
+		AddControllerRollInput(LookVector.Z);
+	}
 }
-
-void AEvergreenPawn::Rotate(const FInputActionValue& InputActionValue)
-{
-	UEvergreenGameInstance* EGI = Cast<UEvergreenGameInstance>(GetGameInstance());
-	if (EGI != nullptr && !EGI->IsDebugModeEnabled()) return;
-
-	
-}
-
