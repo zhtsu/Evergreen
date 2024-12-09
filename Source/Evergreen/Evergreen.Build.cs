@@ -19,8 +19,7 @@ public class Evergreen : ModuleRules
 		PrivateDependencyModuleNames.AddRange(new string[]
 		{
 			"EnhancedInput",
-			"LevelSequence",
-			"MovieScene"
+			"LevelSequence"
 		});
 
 		// Uncomment if you are using Slate UI

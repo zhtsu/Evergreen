@@ -68,21 +68,8 @@ public:
 	void ResumeGame();
 
 	UFUNCTION(BlueprintCallable)
-	void PlayCutscene(
-		class ULevelSequence* LevelSequence, class ALevelSequenceActor*& LevelSequenceActor, class ULevelSequencePlayer*& LevelSequencePlayer,
-		struct FMovieSceneObjectBindingID ViewTargetBindingID, FViewTargetTransitionParams ViewTargetTransitionParams,
-		bool bReturnToPreviousViewTarget = true);
+	void PlayCutscene(class ULevelSequence* LevelSequence, class ALevelSequenceActor*& LevelSequenceActor, class ULevelSequencePlayer*& LevelSequencePlayer);
 
 	UFUNCTION(BlueprintCallable)
 	void StartMiniGame(TSubclassOf<AMiniGameBase> MiniGameClass);
-
-private:
-	UFUNCTION()
-	void ReturnPreviousViewTarget();
-
-	UPROPERTY()
-	AActor* PreviousViewTarget = nullptr;
-	
-	struct FMovieSceneBindingProxy ResolveBindingID(class UMovieSceneSequence* RootSequence, struct FMovieSceneObjectBindingID InObjectBindingID);
-	void LocateBoundObjects(UMovieSceneSequence* Sequence, const FMovieSceneBindingProxy& InBinding, TArray<UObject*>& OutObjects);
 };
