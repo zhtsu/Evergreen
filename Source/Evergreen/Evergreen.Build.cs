@@ -8,11 +8,19 @@ public class Evergreen : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 	
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore" });
+		PublicDependencyModuleNames.AddRange(new string[]
+		{
+			"Core",
+			"CoreUObject",
+			"Engine",
+			"InputCore"
+		});
 
 		PrivateDependencyModuleNames.AddRange(new string[]
 		{
-			"EnhancedInput"
+			"EnhancedInput",
+			"LevelSequence",
+			"MovieScene"
 		});
 
 		// Uncomment if you are using Slate UI

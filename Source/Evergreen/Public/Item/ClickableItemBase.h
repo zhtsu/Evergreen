@@ -5,15 +5,15 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Interface/ClickableInterface.h"
-#include "ClickableItem.generated.h"
+#include "ClickableItemBase.generated.h"
 
 UCLASS()
-class EVERGREEN_API AClickableItem : public AActor, public IClickableInterface
+class EVERGREEN_API AClickableItemBase : public AActor, public IClickableInterface
 {
 	GENERATED_BODY()
 
 public:
-	AClickableItem();
+	AClickableItemBase();
 
 private:
 	UPROPERTY(VisibleDefaultsOnly, Category = "ClickableItem")
