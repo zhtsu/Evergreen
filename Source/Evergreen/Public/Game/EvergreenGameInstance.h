@@ -48,6 +48,13 @@ public:
 
 	UPROPERTY(BlueprintReadOnly)
 	EGamePlayState CurrentGamePlayState = EGamePlayState::Exploring;
+
+	static UEvergreenGameInstance* Singleton;
+	
+	UFUNCTION(BlueprintPure)
+	static UEvergreenGameInstance* GetEvergreenGameInstance();
+
+	UEvergreenGameInstance();
 	
 	UFUNCTION(BlueprintCallable)
 	void SetEvergreenGameMode(EEvergreenGameMode InGameMode);

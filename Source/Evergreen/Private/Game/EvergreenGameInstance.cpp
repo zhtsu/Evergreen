@@ -6,6 +6,18 @@
 #include "Evergreen/Evergreen.h"
 #include "LevelSequencePlayer.h"
 
+UEvergreenGameInstance* UEvergreenGameInstance::Singleton = nullptr;
+
+UEvergreenGameInstance* UEvergreenGameInstance::GetEvergreenGameInstance()
+{
+	return Singleton;
+}
+
+UEvergreenGameInstance::UEvergreenGameInstance()
+{
+	Singleton = this;
+}
+
 void UEvergreenGameInstance::SetEvergreenGameMode(EEvergreenGameMode InGameMode)
 {
 	GameMode = InGameMode;
