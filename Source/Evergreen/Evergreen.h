@@ -13,4 +13,3 @@
 #define FAST_WARNING(Message, ...) \
 	UE_LOG(LogTemp, Warning, Message, ##__VA_ARGS__) \
 	UE_LOG(LogTemp, Warning, TEXT("Check the file: %s - Line: %d"), __FILEW__, __LINE__)
-

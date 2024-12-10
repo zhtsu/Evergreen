@@ -20,7 +20,8 @@ public class Evergreen : ModuleRules
 		{
 			"EnhancedInput",
 			"LevelSequence",
-			"MovieScene"
+			"MovieScene",
+			"AssetPathHub"
 		});
 
 		// Uncomment if you are using Slate UI

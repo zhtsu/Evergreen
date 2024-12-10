@@ -45,8 +45,8 @@ void AEvergreenPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 
 void AEvergreenPawn::Move(const FInputActionValue& InputActionValue)
 {
-	UEvergreenGameInstance* EGI = Cast<UEvergreenGameInstance>(GetGameInstance());
-	if (EGI != nullptr && !EGI->IsTestModeEnabled()) return;
+	UEvergreenGameInstance* EGI = UEvergreenGameInstance::GetEvergreenGameInstance();
+	if (!EGI->IsTestModeEnabled()) return;
 
 	const FVector MovementVector = InputActionValue.Get<FVector>();
 
@@ -66,8 +66,8 @@ void AEvergreenPawn::Move(const FInputActionValue& InputActionValue)
 
 void AEvergreenPawn::Look(const FInputActionValue& InputActionValue)
 {
-	UEvergreenGameInstance* EGI = Cast<UEvergreenGameInstance>(GetGameInstance());
-	if (EGI != nullptr && !EGI->IsTestModeEnabled()) return;
+	UEvergreenGameInstance* EGI = UEvergreenGameInstance::GetEvergreenGameInstance();
+	if (!EGI->IsTestModeEnabled()) return;
 
 	const FVector LookVector = InputActionValue.Get<FVector>();
 

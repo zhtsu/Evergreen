@@ -1,0 +1,24 @@
+{
+	"FileVersion": 3,
+	"Version": 1,
+	"VersionName": "1.0",
+	"FriendlyName": "StringTableLoader",
+	"Description": "Automatically load all StringTable assets when the editor starts.",
+	"Category": "Other",
+	"CreatedBy": "zhtsu",
+	"CreatedByURL": "",
+	"DocsURL": "",
+	"MarketplaceURL": "",
+	"SupportURL": "",
+	"CanContainContent": true,
+	"IsBetaVersion": false,
+	"IsExperimentalVersion": false,
+	"Installed": false,
+	"Modules": [
+		{
+			"Name": "StringTableLoader",
+			"Type": "Editor",
+			"LoadingPhase": "Default"
+		}
+	]
+}

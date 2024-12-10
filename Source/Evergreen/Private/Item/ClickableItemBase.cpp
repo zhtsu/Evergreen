@@ -36,39 +36,48 @@ void AClickableItemBase::BeginPlay()
 
 void AClickableItemBase::OnClickNative(UPrimitiveComponent* TouchedComponent, FKey ButtonReleased)
 {
+	UEvergreenGameInstance* EGI = UEvergreenGameInstance::GetEvergreenGameInstance();
+	if (!EGI->IsAllowInput()) return;
+	
 	Execute_OnClick(this);
 }
 
 void AClickableItemBase::OnHoverNative(UPrimitiveComponent* TouchedComponent)
 {
+	UEvergreenGameInstance* EGI = UEvergreenGameInstance::GetEvergreenGameInstance();
+	if (!EGI->IsAllowInput()) return;
+	
 	Execute_OnHover(this);
 }
 
 void AClickableItemBase::OnUnhoverNative(UPrimitiveComponent* TouchedComponent)
 {
+	UEvergreenGameInstance* EGI = UEvergreenGameInstance::GetEvergreenGameInstance();
+	if (!EGI->IsAllowInput()) return;
+	
 	Execute_OnUnhover(this);
 }
 
 void AClickableItemBase::OnClick_Implementation()
 {
-	UEvergreenGameInstance* EGI = Cast<UEvergreenGameInstance>(GetGameInstance());
-	if (EGI != nullptr && !EGI->IsTestModeEnabled()) return;
+	UEvergreenGameInstance* EGI = UEvergreenGameInstance::GetEvergreenGameInstance();
+	if (!EGI->IsTestModeEnabled()) return;
 	
 	FAST_PRINT("Default OnClick")
 }
 
 void AClickableItemBase::OnHover_Implementation()
 {
-	UEvergreenGameInstance* EGI = Cast<UEvergreenGameInstance>(GetGameInstance());
-	if (EGI != nullptr && !EGI->IsTestModeEnabled()) return;
+	UEvergreenGameInstance* EGI = UEvergreenGameInstance::GetEvergreenGameInstance();
+	if (!EGI->IsTestModeEnabled()) return;
 	
 	FAST_PRINT("Default OnHover")
 }
 
 void AClickableItemBase::OnUnhover_Implementation()
 {
-	UEvergreenGameInstance* EGI = Cast<UEvergreenGameInstance>(GetGameInstance());
-	if (EGI != nullptr && !EGI->IsTestModeEnabled()) return;
+	UEvergreenGameInstance* EGI = UEvergreenGameInstance::GetEvergreenGameInstance();
+	if (!EGI->IsTestModeEnabled()) return;
 
 	FAST_PRINT("Default OnUnhover")
 }

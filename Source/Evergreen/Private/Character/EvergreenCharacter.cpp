@@ -5,6 +5,7 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "Camera/CameraComponent.h"
+#include "Game/EvergreenGameInstance.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 
@@ -59,6 +60,9 @@ void AEvergreenCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInput
 
 void AEvergreenCharacter::Move(const FInputActionValue& InputActionValue)
 {
+	UEvergreenGameInstance* EGI = UEvergreenGameInstance::GetEvergreenGameInstance();
+	if (!EGI->IsAllowInput()) return;
+	
 	const FVector2D MovementVector = InputActionValue.Get<FVector2D>();
 
 	if (Controller != nullptr)

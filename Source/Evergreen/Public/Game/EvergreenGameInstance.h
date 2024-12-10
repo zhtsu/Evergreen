@@ -23,7 +23,21 @@ enum class EGamePlayState : uint8
 	Paused
 };
 
+USTRUCT()
+struct FGamePlayState
+{
+	GENERATED_BODY()
+
+	EGamePlayState PreviousGamePlayState;
+	EGamePlayState CurrentGamePlayState;
+
+	FGamePlayState() :
+		PreviousGamePlayState(EGamePlayState::Exploring),
+		CurrentGamePlayState(EGamePlayState::Exploring) {}
+};
+
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnGameModeChanged, EEvergreenGameMode, CurrentMode);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnGamePlayStateChanged, EGamePlayState, CurrentGamePlayState);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnGamePaused);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnGameResumed);
 
@@ -33,12 +47,18 @@ class EVERGREEN_API UEvergreenGameInstance : public UGameInstance
 	GENERATED_BODY()
 	
 private:
+	static UEvergreenGameInstance* Singleton;
 	EEvergreenGameMode GameMode = EEvergreenGameMode::ThirdPerson;
+	FGamePlayState GamePlayState;
 	bool bTestModeEnabled = false;
+	TArray<FString> CollectedItemUUIDs;
 	
 public:
 	UPROPERTY(BlueprintAssignable)
 	FOnGameModeChanged OnGameModeChanged;
+
+	UPROPERTY(BlueprintAssignable)
+	FOnGamePlayStateChanged OnGamePlayStateChanged;
 
 	UPROPERTY(BlueprintAssignable)
 	FOnGamePaused OnGamePaused;
@@ -46,11 +66,6 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FOnGameResumed OnGameResumed;
 
-	UPROPERTY(BlueprintReadOnly)
-	EGamePlayState CurrentGamePlayState = EGamePlayState::Exploring;
-
-	static UEvergreenGameInstance* Singleton;
-	
 	UFUNCTION(BlueprintPure)
 	static UEvergreenGameInstance* GetEvergreenGameInstance();
 
@@ -79,4 +94,25 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void StartMiniGame(TSubclassOf<AMiniGameBase> MiniGameClass);
+
+	UFUNCTION(BlueprintCallable)
+	void EndMiniGame(TSubclassOf<AMiniGameBase> MiniGameClass);
+
+	UFUNCTION(BlueprintCallable)
+	FORCEINLINE EGamePlayState GetCurrentGamePlayState() { return GamePlayState.CurrentGamePlayState; }
+
+	UFUNCTION(BlueprintCallable)
+	bool IsAllowInput();
+
+	UFUNCTION(BlueprintCallable)
+	void CollectItem(FString UUID);
+
+	UFUNCTION(BlueprintCallable)
+	bool HasItem(FString UUID);
+	
+private:
+	void SetCurrentGamePlayState(EGamePlayState NewGamePlayState);
+
+	UFUNCTION()
+	void ReturnPreviousGamePlayState();
 };

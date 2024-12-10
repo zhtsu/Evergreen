@@ -3,12 +3,13 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "ItemBase.h"
 #include "GameFramework/Actor.h"
 #include "Interface/ClickableInterface.h"
 #include "ClickableItemBase.generated.h"
 
 UCLASS()
-class EVERGREEN_API AClickableItemBase : public AActor, public IClickableInterface
+class EVERGREEN_API AClickableItemBase : public AEvergreenItemBase, public IClickableInterface
 {
 	GENERATED_BODY()
 

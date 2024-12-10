@@ -26,14 +26,18 @@ void UEvergreenGameInstance::SetEvergreenGameMode(EEvergreenGameMode InGameMode)
 
 void UEvergreenGameInstance::PauseGame()
 {
+	SetCurrentGamePlayState(EGamePlayState::Paused);
 }
 
 void UEvergreenGameInstance::ResumeGame()
 {
+	ReturnPreviousGamePlayState();
 }
 
 void UEvergreenGameInstance::PlayCutscene(ULevelSequence* LevelSequence, ALevelSequenceActor*& LevelSequenceActor, ULevelSequencePlayer*& LevelSequencePlayer)
 {
+	SetCurrentGamePlayState(EGamePlayState::Cutscene);
+	
 	LevelSequencePlayer = ULevelSequencePlayer::CreateLevelSequencePlayer(
 		GetWorld(), LevelSequence, FMovieSceneSequencePlaybackSettings(), LevelSequenceActor);
 
@@ -44,8 +48,48 @@ void UEvergreenGameInstance::PlayCutscene(ULevelSequence* LevelSequence, ALevelS
 	}
 	
 	LevelSequencePlayer->Play();
+	LevelSequencePlayer->OnStop.AddDynamic(this, &UEvergreenGameInstance::ReturnPreviousGamePlayState);
 }
 
 void UEvergreenGameInstance::StartMiniGame(TSubclassOf<AMiniGameBase> MiniGameClass)
 {
+	SetCurrentGamePlayState(EGamePlayState::MiniGame);
+}
+
+void UEvergreenGameInstance::EndMiniGame(TSubclassOf<AMiniGameBase> MiniGameClass)
+{
+	SetCurrentGamePlayState(GamePlayState.PreviousGamePlayState);
+}
+
+bool UEvergreenGameInstance::IsAllowInput()
+{
+	return GamePlayState.CurrentGamePlayState != EGamePlayState::Cutscene
+		&& GamePlayState.CurrentGamePlayState != EGamePlayState::Paused;
+}
+
+void UEvergreenGameInstance::CollectItem(FString UUID)
+{
+	CollectedItemUUIDs.Add(UUID);
+}
+
+bool UEvergreenGameInstance::HasItem(FString UUID)
+{
+	return CollectedItemUUIDs.Find(UUID) != INDEX_NONE;
+}
+
+void UEvergreenGameInstance::SetCurrentGamePlayState(EGamePlayState NewGamePlayState)
+{
+	if (NewGamePlayState == GamePlayState.CurrentGamePlayState)
+	{
+		return;
+	}
+
+	GamePlayState.PreviousGamePlayState = GamePlayState.CurrentGamePlayState;
+	GamePlayState.CurrentGamePlayState = NewGamePlayState;
+	OnGamePlayStateChanged.Broadcast(GamePlayState.CurrentGamePlayState);
+}
+
+void UEvergreenGameInstance::ReturnPreviousGamePlayState()
+{
+	SetCurrentGamePlayState(GamePlayState.PreviousGamePlayState);
 }
