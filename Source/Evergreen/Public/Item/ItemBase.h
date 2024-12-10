@@ -6,34 +6,23 @@
 #include "GameFramework/Actor.h"
 #include "ItemBase.generated.h"
 
-USTRUCT(BlueprintType)
-struct FEvergreenItemInfo
-{
-	GENERATED_BODY()
-
-	UPROPERTY(EditAnywhere)
-	FText ItemName;
-
-	UPROPERTY(EditAnywhere)
-	FText ItemDescription;
-};
-
 UCLASS()
 class EVERGREEN_API AEvergreenItemBase : public AActor
 {
 	GENERATED_BODY()
+
+protected:
+	virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
 	
 public:
-	AEvergreenItemBase();
-	
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "EvergreenItem")
 	FText ItemID;
 
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "EvergreenItem")
-	FEvergreenItemInfo ItemInfo;
+	FText ItemName;
 
-protected:
-	virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "EvergreenItem")
+	FText ItemDescription;
 
 private:
 	void ReadItemNameFromStringTable();

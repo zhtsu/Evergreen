@@ -3,8 +3,9 @@
 
 #include "Game/EvergreenGameInstance.h"
 
-#include "Evergreen/Evergreen.h"
 #include "LevelSequencePlayer.h"
+#include "AssetPathHub.h"
+#include "Internationalization/StringTableRegistry.h"
 
 UEvergreenGameInstance* UEvergreenGameInstance::Singleton = nullptr;
 
@@ -16,6 +17,8 @@ UEvergreenGameInstance* UEvergreenGameInstance::GetEvergreenGameInstance()
 UEvergreenGameInstance::UEvergreenGameInstance()
 {
 	Singleton = this;
+
+	LoadStringTablesOnRuntime();
 }
 
 void UEvergreenGameInstance::SetEvergreenGameMode(EEvergreenGameMode InGameMode)
@@ -43,7 +46,7 @@ void UEvergreenGameInstance::PlayCutscene(ULevelSequence* LevelSequence, ALevelS
 
 	if (!LevelSequenceActor || !LevelSequencePlayer)
 	{
-		FAST_WARNING(TEXT("Unable to create level sequence player"))
+		FAST_WARNING(TEXT("Unable to create level sequence player"));
 		return;
 	}
 	
@@ -92,4 +95,19 @@ void UEvergreenGameInstance::SetCurrentGamePlayState(EGamePlayState NewGamePlayS
 void UEvergreenGameInstance::ReturnPreviousGamePlayState()
 {
 	SetCurrentGamePlayState(GamePlayState.PreviousGamePlayState);
+}
+
+void UEvergreenGameInstance::LoadStringTablesOnRuntime()
+{
+#ifndef WITH_EDITOR
+	FStringTableRegistry::Get().UnregisterStringTable(FAssetPathHub::ST_ItemName_Reference);
+	FStringTableRegistry::Get().Internal_LocTableFromFile(
+		FAssetPathHub::ST_ItemName_Reference, TEXT("ItemName"),
+		FAssetPathHub::ST_ItemName_CSV_Path.ToString(), FPaths::ProjectContentDir());
+
+	FStringTableRegistry::Get().UnregisterStringTable(FAssetPathHub::ST_ItemDescription_Reference);
+	FStringTableRegistry::Get().Internal_LocTableFromFile(
+		FAssetPathHub::ST_ItemDescription_Reference, TEXT("ItemDescription"),
+		FAssetPathHub::ST_ItemDescription_CSV_Path.ToString(), FPaths::ProjectContentDir());
+#endif
 }
