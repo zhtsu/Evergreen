@@ -61,7 +61,7 @@ void AEvergreenCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInput
 void AEvergreenCharacter::Move(const FInputActionValue& InputActionValue)
 {
 	UEvergreenGameInstance* EGI = UEvergreenGameInstance::GetEvergreenGameInstance();
-	if (!EGI->IsAllowInput()) return;
+	if (!EGI->IsAllowKeyboardInput()) return;
 	
 	const FVector2D MovementVector = InputActionValue.Get<FVector2D>();
 

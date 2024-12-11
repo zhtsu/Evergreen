@@ -13,10 +13,6 @@ void AMiniGameBase::BeginPlay()
 	Super::BeginPlay();
 }
 
-void AMiniGameBase::OnInitializeMiniGame_Implementation()
-{
-}
-
 void AMiniGameBase::OnStartMiniGame_Implementation()
 {
 }

@@ -7,7 +7,7 @@
 #include "Interface/MiniGameInterface.h"
 #include "MiniGameBase.generated.h"
 
-UCLASS()
+UCLASS(Abstract)
 class EVERGREEN_API AMiniGameBase : public AActor, public IMiniGameInterface
 {
 	GENERATED_BODY()
@@ -19,7 +19,6 @@ protected:
 	virtual void BeginPlay() override;
 	
 public:
-	virtual void OnInitializeMiniGame_Implementation() override;
 	virtual void OnStartMiniGame_Implementation() override;
 	virtual void OnEndMiniGame_Implementation() override;
 };

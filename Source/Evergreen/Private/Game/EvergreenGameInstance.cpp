@@ -64,6 +64,13 @@ void UEvergreenGameInstance::EndMiniGame(TSubclassOf<AMiniGameBase> MiniGameClas
 	SetCurrentGamePlayState(GamePlayState.PreviousGamePlayState);
 }
 
+bool UEvergreenGameInstance::IsAllowKeyboardInput()
+{
+	return GamePlayState.CurrentGamePlayState != EGamePlayState::Cutscene
+		&& GamePlayState.CurrentGamePlayState != EGamePlayState::Paused
+		&& GamePlayState.CurrentGamePlayState != EGamePlayState::MiniGame;
+}
+
 bool UEvergreenGameInstance::IsAllowInput()
 {
 	return GamePlayState.CurrentGamePlayState != EGamePlayState::Cutscene
@@ -102,12 +109,12 @@ void UEvergreenGameInstance::LoadStringTablesOnRuntime()
 #ifndef WITH_EDITOR
 	FStringTableRegistry::Get().UnregisterStringTable(FAssetPathHub::ST_ItemName_Reference);
 	FStringTableRegistry::Get().Internal_LocTableFromFile(
-		FAssetPathHub::ST_ItemName_Reference, TEXT("ItemName"),
+		FAssetPathHub::ST_ItemName_Reference, TEXT("ST_ItemName"),
 		FAssetPathHub::ST_ItemName_CSV_Path.ToString(), FPaths::ProjectContentDir());
 
 	FStringTableRegistry::Get().UnregisterStringTable(FAssetPathHub::ST_ItemDescription_Reference);
 	FStringTableRegistry::Get().Internal_LocTableFromFile(
-		FAssetPathHub::ST_ItemDescription_Reference, TEXT("ItemDescription"),
+		FAssetPathHub::ST_ItemDescription_Reference, TEXT("ST_ItemDescription"),
 		FAssetPathHub::ST_ItemDescription_CSV_Path.ToString(), FPaths::ProjectContentDir());
 #endif
 }

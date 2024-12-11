@@ -72,6 +72,8 @@ public:
 	static UEvergreenGameInstance* GetEvergreenGameInstance();
 
 	UEvergreenGameInstance();
+	bool IsAllowKeyboardInput();
+	bool IsAllowInput();
 	
 	UFUNCTION(BlueprintCallable)
 	void SetEvergreenGameMode(EEvergreenGameMode InGameMode);
@@ -102,9 +104,6 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	FORCEINLINE EGamePlayState GetCurrentGamePlayState() { return GamePlayState.CurrentGamePlayState; }
-
-	UFUNCTION(BlueprintCallable)
-	bool IsAllowInput();
 
 	UFUNCTION(BlueprintCallable)
 	void CollectItem(FString UUID);

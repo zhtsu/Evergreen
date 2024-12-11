@@ -6,7 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "ItemBase.generated.h"
 
-UCLASS()
+UCLASS(Abstract)
 class EVERGREEN_API AEvergreenItemBase : public AActor
 {
 	GENERATED_BODY()

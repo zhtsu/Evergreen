@@ -3,9 +3,12 @@
 
 #include "Item/ClickableItemBase.h"
 
+#include "AssetPathHub.h"
 #include "Components/BoxComponent.h"
+#include "Components/WidgetComponent.h"
 #include "Evergreen/Evergreen.h"
 #include "Game/EvergreenGameInstance.h"
+#include "UI/TypewriterTextWidget.h"
 
 AClickableItemBase::AClickableItemBase()
 {
@@ -23,6 +26,32 @@ AClickableItemBase::AClickableItemBase()
 	StaticMesh->SetGenerateOverlapEvents(false);
 	StaticMesh->SetCollisionProfileName("NoCollision");
 	StaticMesh->SetupAttachment(RootScene);
+	
+	DescriptionTextWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("DescriptionText"));
+	DescriptionTextWidget->SetupAttachment(StaticMesh);
+	DescriptionTextWidget->SetWidgetSpace(EWidgetSpace::Screen);
+	DescriptionTextWidget->SetDrawAtDesiredSize(true);
+	if (UClass* LoadedClass = LoadClass<UTypewriterTextWidget>(nullptr, *FAssetPathHub::WBP_ItemDescriptionText_Path.ToString()))
+	{
+		DescriptionTextWidget->SetWidgetClass(LoadedClass);
+	}
+	else
+	{
+		FAST_WARNING(TEXT("Fail to load blueprint '%s'"), *FAssetPathHub::WBP_ItemDescriptionText_Path.ToString());
+	}
+	
+	HoverOnlyWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("ShowOnHovered"));
+	HoverOnlyWidget->SetupAttachment(StaticMesh);
+	HoverOnlyWidget->SetWidgetSpace(EWidgetSpace::Screen);
+	HoverOnlyWidget->SetDrawAtDesiredSize(true);
+	if (UClass* LoadedClass = LoadClass<UUserWidget>(nullptr, *FAssetPathHub::WBP_ItemShowOnHovered_Path.ToString()))
+	{
+		HoverOnlyWidget->SetWidgetClass(LoadedClass);
+	}
+	else
+	{
+		FAST_WARNING(TEXT("Fail to load blueprint '%s'"), *FAssetPathHub::WBP_ItemDescriptionText_Path.ToString());
+	}
 }
 
 void AClickableItemBase::BeginPlay()
@@ -32,6 +61,42 @@ void AClickableItemBase::BeginPlay()
 	InteractionVolume->OnClicked.AddUniqueDynamic(this, &AClickableItemBase::OnClickNative);
 	InteractionVolume->OnBeginCursorOver.AddUniqueDynamic(this, &AClickableItemBase::OnHoverNative);
 	InteractionVolume->OnEndCursorOver.AddUniqueDynamic(this, &AClickableItemBase::OnUnhoverNative);
+}
+
+void AClickableItemBase::ShowDescriptionWidget(bool bAutoPlay, bool bFadeIn)
+{
+	UTypewriterTextWidget* TypewriterTextWidget = Cast<UTypewriterTextWidget>(DescriptionTextWidget->GetWidget());
+	if (TypewriterTextWidget)
+	{
+		TypewriterTextWidget->Show(bAutoPlay, bFadeIn);
+	}
+}
+
+void AClickableItemBase::ShowHoverOnlyWidget()
+{
+	UUserWidget* UserWidget = HoverOnlyWidget->GetWidget();
+	if (UserWidget)
+	{
+		UserWidget->SetVisibility(ESlateVisibility::HitTestInvisible);
+	}
+}
+
+void AClickableItemBase::HideDescriptionWidget()
+{
+	UTypewriterTextWidget* TypewriterTextWidget = Cast<UTypewriterTextWidget>(DescriptionTextWidget->GetWidget());
+	if (TypewriterTextWidget)
+	{
+		TypewriterTextWidget->Hide();
+	}
+}
+
+void AClickableItemBase::HideHoverOnlyWidget()
+{
+	UUserWidget* UserWidget = HoverOnlyWidget->GetWidget();
+	if (UserWidget)
+	{
+		UserWidget->SetVisibility(ESlateVisibility::Hidden);
+	}
 }
 
 void AClickableItemBase::OnClickNative(UPrimitiveComponent* TouchedComponent, FKey ButtonReleased)
@@ -60,24 +125,15 @@ void AClickableItemBase::OnUnhoverNative(UPrimitiveComponent* TouchedComponent)
 
 void AClickableItemBase::OnClick_Implementation()
 {
-	UEvergreenGameInstance* EGI = UEvergreenGameInstance::GetEvergreenGameInstance();
-	if (!EGI->IsTestModeEnabled()) return;
-	
-	FAST_PRINT("Default OnClick")
+	FAST_LOG(TEXT("Default OnClick"));
 }
 
 void AClickableItemBase::OnHover_Implementation()
 {
-	UEvergreenGameInstance* EGI = UEvergreenGameInstance::GetEvergreenGameInstance();
-	if (!EGI->IsTestModeEnabled()) return;
-	
-	FAST_PRINT("Default OnHover")
+	FAST_LOG(TEXT("Default OnHover"));
 }
 
 void AClickableItemBase::OnUnhover_Implementation()
 {
-	UEvergreenGameInstance* EGI = UEvergreenGameInstance::GetEvergreenGameInstance();
-	if (!EGI->IsTestModeEnabled()) return;
-
-	FAST_PRINT("Default OnUnhover")
+	FAST_LOG(TEXT("Default OnUnhover"));
 }

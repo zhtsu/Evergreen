@@ -1,5 +1,6 @@
 .vsconfig
 Evergreen.sln
+*.~csv
 
 .vs/
 .idea/

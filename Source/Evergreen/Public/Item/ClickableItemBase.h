@@ -8,7 +8,7 @@
 #include "Interface/ClickableInterface.h"
 #include "ClickableItemBase.generated.h"
 
-UCLASS()
+UCLASS(Abstract)
 class EVERGREEN_API AClickableItemBase : public AEvergreenItemBase, public IClickableInterface
 {
 	GENERATED_BODY()
@@ -25,11 +25,34 @@ private:
 
 	UPROPERTY(VisibleDefaultsOnly, Category = "ClickableItem")
 	class USceneComponent* RootScene;
+
+	UPROPERTY(VisibleDefaultsOnly, Category = "ClickableItem")
+	class UWidgetComponent* DescriptionTextWidget;
+
+	UPROPERTY(VisibleDefaultsOnly, Category = "ClickableItem")
+	class UWidgetComponent* HoverOnlyWidget;
 	
 protected:
 	virtual void BeginPlay() override;
 	
 public:
+	UFUNCTION(BlueprintCallable)
+	void ShowDescriptionWidget(bool bAutoPlay = false, bool bFadeIn = false);
+
+	UFUNCTION(BlueprintCallable)
+	void ShowHoverOnlyWidget();
+
+	UFUNCTION(BlueprintCallable)
+	void HideDescriptionWidget();
+
+	UFUNCTION(BlueprintCallable)
+	void HideHoverOnlyWidget();
+	
+	virtual void OnClick_Implementation() override;
+	virtual void OnHover_Implementation() override;
+	virtual void OnUnhover_Implementation() override;
+
+private:
 	UFUNCTION()
 	void OnClickNative(UPrimitiveComponent* TouchedComponent, FKey ButtonReleased);
 
@@ -38,8 +61,4 @@ public:
 
 	UFUNCTION()
 	void OnUnhoverNative(UPrimitiveComponent* TouchedComponent);
-	
-	virtual void OnClick_Implementation() override;
-	virtual void OnHover_Implementation() override;
-	virtual void OnUnhover_Implementation() override;
 };
