@@ -55,9 +55,9 @@ void UEvergreenGameInstance::PlayCutscene(ULevelSequence* LevelSequence, ALevelS
 	LevelSequencePlayer->OnStop.AddDynamic(this, &UEvergreenGameInstance::ReturnPreviousGamePlayState);
 }
 
-void UEvergreenGameInstance::StartMiniGame(TSubclassOf<AMiniGameBase> MiniGameClass, UObject* MiniGameData)
+void UEvergreenGameInstance::StartMiniGame(TSubclassOf<AMiniGameBase> MiniGameClass, UMiniGameData* MiniGameData)
 {
-	if (!MiniGameClass) return;
+	if (!MiniGameClass || CurrentMiniGame) return;
 	
 	SetCurrentGamePlayState(EGamePlayState::MiniGame);
 
@@ -71,17 +71,29 @@ void UEvergreenGameInstance::StartMiniGame(TSubclassOf<AMiniGameBase> MiniGameCl
 
 void UEvergreenGameInstance::EndMiniGame()
 {
+	if (CurrentMiniGame == nullptr) return;
+	
 	SetCurrentGamePlayState(GamePlayState.PreviousGamePlayState);
-
-	if (CurrentMiniGame != nullptr)
-	{
-		IMiniGameInterface::Execute_OnEndMiniGame(CurrentMiniGame);
-		CurrentMiniGame->Destroy();
-	}
+	
+	IMiniGameInterface::Execute_OnEndMiniGame(CurrentMiniGame);
+	CurrentMiniGame->Destroy();
+	CurrentMiniGame = nullptr;
 }
 
 bool UEvergreenGameInstance::IsAllowKeyboardInput() const
 {
+	bool bJudgeWithCurrentMiniGame = false;
+	if (GamePlayState.CurrentGamePlayState == EGamePlayState::MiniGame)
+	{
+		if (CurrentMiniGame) bJudgeWithCurrentMiniGame = true;
+		else bJudgeWithCurrentMiniGame = false;
+	}
+
+	if (bJudgeWithCurrentMiniGame)
+	{
+		return IsAllowInput() && CurrentMiniGame->bAllowKeyboardInput;
+	}
+
 	return GamePlayState.CurrentGamePlayState != EGamePlayState::Cutscene
 		&& GamePlayState.CurrentGamePlayState != EGamePlayState::Paused
 		&& GamePlayState.CurrentGamePlayState != EGamePlayState::MiniGame;

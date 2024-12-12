@@ -26,6 +26,9 @@ public:
 	
 	UPROPERTY(EditInstanceOnly, Category = "MiniGameTriggerBox")
 	TSubclassOf<class AMiniGameBase> MiniGameClass;
+
+	UPROPERTY(EditInstanceOnly, Category = "MiniGameTriggerBox")
+	TSubclassOf<class UMiniGameData> MiniGameDataClass;
 	
 protected:
 	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;

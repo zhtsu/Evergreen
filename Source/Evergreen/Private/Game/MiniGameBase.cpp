@@ -3,7 +3,7 @@
 
 #include "Game/MiniGameBase.h"
 
-void AMiniGameBase::OnStartMiniGame_Implementation(UObject* MiniGameData)
+void AMiniGameBase::OnStartMiniGame_Implementation(UMiniGameData* MiniGameData)
 {
 }
 

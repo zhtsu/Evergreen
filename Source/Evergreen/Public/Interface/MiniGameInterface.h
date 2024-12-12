@@ -19,8 +19,8 @@ class EVERGREEN_API IMiniGameInterface
 
 public:
 	UFUNCTION(BlueprintNativeEvent, Category = "MiniGame")
-	void OnStartMiniGame(UObject* MiniGameData);
-	virtual void OnStartMiniGame_Implementation(UObject* MiniGameData) = 0;
+	void OnStartMiniGame(class UMiniGameData* MiniGameData);
+	virtual void OnStartMiniGame_Implementation(UMiniGameData* MiniGameData) = 0;
 
 	UFUNCTION(BlueprintNativeEvent, Category = "MiniGame")
 	void OnEndMiniGame();

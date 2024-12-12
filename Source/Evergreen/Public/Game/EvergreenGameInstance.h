@@ -82,7 +82,7 @@ public:
 	void SetEvergreenGameMode(EEvergreenGameMode InGameMode);
 
 	UFUNCTION(BlueprintPure)
-	FORCEINLINE EEvergreenGameMode GetEvergreenGameMode() const { return GameMode; }
+	FORCEINLINE EEvergreenGameMode GetCurrentEvergreenGameMode() const { return GameMode; }
 
 	UFUNCTION(BlueprintCallable)
 	FORCEINLINE void SetTestModeEnabled(bool Enabled) { bTestModeEnabled = Enabled; }
@@ -100,7 +100,7 @@ public:
 	void PlayCutscene(class ULevelSequence* LevelSequence, class ALevelSequenceActor*& LevelSequenceActor, class ULevelSequencePlayer*& LevelSequencePlayer);
 
 	UFUNCTION(BlueprintCallable)
-	void StartMiniGame(TSubclassOf<class AMiniGameBase> MiniGameClass, UObject* MiniGameData);
+	void StartMiniGame(TSubclassOf<class AMiniGameBase> MiniGameClass, class UMiniGameData* MiniGameData);
 
 	UFUNCTION(BlueprintCallable)
 	void EndMiniGame();

@@ -13,6 +13,9 @@ class EVERGREEN_API AMiniGameBase : public AActor, public IMiniGameInterface
 	GENERATED_BODY()
 
 public:
-	virtual void OnStartMiniGame_Implementation(UObject* MiniGameData) override;
+	UPROPERTY(EditDefaultsOnly, Category = "MiniGame")
+	bool bAllowKeyboardInput = false;
+	
+	virtual void OnStartMiniGame_Implementation(UMiniGameData* MiniGameData) override;
 	virtual void OnEndMiniGame_Implementation() override;
 };
