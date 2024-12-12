@@ -34,3 +34,13 @@ public:
 	inline static FName WBP_ItemDescriptionText_Path = "Blueprint'/Game/Evergreen/Blueprints/UI/WBP_ItemDescriptionText.WBP_ItemDescriptionText_C'";
 	inline static FName WBP_ItemShowOnHovered_Path = "Blueprint'/Game/Evergreen/Blueprints/UI/WBP_ItemShowOnHovered.WBP_ItemShowOnHovered_C'";
 };
+
+class StringTableHelper
+{
+public:
+	UFUNCTION(BlueprintCallable, Category = "EvergreenEditorUtility")
+	static void ImportStringTableFromCSV();
+
+	UFUNCTION(BlueprintCallable, Category = "EvergreenEditorUtility")
+	static void ExportStringTableToCSV();
+};

@@ -12,7 +12,9 @@ class EVERGREEN_API AEvergreenItemBase : public AActor
 	GENERATED_BODY()
 
 protected:
+#if WITH_EDITOR
 	virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
+#endif
 	
 public:
 	static AEvergreenItemBase* CurrentObservedItem;

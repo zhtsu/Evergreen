@@ -8,6 +8,7 @@
 #include "Internationalization/StringTableCore.h"
 #include "Internationalization/StringTableRegistry.h"
 
+#if WITH_EDITOR
 void AEvergreenItemBase::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent)
 {
 	Super::PostEditChangeProperty(PropertyChangedEvent);
@@ -19,6 +20,7 @@ void AEvergreenItemBase::PostEditChangeProperty(FPropertyChangedEvent& PropertyC
 		ReadItemDescriptionFromStringTable();
 	}
 }
+#endif
 
 void AEvergreenItemBase::ReadItemNameFromStringTable()
 {

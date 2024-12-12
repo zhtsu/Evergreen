@@ -6,13 +6,54 @@
 
 void FGeneralUtility::StartupModule()
 {
-	// This code will execute after your module is loaded into memory; the exact timing is specified in the .uplugin file per-module
+	
 }
 
 void FGeneralUtility::ShutdownModule()
 {
-	// This function may be called during shutdown to clean up your module.  For modules that support dynamic reloading,
-	// we call this function before unloading the module.
+	
+}
+
+void StringTableHelper::ImportStringTableFromCSV()
+{
+	// IDesktopPlatform* const DesktopPlatform = FDesktopPlatformModule::Get();
+	//
+	// if (DesktopPlatform)
+	// {
+	// 	const FString DefaultPath = FEditorDirectories::Get().GetLastDirectory(ELastDirectory::GENERIC_IMPORT);
+	//
+	// 	TSharedPtr<SWindow> ParentWindow = FSlateApplication::Get().FindWidgetWindow(StringTableEntriesListView.ToSharedRef());
+	// 	const void* const ParentWindowHandle = (ParentWindow.IsValid() && ParentWindow->GetNativeWindow().IsValid())
+	// 		? ParentWindow->GetNativeWindow()->GetOSWindowHandle()
+	// 		: nullptr;
+	//
+	// 	TArray<FString> OutFiles;
+	// 	if (DesktopPlatform->OpenFileDialog(
+	// 		ParentWindowHandle,
+	// 		LOCTEXT("ImportStringTableTitle", "Choose a string table CSV file...").ToString(),
+	// 		DefaultPath,
+	// 		TEXT(""),
+	// 		TEXT("String Table CSV (*.csv)|*.csv"),
+	// 		EFileDialogFlags::None,
+	// 		OutFiles
+	// 		))
+	// 	{
+	// 		UStringTable* StringTable = Cast<UStringTable>(GetEditingObject());
+	// 		if (StringTable)
+	// 		{
+	// 			const FScopedTransaction Transaction(LOCTEXT("ImportStringTableEntries", "Import String Table Entries"));
+	// 			StringTable->Modify();
+	// 			StringTable->GetMutableStringTable()->ImportStrings(OutFiles[0]);
+	// 			HandlePostChange();
+	// 		}
+	// 	}
+	// }
+	//
+	// return FReply::Handled();
+}
+
+void StringTableHelper::ExportStringTableToCSV()
+{
 }
 
 #undef LOCTEXT_NAMESPACE
