@@ -40,6 +40,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnGameModeChanged, EEvergreenGameMo
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnGamePlayStateChanged, EGamePlayState, CurrentGamePlayState);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnGamePaused);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnGameResumed);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnItemCollected, FString, CollectedItemID);
 
 UCLASS()
 class EVERGREEN_API UEvergreenGameInstance : public UGameInstance
@@ -53,7 +54,7 @@ private:
 	EEvergreenGameMode GameMode = EEvergreenGameMode::ThirdPerson;
 	FGamePlayState GamePlayState;
 	bool bTestModeEnabled = false;
-	TArray<FString> CollectedItemUUIDs;
+	TArray<FString> CollectedItemIDArray;
 	
 public:
 	UPROPERTY(BlueprintAssignable)
@@ -68,12 +69,15 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FOnGameResumed OnGameResumed;
 
+	UPROPERTY(BlueprintAssignable)
+	FOnItemCollected OnItemCollected;
+
 	UFUNCTION(BlueprintPure)
 	static UEvergreenGameInstance* GetEvergreenGameInstance();
 
 	UEvergreenGameInstance();
-	bool IsAllowKeyboardInput();
-	bool IsAllowInput();
+	bool IsAllowKeyboardInput() const;
+	bool IsAllowInput() const;
 	
 	UFUNCTION(BlueprintCallable)
 	void SetEvergreenGameMode(EEvergreenGameMode InGameMode);
@@ -106,10 +110,13 @@ public:
 	FORCEINLINE EGamePlayState GetCurrentGamePlayState() { return GamePlayState.CurrentGamePlayState; }
 
 	UFUNCTION(BlueprintCallable)
-	void CollectItem(FString UUID);
+	void CollectItem(class AEvergreenItemBase* Item);
 
 	UFUNCTION(BlueprintCallable)
-	bool HasItem(FString UUID);
+	bool HasItem(FString ItemID);
+
+	UFUNCTION(BlueprintPure)
+	FORCEINLINE void GetCollectedItemIDArray(TArray<FString>& OutArray) { OutArray = CollectedItemIDArray; }
 	
 private:
 	void SetCurrentGamePlayState(EGamePlayState NewGamePlayState);

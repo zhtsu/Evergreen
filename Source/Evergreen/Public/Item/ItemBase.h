@@ -16,7 +16,7 @@ protected:
 	
 public:
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "EvergreenItem")
-	FText ItemID;
+	FString ItemID;
 
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "EvergreenItem")
 	FText ItemName;

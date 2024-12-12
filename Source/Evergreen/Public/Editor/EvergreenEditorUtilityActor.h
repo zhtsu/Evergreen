@@ -12,9 +12,12 @@ class EVERGREEN_API AEvergreenEditorUtilityActor : public AEditorUtilityActor
 	GENERATED_BODY()
 
 public:
-	UPROPERTY(VisibleAnywhere, Category = "EvergreenEditorUtility")
+	UPROPERTY(EditDefaultsOnly, Category = "EvergreenEditorUtility")
 	TArray<FText> StringTableLoaderArray;
 	
 	UFUNCTION(BlueprintCallable, Category = "EvergreenEditorUtility")
 	void ImportStringTableFromCSV();
+
+	UFUNCTION(BlueprintCallable, Category = "EvergreenEditorUtility")
+	void ExportStringTableToCSV();
 };

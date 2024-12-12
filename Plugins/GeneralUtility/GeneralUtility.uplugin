@@ -2,7 +2,7 @@
 	"FileVersion": 3,
 	"Version": 1,
 	"VersionName": "1.0",
-	"FriendlyName": "AssetPathHub",
+	"FriendlyName": "GeneralUtility",
 	"Description": "",
 	"Category": "Other",
 	"CreatedBy": "zhtsu",
@@ -16,7 +16,7 @@
 	"Installed": false,
 	"Modules": [
 		{
-			"Name": "AssetPathHub",
+			"Name": "GeneralUtility",
 			"Type": "Runtime",
 			"LoadingPhase": "Default"
 		}

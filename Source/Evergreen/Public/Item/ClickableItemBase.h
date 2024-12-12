@@ -37,13 +37,13 @@ protected:
 	
 public:
 	UFUNCTION(BlueprintCallable)
-	void ShowDescriptionWidget(bool bAutoPlay = false, bool bFadeIn = false);
+	void ShowDescriptionWidget(bool bAutoPlay = false, bool bFadeIn = false, float Delay = 0.2, int CharNumPerDelay = 1);
 
 	UFUNCTION(BlueprintCallable)
 	void ShowHoverOnlyWidget();
 
 	UFUNCTION(BlueprintCallable)
-	void HideDescriptionWidget();
+	void HideDescriptionWidget(bool bAutoHide = false, bool bFadeOut = false);
 
 	UFUNCTION(BlueprintCallable)
 	void HideHoverOnlyWidget();

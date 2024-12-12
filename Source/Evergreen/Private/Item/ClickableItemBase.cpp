@@ -3,10 +3,9 @@
 
 #include "Item/ClickableItemBase.h"
 
-#include "AssetPathHub.h"
+#include "GeneralUtility.h"
 #include "Components/BoxComponent.h"
 #include "Components/WidgetComponent.h"
-#include "Evergreen/Evergreen.h"
 #include "Game/EvergreenGameInstance.h"
 #include "UI/TypewriterTextWidget.h"
 
@@ -63,11 +62,12 @@ void AClickableItemBase::BeginPlay()
 	InteractionVolume->OnEndCursorOver.AddUniqueDynamic(this, &AClickableItemBase::OnUnhoverNative);
 }
 
-void AClickableItemBase::ShowDescriptionWidget(bool bAutoPlay, bool bFadeIn)
+void AClickableItemBase::ShowDescriptionWidget(bool bAutoPlay, bool bFadeIn, float Delay, int CharNumPerDelay)
 {
 	UTypewriterTextWidget* TypewriterTextWidget = Cast<UTypewriterTextWidget>(DescriptionTextWidget->GetWidget());
 	if (TypewriterTextWidget)
 	{
+		TypewriterTextWidget->SetTypewriter(ItemDescription, Delay, CharNumPerDelay);
 		TypewriterTextWidget->Show(bAutoPlay, bFadeIn);
 	}
 }
@@ -81,12 +81,12 @@ void AClickableItemBase::ShowHoverOnlyWidget()
 	}
 }
 
-void AClickableItemBase::HideDescriptionWidget()
+void AClickableItemBase::HideDescriptionWidget(bool bAutoHide, bool bFadeOut)
 {
 	UTypewriterTextWidget* TypewriterTextWidget = Cast<UTypewriterTextWidget>(DescriptionTextWidget->GetWidget());
 	if (TypewriterTextWidget)
 	{
-		TypewriterTextWidget->Hide();
+		TypewriterTextWidget->Hide(bAutoHide, bFadeOut);
 	}
 }
 

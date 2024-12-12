@@ -2,9 +2,9 @@
 
 using UnrealBuildTool;
 
-public class AssetPathHub : ModuleRules
+public class GeneralUtility : ModuleRules
 {
-	public AssetPathHub(ReadOnlyTargetRules Target) : base(Target)
+	public GeneralUtility(ReadOnlyTargetRules Target) : base(Target)
 	{
 		PCHUsage = ModuleRules.PCHUsageMode.UseExplicitOrSharedPCHs;
 		

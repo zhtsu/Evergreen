@@ -4,8 +4,9 @@
 #include "Game/EvergreenGameInstance.h"
 
 #include "LevelSequencePlayer.h"
-#include "AssetPathHub.h"
+#include "GeneralUtility.h"
 #include "Internationalization/StringTableRegistry.h"
+#include "Item/ItemBase.h"
 
 UEvergreenGameInstance* UEvergreenGameInstance::Singleton = nullptr;
 
@@ -64,27 +65,34 @@ void UEvergreenGameInstance::EndMiniGame(TSubclassOf<AMiniGameBase> MiniGameClas
 	SetCurrentGamePlayState(GamePlayState.PreviousGamePlayState);
 }
 
-bool UEvergreenGameInstance::IsAllowKeyboardInput()
+bool UEvergreenGameInstance::IsAllowKeyboardInput() const
 {
 	return GamePlayState.CurrentGamePlayState != EGamePlayState::Cutscene
 		&& GamePlayState.CurrentGamePlayState != EGamePlayState::Paused
 		&& GamePlayState.CurrentGamePlayState != EGamePlayState::MiniGame;
 }
 
-bool UEvergreenGameInstance::IsAllowInput()
+bool UEvergreenGameInstance::IsAllowInput() const
 {
 	return GamePlayState.CurrentGamePlayState != EGamePlayState::Cutscene
 		&& GamePlayState.CurrentGamePlayState != EGamePlayState::Paused;
 }
 
-void UEvergreenGameInstance::CollectItem(FString UUID)
+void UEvergreenGameInstance::CollectItem(AEvergreenItemBase* Item)
 {
-	CollectedItemUUIDs.Add(UUID);
+	if (!Item) return;
+	
+	if (!CollectedItemIDArray.Contains(Item->ItemID))
+	{
+		CollectedItemIDArray.Add(Item->ItemID);
+		OnItemCollected.Broadcast(Item->ItemID);
+		Item->Destroy();
+	}
 }
 
-bool UEvergreenGameInstance::HasItem(FString UUID)
+bool UEvergreenGameInstance::HasItem(FString ItemID)
 {
-	return CollectedItemUUIDs.Find(UUID) != INDEX_NONE;
+	return CollectedItemIDArray.Contains(ItemID);
 }
 
 void UEvergreenGameInstance::SetCurrentGamePlayState(EGamePlayState NewGamePlayState)

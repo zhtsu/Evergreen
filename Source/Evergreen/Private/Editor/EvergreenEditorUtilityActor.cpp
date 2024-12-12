@@ -39,3 +39,7 @@ void AEvergreenEditorUtilityActor::ImportStringTableFromCSV()
 	//
 	// return FReply::Handled();
 }
+
+void AEvergreenEditorUtilityActor::ExportStringTableToCSV()
+{
+}

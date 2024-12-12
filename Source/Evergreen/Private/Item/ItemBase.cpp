@@ -3,7 +3,7 @@
 
 #include "Item/ItemBase.h"
 
-#include "AssetPathHub.h"
+#include "GeneralUtility.h"
 #include "Internationalization/StringTable.h"
 #include "Internationalization/StringTableCore.h"
 #include "Internationalization/StringTableRegistry.h"
@@ -26,13 +26,13 @@ void AEvergreenItemBase::ReadItemNameFromStringTable()
 	if (ST_ItemName)
 	{
 		FString ItemNameStr;
-		if (ST_ItemName->GetMutableStringTable()->GetSourceString(FTextKey(ItemID.ToString()), ItemNameStr))
+		if (ST_ItemName->GetMutableStringTable()->GetSourceString(FTextKey(ItemID), ItemNameStr))
 		{
 			ItemName = FText::FromString(ItemNameStr);
 		}
 		else
 		{
-			FAST_WARNING(TEXT("Fail to find key '%s' from StringTable '%s'"), *ItemID.ToString(), *FAssetPathHub::ST_ItemName_Reference.ToString());
+			FAST_WARNING(TEXT("Fail to find key '%s' from StringTable '%s'"), *ItemID, *FAssetPathHub::ST_ItemName_Reference.ToString());
 			ItemName = {};
 		}
 	}
@@ -49,13 +49,13 @@ void AEvergreenItemBase::ReadItemDescriptionFromStringTable()
 	if (ST_ItemDescription)
 	{
 		FString ItemDescriptionStr;
-		if (ST_ItemDescription->GetMutableStringTable()->GetSourceString(FTextKey(ItemID.ToString()), ItemDescriptionStr))
+		if (ST_ItemDescription->GetMutableStringTable()->GetSourceString(FTextKey(ItemID), ItemDescriptionStr))
 		{
 			ItemDescription = FText::FromString(ItemDescriptionStr);
 		}
 		else
 		{
-			FAST_WARNING(TEXT("Fail to find key '%s' from StringTable '%s'"), *ItemID.ToString(), *FAssetPathHub::ST_ItemDescription_Reference.ToString());
+			FAST_WARNING(TEXT("Fail to find key '%s' from StringTable '%s'"), *ItemID, *FAssetPathHub::ST_ItemDescription_Reference.ToString());
 			ItemDescription = {};
 		}
 	}

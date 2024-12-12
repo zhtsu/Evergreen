@@ -23,10 +23,7 @@ public:
 	FOnPlayCompleted OnPlayCompleted;
 	
 	UPROPERTY(Transient, meta = (BindWidgetAnim))
-	UWidgetAnimation* FadeIn;
-
-	UPROPERTY(Transient, meta = (BindWidget))
-	USizeBox* RootSizeBox;
+	UWidgetAnimation* FadeOut;
 
 	UPROPERTY(Transient, meta = (BindWidget))
 	UTextBlock* Text;
@@ -38,15 +35,27 @@ public:
 	void Show(bool bAutoPlay = false, bool bFadeIn = false);
 
 	UFUNCTION(BlueprintCallable, Category = "TypewriterText")
-	void Hide();
+	void Hide(bool bAutoHide = false, bool bFadeOut = false);
 
 private:
+	UPROPERTY()
+	UUMGSequencePlayer* CurrentUMGSequencePlayer = nullptr;
+	
+	FWidgetAnimationDynamicEvent Hide_NoAnim_Event;
 	bool bPlaying = false;
+	bool bAutoHideEnabled = false;
+	bool bFadeOutHideEnabled = false;
+
 	FString FullString;
 	float StartTimestamp;
 	float Delay;
 	int CharNumPerDelay = 1;
+
+	UFUNCTION()
+	void Hide_NoAnim();
 	
 	void WriteText();
+	void Hide_FadeOut();
+	void Hide_Callback();
 	void BroadcastOnPlayFinished();
 };

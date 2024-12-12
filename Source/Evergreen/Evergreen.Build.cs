@@ -21,7 +21,7 @@ public class Evergreen : ModuleRules
 			"EnhancedInput",
 			"LevelSequence",
 			"MovieScene",
-			"AssetPathHub"
+			"GeneralUtility"
 		});
 
 		if (Target.bBuildEditor)

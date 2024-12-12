@@ -15,12 +15,16 @@ UE_LOG(LogTemp, Display, Message, ##__VA_ARGS__)
 UE_LOG(LogTemp, Warning, Message, ##__VA_ARGS__) \
 UE_LOG(LogTemp, Warning, TEXT("Please check this file: %s - Line: %d"), __FILEW__, __LINE__)
 
-class FAssetPathHub : public IModuleInterface
+class FGeneralUtility : public IModuleInterface
 {
 public:
 	virtual void StartupModule() override;
 	virtual void ShutdownModule() override;
+};
 
+class FAssetPathHub
+{
+public:
 	inline static FName ST_ItemName_CSV_Path = "Evergreen/DataTables/item_name.csv";
 	inline static FName ST_ItemName_Reference = "/Game/Evergreen/DataTables/ST_ItemName.ST_ItemName";
 	
