@@ -7,6 +7,7 @@
 #include "GeneralUtility.h"
 #include "Game/MiniGameBase.h"
 #include "Item/ItemBase.h"
+#include "Camera/CameraActor.h"
 
 UEvergreenGameInstance* UEvergreenGameInstance::Singleton = nullptr;
 
@@ -120,6 +121,39 @@ void UEvergreenGameInstance::CollectItem(AEvergreenItemBase* Item)
 bool UEvergreenGameInstance::HasItem(FString ItemID)
 {
 	return CollectedItemIDArray.Contains(ItemID);
+}
+
+void UEvergreenGameInstance::ObserveItem(AEvergreenItemBase* Item, FViewTargetTransitionParams ViewTargetTransitionParams)
+{
+	if (!Item || !Item->TargetViewCamera) return;
+
+	if (APlayerController* PlayerController = GetPrimaryPlayerController())
+	{
+		SetCurrentGamePlayState(EGamePlayState::Observing);
+
+		Item->bIsBeingObserved = true;
+		AEvergreenItemBase::CurrentObservedItem = Item;
+		PlayerController->SetViewTarget(Item->TargetViewCamera, ViewTargetTransitionParams);
+	}
+}
+
+void UEvergreenGameInstance::ReturnToPlayerView(FViewTargetTransitionParams ViewTargetTransitionParams)
+{
+	if (APlayerController* PlayerController = GetPrimaryPlayerController())
+	{
+		if (APawn* Player = PlayerController->GetPawn())
+		{
+			SetCurrentGamePlayState(EGamePlayState::Exploring);
+
+			if (AEvergreenItemBase::CurrentObservedItem)
+			{
+				AEvergreenItemBase::CurrentObservedItem->bIsBeingObserved = false;
+				AEvergreenItemBase::CurrentObservedItem = nullptr;
+			}
+			
+			PlayerController->SetViewTarget(Player, ViewTargetTransitionParams);
+		}
+	}
 }
 
 void UEvergreenGameInstance::SetCurrentGamePlayState(EGamePlayState NewGamePlayState)

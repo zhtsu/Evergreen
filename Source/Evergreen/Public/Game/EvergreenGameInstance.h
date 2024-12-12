@@ -17,6 +17,7 @@ UENUM()
 enum class EGamePlayState : uint8
 {
 	Exploring,
+	Observing,
 	MiniGame,
 	Cutscene,
 	Paused
@@ -85,7 +86,7 @@ public:
 	FORCEINLINE EEvergreenGameMode GetCurrentEvergreenGameMode() const { return GameMode; }
 
 	UFUNCTION(BlueprintCallable)
-	FORCEINLINE void SetTestModeEnabled(bool Enabled) { bTestModeEnabled = Enabled; }
+	FORCEINLINE void SetTestModeEnabled(bool bEnabled) { bTestModeEnabled = bEnabled; }
 
 	UFUNCTION(BlueprintCallable)
 	FORCEINLINE bool IsTestModeEnabled() const { return bTestModeEnabled; }
@@ -113,6 +114,12 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	bool HasItem(FString ItemID);
+
+	UFUNCTION(BlueprintCallable)
+	void ObserveItem(AEvergreenItemBase* Item, FViewTargetTransitionParams ViewTargetTransitionParams);
+
+	UFUNCTION(BlueprintCallable)
+	void ReturnToPlayerView(FViewTargetTransitionParams ViewTargetTransitionParams);
 
 	UFUNCTION(BlueprintPure)
 	FORCEINLINE void GetCollectedItemIDArray(TArray<FString>& OutArray) { OutArray = CollectedItemIDArray; }
