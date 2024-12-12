@@ -5,7 +5,7 @@
 
 #include "LevelSequencePlayer.h"
 #include "GeneralUtility.h"
-#include "Internationalization/StringTableRegistry.h"
+#include "Game/MiniGameBase.h"
 #include "Item/ItemBase.h"
 
 UEvergreenGameInstance* UEvergreenGameInstance::Singleton = nullptr;
@@ -55,14 +55,29 @@ void UEvergreenGameInstance::PlayCutscene(ULevelSequence* LevelSequence, ALevelS
 	LevelSequencePlayer->OnStop.AddDynamic(this, &UEvergreenGameInstance::ReturnPreviousGamePlayState);
 }
 
-void UEvergreenGameInstance::StartMiniGame(TSubclassOf<AMiniGameBase> MiniGameClass)
+void UEvergreenGameInstance::StartMiniGame(TSubclassOf<AMiniGameBase> MiniGameClass, UObject* MiniGameData)
 {
+	if (!MiniGameClass) return;
+	
 	SetCurrentGamePlayState(EGamePlayState::MiniGame);
+
+	AMiniGameBase* MiniGame = Cast<AMiniGameBase>(GetWorld()->SpawnActor(MiniGameClass));
+	if (MiniGame)
+	{
+		CurrentMiniGame = MiniGame;
+		IMiniGameInterface::Execute_OnStartMiniGame(MiniGame, MiniGameData);
+	}
 }
 
-void UEvergreenGameInstance::EndMiniGame(TSubclassOf<AMiniGameBase> MiniGameClass)
+void UEvergreenGameInstance::EndMiniGame()
 {
 	SetCurrentGamePlayState(GamePlayState.PreviousGamePlayState);
+
+	if (CurrentMiniGame != nullptr)
+	{
+		IMiniGameInterface::Execute_OnEndMiniGame(CurrentMiniGame);
+		CurrentMiniGame->Destroy();
+	}
 }
 
 bool UEvergreenGameInstance::IsAllowKeyboardInput() const

@@ -13,12 +13,6 @@ class EVERGREEN_API AMiniGameBase : public AActor, public IMiniGameInterface
 	GENERATED_BODY()
 
 public:
-	AMiniGameBase();
-	
-protected:
-	virtual void BeginPlay() override;
-	
-public:
-	virtual void OnStartMiniGame_Implementation() override;
+	virtual void OnStartMiniGame_Implementation(UObject* MiniGameData) override;
 	virtual void OnEndMiniGame_Implementation() override;
 };

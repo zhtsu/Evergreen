@@ -3,7 +3,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "MiniGameBase.h"
 #include "Engine/GameInstance.h"
 #include "EvergreenGameInstance.generated.h"
 
@@ -101,10 +100,10 @@ public:
 	void PlayCutscene(class ULevelSequence* LevelSequence, class ALevelSequenceActor*& LevelSequenceActor, class ULevelSequencePlayer*& LevelSequencePlayer);
 
 	UFUNCTION(BlueprintCallable)
-	void StartMiniGame(TSubclassOf<AMiniGameBase> MiniGameClass);
+	void StartMiniGame(TSubclassOf<class AMiniGameBase> MiniGameClass, UObject* MiniGameData);
 
 	UFUNCTION(BlueprintCallable)
-	void EndMiniGame(TSubclassOf<AMiniGameBase> MiniGameClass);
+	void EndMiniGame();
 
 	UFUNCTION(BlueprintCallable)
 	FORCEINLINE EGamePlayState GetCurrentGamePlayState() { return GamePlayState.CurrentGamePlayState; }
@@ -119,6 +118,9 @@ public:
 	FORCEINLINE void GetCollectedItemIDArray(TArray<FString>& OutArray) { OutArray = CollectedItemIDArray; }
 	
 private:
+	UPROPERTY()
+	AMiniGameBase* CurrentMiniGame = nullptr;
+	
 	void SetCurrentGamePlayState(EGamePlayState NewGamePlayState);
 
 	UFUNCTION()
