@@ -8,12 +8,12 @@
 
 void FEditorLifeCycleModule::StartupModule()
 {
-	UStringTableHelper::ImportStringTableFromCSV("", "", "");
+	UStringTableHelper::ImportAllStringTableFromCSV();
 }
 
 void FEditorLifeCycleModule::ShutdownModule()
 {
-	UStringTableHelper::ExportStringTableToCSV("", "", "");
+	
 }
 
 #undef LOCTEXT_NAMESPACE

@@ -8,6 +8,7 @@
 #include "Game/MiniGameBase.h"
 #include "Item/ItemBase.h"
 #include "Camera/CameraActor.h"
+#include "StringTableHelper.h"
 
 UEvergreenGameInstance* UEvergreenGameInstance::Singleton = nullptr;
 
@@ -19,8 +20,8 @@ UEvergreenGameInstance* UEvergreenGameInstance::GetEvergreenGameInstance()
 UEvergreenGameInstance::UEvergreenGameInstance()
 {
 	Singleton = this;
-
-	LoadStringTablesOnRuntime();
+	
+	UStringTableHelper::ImportAllStringTableFromCSV();
 }
 
 void UEvergreenGameInstance::OnStart()
@@ -183,19 +184,4 @@ void UEvergreenGameInstance::SetCurrentGamePlayState(EGamePlayState NewGamePlayS
 void UEvergreenGameInstance::ReturnPreviousGamePlayState()
 {
 	SetCurrentGamePlayState(GamePlayState.PreviousGamePlayState);
-}
-
-void UEvergreenGameInstance::LoadStringTablesOnRuntime()
-{
-#ifndef WITH_EDITOR
-	FStringTableRegistry::Get().UnregisterStringTable(FAssetPathHub::ST_ItemName_Reference);
-	FStringTableRegistry::Get().Internal_LocTableFromFile(
-		FAssetPathHub::ST_ItemName_Reference, TEXT("ST_ItemName"),
-		FAssetPathHub::ST_ItemName_CSV_Path.ToString(), FPaths::ProjectContentDir());
-
-	FStringTableRegistry::Get().UnregisterStringTable(FAssetPathHub::ST_ItemDescription_Reference);
-	FStringTableRegistry::Get().Internal_LocTableFromFile(
-		FAssetPathHub::ST_ItemDescription_Reference, TEXT("ST_ItemDescription"),
-		FAssetPathHub::ST_ItemDescription_CSV_Path.ToString(), FPaths::ProjectContentDir());
-#endif
 }

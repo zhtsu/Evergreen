@@ -17,6 +17,8 @@ protected:
 #endif
 	
 public:
+	AEvergreenItemBase();
+
 	static AEvergreenItemBase* CurrentObservedItem;
 	bool bIsBeingObserved = false;
 	

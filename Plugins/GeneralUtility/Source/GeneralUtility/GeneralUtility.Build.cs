@@ -39,6 +39,12 @@ public class GeneralUtility : ModuleRules
 				// ... add private dependencies that you statically link with here ...	
 			}
 			);
+
+		if (Target.bBuildEditor)
+		{
+			PrivateDependencyModuleNames.Add("Slate");
+			PrivateDependencyModuleNames.Add("SlateCore");
+		}
 		
 		DynamicallyLoadedModuleNames.AddRange(
 			new string[]

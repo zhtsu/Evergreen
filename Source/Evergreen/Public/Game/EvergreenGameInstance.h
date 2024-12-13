@@ -49,7 +49,6 @@ class EVERGREEN_API UEvergreenGameInstance : public UGameInstance
 	
 private:
 	static UEvergreenGameInstance* Singleton;
-	static void LoadStringTablesOnRuntime();
 	
 	EEvergreenGameMode GameMode = EEvergreenGameMode::ThirdPerson;
 	FGamePlayState GamePlayState;
