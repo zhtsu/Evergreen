@@ -7,6 +7,8 @@
 class FAssetPathHub
 {
 public:
+	inline static FString StringTableSavePath = "Localization/StringTables_DontOpenInEditor";
+	
 	inline static FName ItemName_TableID = "ItemName";
 	inline static FName ItemDescription_TableID = "ItemDescription";
 	inline static FName UI_TableID = "UI";

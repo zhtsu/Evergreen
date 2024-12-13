@@ -3,27 +3,47 @@
 #pragma once
 
 #include "AssetPathHub.h"
+#include "Internationalization/StringTableCore.h"
 #include "Internationalization/StringTableRegistry.h"
 #if WITH_EDITOR
 	#include "Framework/Notifications/NotificationManager.h"
 	#include "Widgets/Notifications/SNotificationList.h"
+	#include "Subsystems/EditorAssetSubsystem.h"
+	#include "Internationalization/StringTable.h"
+	#include "AssetRegistry/AssetRegistryModule.h"
 #endif
 
 #define CREATE_STRING_TABLE(StringTableID)\
 	FStringTableRegistry::Get().UnregisterStringTable(#StringTableID);\
 	FStringTableRegistry::Get().Internal_LocTableFromFile(#StringTableID, #StringTableID,\
 		FAssetPathHub::ST_##StringTableID##_CSV_Path.ToString(), FPaths::ProjectContentDir());\
-	FStringTableConstPtr StringTableID##_StringTable = FStringTableRegistry::Get().FindStringTable(#StringTableID);\
+	FStringTablePtr StringTableID##_StringTable = FStringTableRegistry::Get().FindMutableStringTable(#StringTableID);\
 	if (!StringTableID##_StringTable)\
 	{\
 		AddErrorNotification(ENotificationType::Error, FAssetPathHub::ST_##StringTableID##_CSV_Path.ToString());\
-	}
+	}\
+	else\
+	{\
+	}\
 
 inline void UStringTableHelper::ImportAllStringTableFromCSV()
 {
 	CREATE_STRING_TABLE(ItemName)
 	CREATE_STRING_TABLE(ItemDescription)
 	CREATE_STRING_TABLE(UI)
+}
+
+inline void UStringTableHelper::SaveStringTable(const FStringTablePtr& StringTablePtr)
+{
+	// if (!StringTablePtr) return;
+	//
+	// FString PackageName = StringTablePtr->GetNamespace();
+	// UPackage* Package = CreatePackage(*PackageName);
+	//
+	// UStringTable* StringTable = NewObject<UStringTable>(
+	// 	Package, *FAssetPathHub::StringTableSavePath, RF_Public | RF_Standalone);
+	//
+	//
 }
 
 inline void UStringTableHelper::AddErrorNotification(ENotificationType Type, FString CsvPath)

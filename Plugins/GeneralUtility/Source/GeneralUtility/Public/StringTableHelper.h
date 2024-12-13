@@ -8,7 +8,8 @@ class UStringTableHelper
 {
 public:
 	static void ImportAllStringTableFromCSV();
-	
+	static void SaveStringTable(const FStringTablePtr& StringTablePtr);
+
 private:
 	enum class ENotificationType
 	{
