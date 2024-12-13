@@ -2,9 +2,9 @@
 
 using UnrealBuildTool;
 
-public class GeneralUtility : ModuleRules
+public class EditorLifeCycle : ModuleRules
 {
-	public GeneralUtility(ReadOnlyTargetRules Target) : base(Target)
+	public EditorLifeCycle(ReadOnlyTargetRules Target) : base(Target)
 	{
 		PCHUsage = ModuleRules.PCHUsageMode.UseExplicitOrSharedPCHs;
 		
@@ -35,10 +35,13 @@ public class GeneralUtility : ModuleRules
 			new string[]
 			{
 				"CoreUObject",
-				"Engine"
-				// ... add private dependencies that you statically link with here ...	
+				"Engine",
+				"Slate",
+				"SlateCore",
+				"GeneralUtility"
 			}
 			);
+		
 		
 		DynamicallyLoadedModuleNames.AddRange(
 			new string[]

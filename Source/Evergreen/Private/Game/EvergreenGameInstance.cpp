@@ -4,7 +4,7 @@
 #include "Game/EvergreenGameInstance.h"
 
 #include "LevelSequencePlayer.h"
-#include "GeneralUtility.h"
+#include "CommonMacro.h"
 #include "Game/MiniGameBase.h"
 #include "Item/ItemBase.h"
 #include "Camera/CameraActor.h"
@@ -21,6 +21,18 @@ UEvergreenGameInstance::UEvergreenGameInstance()
 	Singleton = this;
 
 	LoadStringTablesOnRuntime();
+}
+
+void UEvergreenGameInstance::OnStart()
+{
+	Super::OnStart();
+	
+}
+
+void UEvergreenGameInstance::BeginDestroy()
+{
+	Super::BeginDestroy();
+	
 }
 
 void UEvergreenGameInstance::SetEvergreenGameMode(EEvergreenGameMode InGameMode)

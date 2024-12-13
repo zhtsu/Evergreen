@@ -55,6 +55,10 @@ private:
 	FGamePlayState GamePlayState;
 	bool bTestModeEnabled = false;
 	TArray<FString> CollectedItemIDArray;
+
+protected:
+	virtual void OnStart() override;
+	virtual void BeginDestroy() override;
 	
 public:
 	UPROPERTY(BlueprintAssignable)

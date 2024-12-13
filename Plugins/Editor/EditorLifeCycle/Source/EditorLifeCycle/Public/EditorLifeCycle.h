@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "Modules/ModuleManager.h"
 
-class FGeneralUtilityModule : public IModuleInterface
+class FEditorLifeCycleModule : public IModuleInterface
 {
 public:
 	virtual void StartupModule() override;

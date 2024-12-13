@@ -3,7 +3,8 @@
 
 #include "Item/ItemBase.h"
 
-#include "GeneralUtility.h"
+#include "CommonMacro.h"
+#include "AssetPathHub.h"
 #include "Internationalization/StringTable.h"
 #include "Internationalization/StringTableCore.h"
 #include "Internationalization/StringTableRegistry.h"

@@ -3,7 +3,8 @@
 
 #include "Item/ClickableItemBase.h"
 
-#include "GeneralUtility.h"
+#include "CommonMacro.h"
+#include "AssetPathHub.h"
 #include "Components/BoxComponent.h"
 #include "Components/WidgetComponent.h"
 #include "Game/EvergreenGameInstance.h"
