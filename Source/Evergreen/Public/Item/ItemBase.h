@@ -12,37 +12,15 @@ class EVERGREEN_API AEvergreenItemBase : public AActor
 	GENERATED_BODY()
 
 protected:
-#if WITH_EDITOR
-	virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
-#endif
+	virtual void BeginPlay() override;
 	
 public:
-	AEvergreenItemBase();
-
-	static AEvergreenItemBase* CurrentObservedItem;
-	bool bIsBeingObserved = false;
-	
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "EvergreenItem")
+	UPROPERTY(BlueprintReadOnly, EditInstanceOnly, Category = "Item", meta = (DisplayPriority="1"))
 	FString ItemID;
-
-	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "EvergreenItem")
+	
 	FText ItemName;
-
-	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "EvergreenItem")
 	FText ItemDescription;
 
-	UPROPERTY(EditInstanceOnly, Category = "EvergreenItem")
-	ACameraActor* TargetViewCamera;
-
-	UFUNCTION(BlueprintPure)
-	FORCEINLINE bool IsBeingObserved() const { return bIsBeingObserved; }
-
-	UFUNCTION(BlueprintPure)
-	static AEvergreenItemBase* GetCurrentObservedItem() { return CurrentObservedItem; }
-	
-private:
-	void ReadItemNameFromStringTable();
-	void ReadItemDescriptionFromStringTable();
+	UFUNCTION(BlueprintCallable)
+	FORCEINLINE void SetItemID(FString InItemID) { ItemID = InItemID; }
 };
-
-AEvergreenItemBase* AEvergreenItemBase::CurrentObservedItem = nullptr;

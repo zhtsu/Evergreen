@@ -2,13 +2,10 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
-
 class UStringTableHelper
 {
 public:
 	static void ImportAllStringTableFromCSV();
-	static void SaveStringTable(const FStringTablePtr& StringTablePtr);
 
 private:
 	enum class ENotificationType
@@ -17,8 +14,4 @@ private:
 		Success,
 		Error
 	};
-	
-	static void AddErrorNotification(ENotificationType Type, FString CsvPath);
 };
-
-#include "..\Private\StringTableHelper.inl"

@@ -6,10 +6,11 @@
 #include "ItemBase.h"
 #include "GameFramework/Actor.h"
 #include "Interface/ClickableInterface.h"
+#include "Interface/ObservableInterface.h"
 #include "ClickableItemBase.generated.h"
 
 UCLASS(Abstract)
-class EVERGREEN_API AClickableItemBase : public AEvergreenItemBase, public IClickableInterface
+class EVERGREEN_API AClickableItemBase : public AEvergreenItemBase, public IClickableInterface, public IObservableInterface
 {
 	GENERATED_BODY()
 
@@ -17,23 +18,20 @@ public:
 	AClickableItemBase();
 
 private:
-	UPROPERTY(VisibleDefaultsOnly, Category = "ClickableItem")
+	UPROPERTY(VisibleDefaultsOnly, Category = "Item")
 	class UStaticMeshComponent* StaticMesh;
 
-	UPROPERTY(VisibleDefaultsOnly, Category = "ClickableItem")
+	UPROPERTY(VisibleDefaultsOnly, Category = "Item")
 	class UBoxComponent* InteractionVolume;
 
-	UPROPERTY(VisibleDefaultsOnly, Category = "ClickableItem")
+	UPROPERTY(VisibleDefaultsOnly, Category = "Item")
 	class USceneComponent* RootScene;
 
-	UPROPERTY(VisibleDefaultsOnly, Category = "ClickableItem")
+	UPROPERTY(VisibleDefaultsOnly, Category = "Item")
 	class UWidgetComponent* DescriptionTextWidget;
 
-	UPROPERTY(VisibleDefaultsOnly, Category = "ClickableItem")
+	UPROPERTY(VisibleDefaultsOnly, Category = "Item")
 	class UWidgetComponent* HoverOnlyWidget;
-	
-protected:
-	virtual void BeginPlay() override;
 	
 public:
 	UFUNCTION(BlueprintCallable)
@@ -52,6 +50,9 @@ public:
 	virtual void OnHover_Implementation() override;
 	virtual void OnUnhover_Implementation() override;
 
+	UPROPERTY(BlueprintReadOnly, EditInstanceOnly, Category = "Item")
+	ACameraActor* TargetViewCamera;
+	
 private:
 	UFUNCTION()
 	void OnClickNative(UPrimitiveComponent* TouchedComponent, FKey ButtonReleased);

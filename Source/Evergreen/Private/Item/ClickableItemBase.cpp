@@ -3,8 +3,8 @@
 
 #include "Item/ClickableItemBase.h"
 
-#include "CommonMacro.h"
-#include "AssetPathHub.h"
+#include "Common/CommonMacro.h"
+#include "Common/AssetPathHub.h"
 #include "Components/BoxComponent.h"
 #include "Components/WidgetComponent.h"
 #include "Game/EvergreenGameInstance.h"
@@ -20,6 +20,9 @@ AClickableItemBase::AClickableItemBase()
 	InteractionVolume->Mobility = EComponentMobility::Static;
 	InteractionVolume->SetCollisionProfileName("UI");
 	InteractionVolume->SetupAttachment(RootScene);
+	InteractionVolume->OnClicked.AddUniqueDynamic(this, &AClickableItemBase::OnClickNative);
+	InteractionVolume->OnBeginCursorOver.AddUniqueDynamic(this, &AClickableItemBase::OnHoverNative);
+	InteractionVolume->OnEndCursorOver.AddUniqueDynamic(this, &AClickableItemBase::OnUnhoverNative);
 	
 	StaticMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMesh"));
 	StaticMesh->Mobility = EComponentMobility::Static;
@@ -31,36 +34,27 @@ AClickableItemBase::AClickableItemBase()
 	DescriptionTextWidget->SetupAttachment(StaticMesh);
 	DescriptionTextWidget->SetWidgetSpace(EWidgetSpace::Screen);
 	DescriptionTextWidget->SetDrawAtDesiredSize(true);
-	if (UClass* LoadedClass = LoadClass<UTypewriterTextWidget>(nullptr, *FAssetPathHub::WBP_ItemDescriptionText_Path.ToString()))
+	if (UClass* LoadedClass = LoadClass<UTypewriterTextWidget>(nullptr, *UAssetPathHub::WBP_ItemDescriptionText_Path.ToString()))
 	{
 		DescriptionTextWidget->SetWidgetClass(LoadedClass);
 	}
 	else
 	{
-		FAST_WARNING(TEXT("Fail to load blueprint '%s'"), *FAssetPathHub::WBP_ItemDescriptionText_Path.ToString());
+		FAST_WARNING(TEXT("Fail to load blueprint '%s'"), *UAssetPathHub::WBP_ItemDescriptionText_Path.ToString());
 	}
 	
 	HoverOnlyWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("ShowOnHovered"));
 	HoverOnlyWidget->SetupAttachment(StaticMesh);
 	HoverOnlyWidget->SetWidgetSpace(EWidgetSpace::Screen);
 	HoverOnlyWidget->SetDrawAtDesiredSize(true);
-	if (UClass* LoadedClass = LoadClass<UUserWidget>(nullptr, *FAssetPathHub::WBP_ItemShowOnHovered_Path.ToString()))
+	if (UClass* LoadedClass = LoadClass<UUserWidget>(nullptr, *UAssetPathHub::WBP_ItemShowOnHovered_Path.ToString()))
 	{
 		HoverOnlyWidget->SetWidgetClass(LoadedClass);
 	}
 	else
 	{
-		FAST_WARNING(TEXT("Fail to load blueprint '%s'"), *FAssetPathHub::WBP_ItemDescriptionText_Path.ToString());
+		FAST_WARNING(TEXT("Fail to load blueprint '%s'"), *UAssetPathHub::WBP_ItemDescriptionText_Path.ToString());
 	}
-}
-
-void AClickableItemBase::BeginPlay()
-{
-	Super::BeginPlay();
-
-	InteractionVolume->OnClicked.AddUniqueDynamic(this, &AClickableItemBase::OnClickNative);
-	InteractionVolume->OnBeginCursorOver.AddUniqueDynamic(this, &AClickableItemBase::OnHoverNative);
-	InteractionVolume->OnEndCursorOver.AddUniqueDynamic(this, &AClickableItemBase::OnUnhoverNative);
 }
 
 void AClickableItemBase::ShowDescriptionWidget(bool bAutoPlay, bool bFadeIn, float Delay, int CharNumPerDelay)

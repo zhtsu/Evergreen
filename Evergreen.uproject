@@ -234,10 +234,6 @@
 		{
 			"Name": "UdpMessaging",
 			"Enabled": false
-		},
-		{
-			"Name": "StringTableLoader",
-			"Enabled": false
 		}
 	]
 }

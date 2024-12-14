@@ -38,23 +38,16 @@ struct FGamePlayState
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnGameModeChanged, EEvergreenGameMode, CurrentMode);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnGamePlayStateChanged, EGamePlayState, CurrentGamePlayState);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnScreenResolutionChanged, FIntPoint, CurrentScreenResolution);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnGameLanguageChanged, FString, CurrentIetfLanguageTag);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnGamePaused);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnGameResumed);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnItemCollected, FString, CollectedItemID);
 
 UCLASS()
 class EVERGREEN_API UEvergreenGameInstance : public UGameInstance
 {
 	GENERATED_BODY()
 	
-private:
-	static UEvergreenGameInstance* Singleton;
-	
-	EEvergreenGameMode GameMode = EEvergreenGameMode::ThirdPerson;
-	FGamePlayState GamePlayState;
-	bool bTestModeEnabled = false;
-	TArray<FString> CollectedItemIDArray;
-
 protected:
 	virtual void OnStart() override;
 	virtual void BeginDestroy() override;
@@ -71,9 +64,12 @@ public:
 
 	UPROPERTY(BlueprintAssignable)
 	FOnGameResumed OnGameResumed;
+	
+	UPROPERTY(BlueprintAssignable)
+	FOnScreenResolutionChanged OnScreenResolutionChanged;
 
 	UPROPERTY(BlueprintAssignable)
-	FOnItemCollected OnItemCollected;
+	FOnGameLanguageChanged OnGameLanguageChanged;
 
 	UFUNCTION(BlueprintPure)
 	static UEvergreenGameInstance* GetEvergreenGameInstance();
@@ -101,38 +97,44 @@ public:
 	void ResumeGame();
 
 	UFUNCTION(BlueprintCallable)
-	void PlayCutscene(class ULevelSequence* LevelSequence, class ALevelSequenceActor*& LevelSequenceActor, class ULevelSequencePlayer*& LevelSequencePlayer);
+	FORCEINLINE EGamePlayState GetCurrentGamePlayState() const { return GamePlayState.CurrentGamePlayState; }
 
-	UFUNCTION(BlueprintCallable)
-	void StartMiniGame(TSubclassOf<class AMiniGameBase> MiniGameClass, class UMiniGameData* MiniGameData);
-
-	UFUNCTION(BlueprintCallable)
-	void EndMiniGame();
-
-	UFUNCTION(BlueprintCallable)
-	FORCEINLINE EGamePlayState GetCurrentGamePlayState() { return GamePlayState.CurrentGamePlayState; }
-
-	UFUNCTION(BlueprintCallable)
-	void CollectItem(class AEvergreenItemBase* Item);
-
-	UFUNCTION(BlueprintCallable)
-	bool HasItem(FString ItemID);
-
-	UFUNCTION(BlueprintCallable)
-	void ObserveItem(AEvergreenItemBase* Item, FViewTargetTransitionParams ViewTargetTransitionParams);
-
-	UFUNCTION(BlueprintCallable)
-	void ReturnToPlayerView(FViewTargetTransitionParams ViewTargetTransitionParams);
-
-	UFUNCTION(BlueprintPure)
-	FORCEINLINE void GetCollectedItemIDArray(TArray<FString>& OutArray) { OutArray = CollectedItemIDArray; }
-	
-private:
-	UPROPERTY()
-	AMiniGameBase* CurrentMiniGame = nullptr;
-	
 	void SetCurrentGamePlayState(EGamePlayState NewGamePlayState);
-
+	EGamePlayState GetPreviousGamePlayState() const { return GamePlayState.PreviousGamePlayState; }
+	
 	UFUNCTION()
 	void ReturnPreviousGamePlayState();
+
+	UFUNCTION(BlueprintPure)
+	static void GetSupportedLanguages(TArray<FString>& OutSupportedLanguages) { OutSupportedLanguages = SupportedLanguages; }
+
+	UFUNCTION(BlueprintPure)
+	static void GetSupportedScreenResolutions(TArray<FString>& OutSupportedScreenResolutions) { OutSupportedScreenResolutions = SupportedScreenResolutions; }
+
+	UFUNCTION(BlueprintCallable)
+	void SetScreenResolution(FString ScreenResolution);
+
+	UFUNCTION(BlueprintCallable)
+	void SetGameLanguage(FString IetfLanguageTag);
+
+	UFUNCTION(BlueprintPure)
+	FIntPoint GetCurrentScreenResolution() const { return CurrentScreenResolution; }
+
+	UFUNCTION(BlueprintPure)
+	FString GetCurrentIetfLanguageTag() const { return CurrentIetfLanguageTag; }
+	
+private:
+	static UEvergreenGameInstance* Singleton;
+	inline static TArray<FString> SupportedLanguages = {
+		"en", "zh-CN"
+	};
+	inline static TArray<FString> SupportedScreenResolutions = {
+		"1920x1080", "1280x720", "960x540", "Fullscreen"
+	};
+	
+	EEvergreenGameMode GameMode = EEvergreenGameMode::ThirdPerson;
+	FGamePlayState GamePlayState;
+	bool bTestModeEnabled = false;
+	FString CurrentIetfLanguageTag = "zh-CN";
+	FIntPoint CurrentScreenResolution = FIntPoint(1920, 1080);
 };

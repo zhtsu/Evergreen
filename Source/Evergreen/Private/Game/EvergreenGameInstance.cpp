@@ -3,12 +3,9 @@
 
 #include "Game/EvergreenGameInstance.h"
 
-#include "LevelSequencePlayer.h"
-#include "CommonMacro.h"
 #include "Game/MiniGameBase.h"
-#include "Item/ItemBase.h"
-#include "Camera/CameraActor.h"
-#include "StringTableHelper.h"
+#include "GameFramework/GameUserSettings.h"
+#include "Manager/MiniGameManager.h"
 
 UEvergreenGameInstance* UEvergreenGameInstance::Singleton = nullptr;
 
@@ -20,8 +17,6 @@ UEvergreenGameInstance* UEvergreenGameInstance::GetEvergreenGameInstance()
 UEvergreenGameInstance::UEvergreenGameInstance()
 {
 	Singleton = this;
-	
-	UStringTableHelper::ImportAllStringTableFromCSV();
 }
 
 void UEvergreenGameInstance::OnStart()
@@ -52,60 +47,18 @@ void UEvergreenGameInstance::ResumeGame()
 	ReturnPreviousGamePlayState();
 }
 
-void UEvergreenGameInstance::PlayCutscene(ULevelSequence* LevelSequence, ALevelSequenceActor*& LevelSequenceActor, ULevelSequencePlayer*& LevelSequencePlayer)
-{
-	SetCurrentGamePlayState(EGamePlayState::Cutscene);
-	
-	LevelSequencePlayer = ULevelSequencePlayer::CreateLevelSequencePlayer(
-		GetWorld(), LevelSequence, FMovieSceneSequencePlaybackSettings(), LevelSequenceActor);
-
-	if (!LevelSequenceActor || !LevelSequencePlayer)
-	{
-		FAST_WARNING(TEXT("Unable to create level sequence player"));
-		return;
-	}
-	
-	LevelSequencePlayer->Play();
-	LevelSequencePlayer->OnStop.AddDynamic(this, &UEvergreenGameInstance::ReturnPreviousGamePlayState);
-}
-
-void UEvergreenGameInstance::StartMiniGame(TSubclassOf<AMiniGameBase> MiniGameClass, UMiniGameData* MiniGameData)
-{
-	if (!MiniGameClass || CurrentMiniGame) return;
-	
-	SetCurrentGamePlayState(EGamePlayState::MiniGame);
-
-	AMiniGameBase* MiniGame = Cast<AMiniGameBase>(GetWorld()->SpawnActor(MiniGameClass));
-	if (MiniGame)
-	{
-		CurrentMiniGame = MiniGame;
-		IMiniGameInterface::Execute_OnStartMiniGame(MiniGame, MiniGameData);
-	}
-}
-
-void UEvergreenGameInstance::EndMiniGame()
-{
-	if (CurrentMiniGame == nullptr) return;
-	
-	SetCurrentGamePlayState(GamePlayState.PreviousGamePlayState);
-	
-	IMiniGameInterface::Execute_OnEndMiniGame(CurrentMiniGame);
-	CurrentMiniGame->Destroy();
-	CurrentMiniGame = nullptr;
-}
-
 bool UEvergreenGameInstance::IsAllowKeyboardInput() const
 {
 	bool bJudgeWithCurrentMiniGame = false;
 	if (GamePlayState.CurrentGamePlayState == EGamePlayState::MiniGame)
 	{
-		if (CurrentMiniGame) bJudgeWithCurrentMiniGame = true;
+		if (GetSubsystem<UMiniGameManager>()->GetCurrentMiniGame()) bJudgeWithCurrentMiniGame = true;
 		else bJudgeWithCurrentMiniGame = false;
 	}
 
 	if (bJudgeWithCurrentMiniGame)
 	{
-		return IsAllowInput() && CurrentMiniGame->bAllowKeyboardInput;
+		return IsAllowInput() && GetSubsystem<UMiniGameManager>()->GetCurrentMiniGame()->bAllowKeyboardInput;
 	}
 
 	return GamePlayState.CurrentGamePlayState != EGamePlayState::Cutscene
@@ -117,56 +70,6 @@ bool UEvergreenGameInstance::IsAllowInput() const
 {
 	return GamePlayState.CurrentGamePlayState != EGamePlayState::Cutscene
 		&& GamePlayState.CurrentGamePlayState != EGamePlayState::Paused;
-}
-
-void UEvergreenGameInstance::CollectItem(AEvergreenItemBase* Item)
-{
-	if (!Item) return;
-	
-	if (!CollectedItemIDArray.Contains(Item->ItemID))
-	{
-		CollectedItemIDArray.Add(Item->ItemID);
-		OnItemCollected.Broadcast(Item->ItemID);
-		Item->Destroy();
-	}
-}
-
-bool UEvergreenGameInstance::HasItem(FString ItemID)
-{
-	return CollectedItemIDArray.Contains(ItemID);
-}
-
-void UEvergreenGameInstance::ObserveItem(AEvergreenItemBase* Item, FViewTargetTransitionParams ViewTargetTransitionParams)
-{
-	if (!Item || !Item->TargetViewCamera) return;
-
-	if (APlayerController* PlayerController = GetPrimaryPlayerController())
-	{
-		SetCurrentGamePlayState(EGamePlayState::Observing);
-
-		Item->bIsBeingObserved = true;
-		AEvergreenItemBase::CurrentObservedItem = Item;
-		PlayerController->SetViewTarget(Item->TargetViewCamera, ViewTargetTransitionParams);
-	}
-}
-
-void UEvergreenGameInstance::ReturnToPlayerView(FViewTargetTransitionParams ViewTargetTransitionParams)
-{
-	if (APlayerController* PlayerController = GetPrimaryPlayerController())
-	{
-		if (APawn* Player = PlayerController->GetPawn())
-		{
-			SetCurrentGamePlayState(EGamePlayState::Exploring);
-
-			if (AEvergreenItemBase::CurrentObservedItem)
-			{
-				AEvergreenItemBase::CurrentObservedItem->bIsBeingObserved = false;
-				AEvergreenItemBase::CurrentObservedItem = nullptr;
-			}
-			
-			PlayerController->SetViewTarget(Player, ViewTargetTransitionParams);
-		}
-	}
 }
 
 void UEvergreenGameInstance::SetCurrentGamePlayState(EGamePlayState NewGamePlayState)
@@ -184,4 +87,61 @@ void UEvergreenGameInstance::SetCurrentGamePlayState(EGamePlayState NewGamePlayS
 void UEvergreenGameInstance::ReturnPreviousGamePlayState()
 {
 	SetCurrentGamePlayState(GamePlayState.PreviousGamePlayState);
+}
+
+void UEvergreenGameInstance::SetScreenResolution(FString ScreenResolution)
+{
+	int32 MaxScreenWidth = 1920;
+	int32 MaxScreenHeight = 1080;
+	int32 TargetScreenWidth = MaxScreenWidth;
+	int32 TargetScreenHeight = MaxScreenHeight;
+	
+	UGameUserSettings* UserSettings = GEngine->GetGameUserSettings();
+	if (ScreenResolution == "Fullscreen")
+	{
+		TargetScreenWidth = MaxScreenWidth;
+		TargetScreenHeight = MaxScreenHeight;
+	}
+	else if (ScreenResolution == "1920x1080")
+	{
+		TargetScreenWidth = 1920;
+		TargetScreenHeight = 1080;
+	}
+	else if (ScreenResolution == "1280x720")
+	{
+		TargetScreenWidth = 1280;
+		TargetScreenHeight = 720;
+	}
+	else if (ScreenResolution == "960x540")
+	{
+		TargetScreenWidth = 960;
+		TargetScreenHeight = 540;
+	}
+
+	FIntPoint TargetScreenResolution = FIntPoint(TargetScreenWidth, TargetScreenHeight);
+	if (CurrentScreenResolution == TargetScreenResolution) return;
+	
+	UserSettings->SetScreenResolution(TargetScreenResolution);
+	if (TargetScreenWidth == MaxScreenWidth && TargetScreenHeight == MaxScreenHeight)
+	{
+		UserSettings->SetFullscreenMode(EWindowMode::Fullscreen);
+	}
+	else
+	{
+		UserSettings->SetFullscreenMode(EWindowMode::Windowed);
+	}
+	UserSettings->ApplySettings(false);
+
+	CurrentScreenResolution = TargetScreenResolution;
+	OnScreenResolutionChanged.Broadcast(CurrentScreenResolution);
+}
+
+void UEvergreenGameInstance::SetGameLanguage(FString IetfLanguageTag)
+{
+	if (CurrentIetfLanguageTag == IetfLanguageTag) return;
+	
+	FInternationalization::Get().SetCurrentLanguageAndLocale(IetfLanguageTag);
+
+	CurrentIetfLanguageTag = IetfLanguageTag;
+	OnGameLanguageChanged.Broadcast(CurrentIetfLanguageTag);
 }

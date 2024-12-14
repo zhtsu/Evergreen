@@ -5,6 +5,7 @@
 
 #include "Game/EvergreenGameInstance.h"
 #include "Game/MiniGameData.h"
+#include "Manager/MiniGameManager.h"
 
 AMiniGameTriggerBox::AMiniGameTriggerBox()
 {
@@ -18,10 +19,10 @@ void AMiniGameTriggerBox::NotifyActorBeginOverlap(AActor* OtherActor)
 	if (TriggerBoxType == EMiniGameTriggerBoxType::StartMiniGame)
 	{
 		UMiniGameData* MiniGameData = NewObject<UMiniGameData>(this, MiniGameDataClass);
-		UEvergreenGameInstance::GetEvergreenGameInstance()->StartMiniGame(MiniGameClass, MiniGameData);
+		UEvergreenGameInstance::GetEvergreenGameInstance()->GetSubsystem<UMiniGameManager>()->StartMiniGame(MiniGameClass, MiniGameData);
 	}
 	else
 	{
-		UEvergreenGameInstance::GetEvergreenGameInstance()->EndMiniGame();
+		UEvergreenGameInstance::GetEvergreenGameInstance()->GetSubsystem<UMiniGameManager>()->EndMiniGame();
 	}
 }
