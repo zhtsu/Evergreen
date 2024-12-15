@@ -1,12 +1,12 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Character/EvergreenPawn.h"
+#include "Gameplay/EvergreenPawn.h"
 
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
-#include "Game/EvergreenGameInstance.h"
 #include "GameFramework/FloatingPawnMovement.h"
+#include "Gameplay/EvergreenGameInstance.h"
 
 AEvergreenPawn::AEvergreenPawn()
 {

@@ -1,11 +1,11 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Character/EvergreenCharacter.h"
+#include "Gameplay/EvergreenCharacter.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "Camera/CameraComponent.h"
-#include "Game/EvergreenGameInstance.h"
+#include "Gameplay/EvergreenGameInstance.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 

@@ -6,7 +6,7 @@
 
 #include "LevelSequencePlayer.h"
 #include "Common/CommonMacro.h"
-#include "Game/EvergreenGameInstance.h"
+#include "Gameplay/EvergreenGameInstance.h"
 #include "Interface/ObservableInterface.h"
 #include "Camera/CameraActor.h"
 

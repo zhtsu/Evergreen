@@ -3,7 +3,7 @@
 #pragma once
 
 #include "Manager/ItemManager.h"
-#include "Item/ItemBase.h"
+#include "World/ItemBase.h"
 
 UItemManager::UItemManager()
 {

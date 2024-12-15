@@ -1,10 +1,10 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Game/MiniGameTriggerBox.h"
+#include "World/MiniGameTriggerBox.h"
 
-#include "Game/EvergreenGameInstance.h"
-#include "Game/MiniGameData.h"
+#include "Gameplay/EvergreenGameInstance.h"
+#include "World/MiniGameData.h"
 #include "Manager/MiniGameManager.h"
 
 AMiniGameTriggerBox::AMiniGameTriggerBox()

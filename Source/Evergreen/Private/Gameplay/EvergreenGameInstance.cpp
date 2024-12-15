@@ -1,9 +1,9 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Game/EvergreenGameInstance.h"
+#include "Gameplay/EvergreenGameInstance.h"
 
-#include "Game/MiniGameBase.h"
+#include "World/MiniGameBase.h"
 #include "GameFramework/GameUserSettings.h"
 #include "Manager/MiniGameManager.h"
 

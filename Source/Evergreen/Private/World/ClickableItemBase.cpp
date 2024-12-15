@@ -1,13 +1,13 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Item/ClickableItemBase.h"
+#include "World/ClickableItemBase.h"
 
 #include "Common/CommonMacro.h"
 #include "Common/AssetPathHub.h"
 #include "Components/BoxComponent.h"
 #include "Components/WidgetComponent.h"
-#include "Game/EvergreenGameInstance.h"
+#include "Gameplay/EvergreenGameInstance.h"
 #include "UI/TypewriterTextWidget.h"
 
 AClickableItemBase::AClickableItemBase()
@@ -57,12 +57,12 @@ AClickableItemBase::AClickableItemBase()
 	}
 }
 
-void AClickableItemBase::ShowDescriptionWidget(bool bAutoPlay, bool bFadeIn, float Delay, int CharNumPerDelay)
+void AClickableItemBase::ShowDescriptionWidget(FText Text, bool bAutoPlay, bool bFadeIn, float Delay, int CharNumPerDelay)
 {
 	UTypewriterTextWidget* TypewriterTextWidget = Cast<UTypewriterTextWidget>(DescriptionTextWidget->GetWidget());
 	if (TypewriterTextWidget)
 	{
-		TypewriterTextWidget->SetTypewriter(ItemDescription, Delay, CharNumPerDelay);
+		TypewriterTextWidget->SetTypewriter(Text, Delay, CharNumPerDelay);
 		TypewriterTextWidget->Show(bAutoPlay, bFadeIn);
 	}
 }

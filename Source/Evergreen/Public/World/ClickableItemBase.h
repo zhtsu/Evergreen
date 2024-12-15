@@ -35,7 +35,7 @@ private:
 	
 public:
 	UFUNCTION(BlueprintCallable)
-	void ShowDescriptionWidget(bool bAutoPlay = false, bool bFadeIn = false, float Delay = 0.2, int CharNumPerDelay = 1);
+	void ShowDescriptionWidget(FText Text = FText(), bool bAutoPlay = false, bool bFadeIn = false, float Delay = 0.2, int CharNumPerDelay = 1);
 
 	UFUNCTION(BlueprintCallable)
 	void ShowHoverOnlyWidget();

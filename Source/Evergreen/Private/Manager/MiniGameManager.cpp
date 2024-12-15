@@ -3,8 +3,8 @@
 #pragma once
 
 #include "Manager/MiniGameManager.h"
-#include "Game/MiniGameBase.h"
-#include "Game/EvergreenGameInstance.h"
+#include "Gameplay/EvergreenGameInstance.h"
+#include "World/MiniGameBase.h"
 
 UMiniGameManager::UMiniGameManager()
 {
