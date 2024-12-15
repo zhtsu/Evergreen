@@ -234,6 +234,10 @@
 		{
 			"Name": "UdpMessaging",
 			"Enabled": false
+		},
+		{
+			"Name": "CommonUI",
+			"Enabled": true
 		}
 	]
 }
