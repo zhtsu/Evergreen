@@ -112,7 +112,13 @@ public:
 	static void GetSupportedScreenResolutions(TArray<FString>& OutSupportedScreenResolutions) { OutSupportedScreenResolutions = SupportedScreenResolutions; }
 
 	UFUNCTION(BlueprintCallable)
-	void SetScreenResolution(FString ScreenResolution);
+	bool SetScreenResolutionFromString(FString ScreenResolutionString);
+
+	UFUNCTION(BlueprintCallable)
+	bool SetScreenResolution(FIntPoint TargetScreenResolution);
+	
+	UFUNCTION(BlueprintCallable)
+	void SetFullscreenEnabled(bool FullscreenEnabled);
 
 	UFUNCTION(BlueprintCallable)
 	void SetGameLanguage(FString IetfLanguageTag);
@@ -129,7 +135,7 @@ private:
 		"en", "zh-CN"
 	};
 	inline static TArray<FString> SupportedScreenResolutions = {
-		"1920x1080", "1280x720", "960x540", "Fullscreen"
+		"1920x1080", "1280x720", "960x540"
 	};
 	
 	EEvergreenGameMode GameMode = EEvergreenGameMode::ThirdPerson;

@@ -35,6 +35,16 @@ void UEvergreenGameInstance::SetEvergreenGameMode(EEvergreenGameMode InGameMode)
 {
 	GameMode = InGameMode;
 	OnGameModeChanged.Broadcast(GameMode);
+
+	if (APlayerController* PlayerController = Cast<APlayerController>(GetPrimaryPlayerController()))
+	{
+		FIntPoint ViewportSize;
+		PlayerController->GetViewportSize(ViewportSize.X, ViewportSize.Y);
+		if (ViewportSize != CurrentScreenResolution)
+		{
+			SetScreenResolution(CurrentScreenResolution);
+		}
+	}
 }
 
 void UEvergreenGameInstance::PauseGame()
@@ -89,51 +99,37 @@ void UEvergreenGameInstance::ReturnPreviousGamePlayState()
 	SetCurrentGamePlayState(GamePlayState.PreviousGamePlayState);
 }
 
-void UEvergreenGameInstance::SetScreenResolution(FString ScreenResolution)
+bool UEvergreenGameInstance::SetScreenResolutionFromString(FString ScreenResolutionString)
 {
-	int32 MaxScreenWidth = 1920;
-	int32 MaxScreenHeight = 1080;
-	int32 TargetScreenWidth = MaxScreenWidth;
-	int32 TargetScreenHeight = MaxScreenHeight;
+	FIntPoint TargetScreenResolution = FIntPoint(-1, -1);
+	if (ScreenResolutionString == "1920x1080") TargetScreenResolution = FIntPoint(1920, 1080);
+	else if (ScreenResolutionString == "1280x720") TargetScreenResolution = FIntPoint(1280, 720);
+	else if (ScreenResolutionString == "960x540") TargetScreenResolution = FIntPoint(960, 540);
+	else return false;
+
+	return SetScreenResolution(TargetScreenResolution);
+}
+
+bool UEvergreenGameInstance::SetScreenResolution(FIntPoint TargetScreenResolution)
+{
+	if (CurrentScreenResolution == TargetScreenResolution) return false;
 	
 	UGameUserSettings* UserSettings = GEngine->GetGameUserSettings();
-	if (ScreenResolution == "Fullscreen")
-	{
-		TargetScreenWidth = MaxScreenWidth;
-		TargetScreenHeight = MaxScreenHeight;
-	}
-	else if (ScreenResolution == "1920x1080")
-	{
-		TargetScreenWidth = 1920;
-		TargetScreenHeight = 1080;
-	}
-	else if (ScreenResolution == "1280x720")
-	{
-		TargetScreenWidth = 1280;
-		TargetScreenHeight = 720;
-	}
-	else if (ScreenResolution == "960x540")
-	{
-		TargetScreenWidth = 960;
-		TargetScreenHeight = 540;
-	}
-
-	FIntPoint TargetScreenResolution = FIntPoint(TargetScreenWidth, TargetScreenHeight);
-	if (CurrentScreenResolution == TargetScreenResolution) return;
 	
-	UserSettings->SetScreenResolution(TargetScreenResolution);
-	if (TargetScreenWidth == MaxScreenWidth && TargetScreenHeight == MaxScreenHeight)
-	{
-		UserSettings->SetFullscreenMode(EWindowMode::Fullscreen);
-	}
-	else
-	{
-		UserSettings->SetFullscreenMode(EWindowMode::Windowed);
-	}
+	if (CurrentScreenResolution != TargetScreenResolution) UserSettings->SetScreenResolution(TargetScreenResolution);
 	UserSettings->ApplySettings(false);
 
 	CurrentScreenResolution = TargetScreenResolution;
 	OnScreenResolutionChanged.Broadcast(CurrentScreenResolution);
+
+	return true;
+}
+
+void UEvergreenGameInstance::SetFullscreenEnabled(bool FullscreenEnabled)
+{
+	UGameUserSettings* UserSettings = GEngine->GetGameUserSettings();
+	if (FullscreenEnabled) UserSettings->SetFullscreenMode(EWindowMode::Fullscreen);
+	else UserSettings->SetFullscreenMode(EWindowMode::Windowed);
 }
 
 void UEvergreenGameInstance::SetGameLanguage(FString IetfLanguageTag)
