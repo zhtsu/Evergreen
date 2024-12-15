@@ -5,6 +5,18 @@
 #include "CoreMinimal.h"
 #include "ItemManager.generated.h"
 
+USTRUCT(BlueprintType)
+struct FEvergreenItemInfo
+{
+	GENERATED_BODY()
+
+	UPROPERTY(BlueprintReadWrite)
+	FText ItemName;
+
+	UPROPERTY(BlueprintReadWrite)
+	FText ItemDescription;
+};
+
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnItemCollected, FString, CollectedItemID);
 
 UCLASS()
@@ -21,8 +33,11 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void CollectItem(class AEvergreenItemBase* Item);
 
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintPure)
 	bool HasItem(FString ItemID);
+
+	UFUNCTION(BlueprintPure)
+	static void GetItemInfo(FString ItemID, FEvergreenItemInfo& OutItemInfo);
 
 	UFUNCTION(BlueprintPure)
 	FORCEINLINE void GetCollectedItemIdArray(TArray<FString>& OutArray) const { OutArray = CollectedItemIdArray; }

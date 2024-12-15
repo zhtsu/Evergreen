@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "ItemBase.h"
+#include "Components/WidgetComponent.h"
 #include "GameFramework/Actor.h"
 #include "Interface/ClickableInterface.h"
 #include "Interface/ObservableInterface.h"

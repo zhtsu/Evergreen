@@ -20,4 +20,10 @@ class EVERGREEN_API IObservableInterface
 public:
 	UFUNCTION(BlueprintNativeEvent, Category = "Observable")
 	ACameraActor* GetViewTarget();
+
+	UFUNCTION(BlueprintNativeEvent, Category = "Observable")
+	void OnStartObserve();
+
+	UFUNCTION(BlueprintNativeEvent, Category = "Observable")
+	void OnEndObserve();
 };

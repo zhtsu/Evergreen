@@ -17,9 +17,6 @@ protected:
 public:
 	UPROPERTY(BlueprintReadOnly, EditInstanceOnly, Category = "Item", meta = (DisplayPriority="1"))
 	FString ItemID;
-	
-	FText ItemName;
-	FText ItemDescription;
 
 	UFUNCTION(BlueprintCallable)
 	FORCEINLINE void SetItemID(FString InItemID) { ItemID = InItemID; }

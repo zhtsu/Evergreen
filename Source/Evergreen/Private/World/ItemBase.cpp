@@ -3,12 +3,8 @@
 
 #include "World/ItemBase.h"
 
-#include "Common/AssetPathHub.h"
-
 void AEvergreenItemBase::BeginPlay()
 {
 	Super::BeginPlay();
-
-	ItemName = FText::FromStringTable(UAssetPathHub::ST_ItemName_TableID, ItemID);
-	ItemDescription = FText::FromStringTable(UAssetPathHub::ST_ItemDescription_TableID, ItemID);
+	
 }

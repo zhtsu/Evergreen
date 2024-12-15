@@ -30,6 +30,8 @@ public:
 	
 private:
 	static UObject* CurrentObservedObject;
+
+	void CallOnStartObserve();
 };
 
 UObject* UViewManager::CurrentObservedObject = nullptr;

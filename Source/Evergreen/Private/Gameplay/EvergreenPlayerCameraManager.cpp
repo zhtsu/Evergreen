@@ -3,3 +3,9 @@
 
 #include "Gameplay/EvergreenPlayerCameraManager.h"
 
+void AEvergreenPlayerCameraManager::UpdateCamera(float DeltaTime)
+{
+	Super::UpdateCamera(DeltaTime);
+
+	
+}

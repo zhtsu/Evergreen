@@ -37,6 +37,9 @@ void UViewManager::Observe(UObject* ObservableObject, FViewTargetTransitionParam
 		CurrentObservedObject = ObservableObject;
 		ACameraActor* TargetViewCamera = IObservableInterface::Execute_GetViewTarget(ObservableObject);
 		PlayerController->SetViewTarget(Cast<AActor>(TargetViewCamera), ViewTargetTransitionParams);
+		FTimerHandle TimerHandle;
+		GetWorld()->GetTimerManager().SetTimer(
+			TimerHandle, this, &UViewManager::CallOnStartObserve, ViewTargetTransitionParams.BlendTime);
 	}
 }
 
@@ -51,6 +54,7 @@ void UViewManager::SetToPlayerView(FViewTargetTransitionParams ViewTargetTransit
 
 			if (CurrentObservedObject)
 			{
+				IObservableInterface::Execute_OnEndObserve(CurrentObservedObject);
 				CurrentObservedObject = nullptr;
 			}
 			
@@ -75,4 +79,9 @@ void UViewManager::PlayCutscene(ULevelSequence* LevelSequence, ALevelSequenceAct
 	
 	LevelSequencePlayer->Play();
 	LevelSequencePlayer->OnStop.AddDynamic(EGI, &UEvergreenGameInstance::ReturnPreviousGamePlayState);
+}
+
+void UViewManager::CallOnStartObserve()
+{
+	IObservableInterface::Execute_OnStartObserve(CurrentObservedObject);
 }
