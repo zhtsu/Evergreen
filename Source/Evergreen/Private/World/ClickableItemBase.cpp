@@ -40,7 +40,7 @@ AClickableItemBase::AClickableItemBase()
 	}
 	else
 	{
-		FAST_WARNING(TEXT("Fail to load blueprint '%s'"), *UAssetPathHub::WBP_ItemDescriptionText_Path.ToString());
+		FAST_WARNING("Fail to load blueprint '%s'", *UAssetPathHub::WBP_ItemDescriptionText_Path.ToString());
 	}
 	
 	HoverOnlyWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("ShowOnHovered"));
@@ -53,7 +53,7 @@ AClickableItemBase::AClickableItemBase()
 	}
 	else
 	{
-		FAST_WARNING(TEXT("Fail to load blueprint '%s'"), *UAssetPathHub::WBP_ItemDescriptionText_Path.ToString());
+		FAST_WARNING("Fail to load blueprint '%s'", *UAssetPathHub::WBP_ItemDescriptionText_Path.ToString());
 	}
 }
 
@@ -120,15 +120,15 @@ void AClickableItemBase::OnUnhoverNative(UPrimitiveComponent* TouchedComponent)
 
 void AClickableItemBase::OnClick_Implementation()
 {
-	FAST_LOG(TEXT("Default OnClick"));
+	FAST_LOG("Default OnClick")
 }
 
 void AClickableItemBase::OnHover_Implementation()
 {
-	FAST_LOG(TEXT("Default OnHover"));
+	FAST_LOG("Default OnHover")
 }
 
 void AClickableItemBase::OnUnhover_Implementation()
 {
-	FAST_LOG(TEXT("Default OnUnhover"));
+	FAST_LOG("Default OnUnhover")
 }

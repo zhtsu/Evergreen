@@ -9,6 +9,7 @@
 #include "Gameplay/EvergreenGameInstance.h"
 #include "Interface/ObservableInterface.h"
 #include "Camera/CameraActor.h"
+#include "Gameplay/EvergreenPlayerCameraManager.h"
 
 UViewManager::UViewManager()
 {
@@ -31,13 +32,17 @@ void UViewManager::Observe(UObject* ObservableObject, FViewTargetTransitionParam
 	if (!ObservableObject->Implements<UObservableInterface>()) return;
 
 	UEvergreenGameInstance* EGI = UEvergreenGameInstance::GetEvergreenGameInstance();
+	if (EGI->GetCurrentGamePlayState() == EGamePlayState::Cutscene) return;
+	
 	if (APlayerController* PlayerController = EGI->GetPrimaryPlayerController())
 	{
-		EGI->SetCurrentGamePlayState(EGamePlayState::Observing);
+		EGI->SetCurrentGamePlayState(EGamePlayState::Cutscene);
 		CurrentObservedObject = ObservableObject;
 		ACameraActor* TargetViewCamera = IObservableInterface::Execute_GetViewTarget(ObservableObject);
+		
 		PlayerController->SetViewTarget(Cast<AActor>(TargetViewCamera), ViewTargetTransitionParams);
-		FTimerHandle TimerHandle;
+
+		if (TimerHandle.IsValid()) GetWorld()->GetTimerManager().ClearTimer(TimerHandle);
 		GetWorld()->GetTimerManager().SetTimer(
 			TimerHandle, this, &UViewManager::CallOnStartObserve, ViewTargetTransitionParams.BlendTime);
 	}
@@ -46,11 +51,13 @@ void UViewManager::Observe(UObject* ObservableObject, FViewTargetTransitionParam
 void UViewManager::SetToPlayerView(FViewTargetTransitionParams ViewTargetTransitionParams)
 {
 	UEvergreenGameInstance* EGI = UEvergreenGameInstance::GetEvergreenGameInstance();
+	if (EGI->GetCurrentGamePlayState() == EGamePlayState::Cutscene) return;
+	
 	if (APlayerController* PlayerController = EGI->GetPrimaryPlayerController())
 	{
 		if (APawn* Player = PlayerController->GetPawn())
 		{
-			EGI->SetCurrentGamePlayState(EGamePlayState::Exploring);
+			EGI->SetCurrentGamePlayState(EGamePlayState::Cutscene);
 
 			if (CurrentObservedObject)
 			{
@@ -59,6 +66,10 @@ void UViewManager::SetToPlayerView(FViewTargetTransitionParams ViewTargetTransit
 			}
 			
 			PlayerController->SetViewTarget(Player, ViewTargetTransitionParams);
+			
+			if (TimerHandle.IsValid()) GetWorld()->GetTimerManager().ClearTimer(TimerHandle);
+			GetWorld()->GetTimerManager().SetTimer(
+				TimerHandle, this, &UViewManager::CallOnAttainPlayerView, ViewTargetTransitionParams.BlendTime);
 		}
 	}
 }
@@ -73,7 +84,7 @@ void UViewManager::PlayCutscene(ULevelSequence* LevelSequence, ALevelSequenceAct
 
 	if (!LevelSequenceActor || !LevelSequencePlayer)
 	{
-		FAST_WARNING(TEXT("Unable to create level sequence player"));
+		FAST_WARNING("Unable to create level sequence player");
 		return;
 	}
 	
@@ -83,5 +94,38 @@ void UViewManager::PlayCutscene(ULevelSequence* LevelSequence, ALevelSequenceAct
 
 void UViewManager::CallOnStartObserve()
 {
-	IObservableInterface::Execute_OnStartObserve(CurrentObservedObject);
+	if (CurrentObservedObject)
+	{
+		UEvergreenGameInstance* EGI = UEvergreenGameInstance::GetEvergreenGameInstance();
+		EGI->SetCurrentGamePlayState(EGamePlayState::Observing);
+		IObservableInterface::Execute_OnStartObserve(CurrentObservedObject);
+	}
+}
+
+void UViewManager::CallOnAttainPlayerView()
+{
+	UEvergreenGameInstance* EGI = UEvergreenGameInstance::GetEvergreenGameInstance();
+	EGI->SetCurrentGamePlayState(EGamePlayState::Exploring);
+}
+
+void UViewManager::SetCameraOffsetFollowCursorEnabled(bool bEnabled)
+{
+	if (PCM) PCM->bCameraOffsetFollowCursorEnabled = bEnabled;
+}
+
+void UViewManager::SetCameraOffsetScale(float NewOffsetScale)
+{
+	if (PCM) PCM->OffsetScale = NewOffsetScale;
+}
+
+bool UViewManager::GetCameraOffsetFollowCursorEnabled() const
+{
+	if (PCM) return PCM->bCameraOffsetFollowCursorEnabled;
+	return false;
+}
+
+float UViewManager::GetCameraOffsetScale() const
+{
+	if (PCM) return PCM->OffsetScale;
+	return 0.f;
 }

@@ -12,5 +12,17 @@ class EVERGREEN_API AEvergreenPlayerCameraManager : public APlayerCameraManager
 	GENERATED_BODY()
 
 public:
-	virtual void UpdateCamera(float DeltaTime) override;
+	AEvergreenPlayerCameraManager();
+
+	UPROPERTY(EditDefaultsOnly)
+	bool bCameraOffsetFollowCursorEnabled = false;
+
+	UPROPERTY(EditDefaultsOnly)
+	float OffsetScale = 0.1f;
+	
+	UFUNCTION(BlueprintCallable)
+	bool CameraOffsetFollowCursor(AActor* CameraTarget, FVector& NewCameraLocation, FRotator& NewCameraRotation, float& NewCameraFOV);
+
+private:
+	FVector2D CurrentOffset = FVector2D();
 };

@@ -27,11 +27,30 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	static void PlayCutscene(class ULevelSequence* LevelSequence, class ALevelSequenceActor*& LevelSequenceActor, class ULevelSequencePlayer*& LevelSequencePlayer);
+
+	UFUNCTION(BlueprintCallable)
+	void SetCameraOffsetFollowCursorEnabled(bool bEnabled);
+
+	UFUNCTION(BlueprintCallable)
+	void SetCameraOffsetScale(float NewOffsetScale);
+
+	UFUNCTION(BlueprintPure)
+	bool GetCameraOffsetFollowCursorEnabled() const;
+
+	UFUNCTION(BlueprintPure)
+	float GetCameraOffsetScale() const;
+
+	FORCEINLINE void SetPlayerCameraManager(class AEvergreenPlayerCameraManager* InPCM) { PCM = InPCM; }
 	
 private:
 	static UObject* CurrentObservedObject;
+	FTimerHandle TimerHandle;
 
+	UPROPERTY()
+	AEvergreenPlayerCameraManager* PCM = nullptr;
+	
 	void CallOnStartObserve();
+	void CallOnAttainPlayerView();
 };
 
 UObject* UViewManager::CurrentObservedObject = nullptr;
