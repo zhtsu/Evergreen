@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Dataflow/DataflowNodeParameters.h"
 #include "GameFramework/Character.h"
 #include "EvergreenCharacter.generated.h"
 
@@ -15,11 +16,14 @@ public:
 	AEvergreenCharacter();
 
 protected:
+	virtual void Tick(float DeltaSeconds) override;
 	virtual void BeginPlay() override;
 
 public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	void RotateCameraYaw(float Angle);
+	
 private:
 	UPROPERTY(VisibleDefaultsOnly, Category = "Camera")
 	class USpringArmComponent* SpringArm;
@@ -34,4 +38,9 @@ private:
 	class UInputAction* MoveAction;
 	
 	void Move(const struct FInputActionValue& InputActionValue);
+	
+	bool bCameraRotating = false;
+	FRotator CurrentSpringArmRotator;
+	FRotator TargetSpringArmRotator;
+	float InterpSpeed = 1.f;
 };

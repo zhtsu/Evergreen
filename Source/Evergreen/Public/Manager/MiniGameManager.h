@@ -14,15 +14,18 @@ public:
 	UMiniGameManager();
 
 	UFUNCTION(BlueprintCallable)
-	void StartMiniGame(TSubclassOf<class AMiniGameBase> MiniGameClass, class UMiniGameData* MiniGameData);
+	bool StartMiniGame(TSubclassOf<class AMiniGameBase> MiniGameClass, class UMiniGameData* MiniGameData);
 
 	UFUNCTION(BlueprintCallable)
-	void EndMiniGame();
+	bool EndMiniGame(TSubclassOf<class AMiniGameBase> MiniGameClass);
 
 	UFUNCTION(BlueprintPure)
-	FORCEINLINE AMiniGameBase* GetCurrentMiniGame() const { return CurrentMiniGame; }
+	bool IsMiniGameOnProcess(TSubclassOf<class AMiniGameBase> MiniGameClass);
+
+	UFUNCTION(BlueprintPure)
+	bool IsAnyMiniGameOnProcess();
 	
 private:
 	UPROPERTY()
-	AMiniGameBase* CurrentMiniGame = nullptr;
+	TArray<AMiniGameBase*> OnProcessMiniGames;
 };

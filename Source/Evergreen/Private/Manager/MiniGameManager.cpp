@@ -11,29 +11,63 @@ UMiniGameManager::UMiniGameManager()
 	
 }
 
-void UMiniGameManager::StartMiniGame(TSubclassOf<AMiniGameBase> MiniGameClass, UMiniGameData* MiniGameData)
+bool UMiniGameManager::StartMiniGame(TSubclassOf<AMiniGameBase> MiniGameClass, UMiniGameData* MiniGameData)
 {
-	if (!MiniGameClass || CurrentMiniGame) return;
+	if (!MiniGameClass || IsMiniGameOnProcess(MiniGameClass)) return false;
 
 	UEvergreenGameInstance* EGI = UEvergreenGameInstance::GetEvergreenGameInstance();
 	EGI->SetCurrentGamePlayState(EGamePlayState::MiniGame);
 
 	AMiniGameBase* MiniGame = Cast<AMiniGameBase>(GetWorld()->SpawnActor(MiniGameClass));
-	if (MiniGame)
-	{
-		CurrentMiniGame = MiniGame;
-		IMiniGameInterface::Execute_OnStartMiniGame(MiniGame, MiniGameData);
-	}
+	OnProcessMiniGames.Add(MiniGame);
+	IMiniGameInterface::Execute_OnStartMiniGame(MiniGame, MiniGameData);
+
+	return true;
 }
 
-void UMiniGameManager::EndMiniGame()
+bool UMiniGameManager::EndMiniGame(TSubclassOf<class AMiniGameBase> MiniGameClass)
 {
-	if (CurrentMiniGame == nullptr) return;
+	if (!IsMiniGameOnProcess(MiniGameClass)) return false;
 
-	UEvergreenGameInstance* EGI = UEvergreenGameInstance::GetEvergreenGameInstance();
-	EGI->SetCurrentGamePlayState(EGI->GetPreviousGamePlayState());
-	
-	IMiniGameInterface::Execute_OnEndMiniGame(CurrentMiniGame);
-	CurrentMiniGame->Destroy();
-	CurrentMiniGame = nullptr;
+	AMiniGameBase* EndedMiniGame = nullptr;
+	for (AMiniGameBase* MiniGame : OnProcessMiniGames)
+	{
+		if (MiniGame->GetClass() == MiniGameClass)
+		{
+			EndedMiniGame = MiniGame;
+			break;
+		}
+	}
+
+	if (EndedMiniGame)
+	{
+		if (OnProcessMiniGames.Num() - 1 <= 0)
+		{
+			UEvergreenGameInstance* EGI = UEvergreenGameInstance::GetEvergreenGameInstance();
+			EGI->SetCurrentGamePlayState(EGI->GetPreviousGamePlayState());
+		}
+		
+		IMiniGameInterface::Execute_OnEndMiniGame(EndedMiniGame);
+		OnProcessMiniGames.Remove(EndedMiniGame);
+		EndedMiniGame->Destroy();
+		
+		return true;
+	}
+
+	return false;
+}
+
+bool UMiniGameManager::IsMiniGameOnProcess(TSubclassOf<AMiniGameBase> MiniGameClass)
+{
+	for (AMiniGameBase* MiniGame : OnProcessMiniGames)
+	{
+		if (MiniGame->GetClass() == MiniGameClass) return true;
+	}
+
+	return false;
+}
+
+bool UMiniGameManager::IsAnyMiniGameOnProcess()
+{
+	return OnProcessMiniGames.Num() > 0;
 }

@@ -31,14 +31,23 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SetCameraOffsetFollowCursorEnabled(bool bEnabled);
 
-	UFUNCTION(BlueprintCallable)
-	void SetCameraOffsetScale(float NewOffsetScale);
-
 	UFUNCTION(BlueprintPure)
 	bool GetCameraOffsetFollowCursorEnabled() const;
 
+	UFUNCTION(BlueprintCallable)
+	void SetCameraOffsetScale(float OffsetScale);
+
 	UFUNCTION(BlueprintPure)
 	float GetCameraOffsetScale() const;
+	
+	UFUNCTION(BlueprintCallable)
+	void SetCameraOffsetInterpSpeed(float InterpSpeed);
+
+	UFUNCTION(BlueprintPure)
+	float GetCameraOffsetInterpSpeed() const;
+
+	UFUNCTION(BlueprintCallable)
+	void RotateCharacterCameraYaw(float Angle);
 
 	FORCEINLINE void SetPlayerCameraManager(class AEvergreenPlayerCameraManager* InPCM) { PCM = InPCM; }
 	

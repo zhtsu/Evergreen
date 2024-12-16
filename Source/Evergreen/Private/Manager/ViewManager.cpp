@@ -9,6 +9,7 @@
 #include "Gameplay/EvergreenGameInstance.h"
 #include "Interface/ObservableInterface.h"
 #include "Camera/CameraActor.h"
+#include "Gameplay/EvergreenCharacter.h"
 #include "Gameplay/EvergreenPlayerCameraManager.h"
 
 UViewManager::UViewManager()
@@ -113,9 +114,9 @@ void UViewManager::SetCameraOffsetFollowCursorEnabled(bool bEnabled)
 	if (PCM) PCM->bCameraOffsetFollowCursorEnabled = bEnabled;
 }
 
-void UViewManager::SetCameraOffsetScale(float NewOffsetScale)
+void UViewManager::SetCameraOffsetScale(float OffsetScale)
 {
-	if (PCM) PCM->OffsetScale = NewOffsetScale;
+	if (PCM) PCM->OffsetScale = OffsetScale;
 }
 
 bool UViewManager::GetCameraOffsetFollowCursorEnabled() const
@@ -128,4 +129,29 @@ float UViewManager::GetCameraOffsetScale() const
 {
 	if (PCM) return PCM->OffsetScale;
 	return 0.f;
+}
+
+void UViewManager::SetCameraOffsetInterpSpeed(float InterpSpeed)
+{
+	if (PCM) PCM->InterpSpeed = InterpSpeed;
+}
+
+float UViewManager::GetCameraOffsetInterpSpeed() const
+{
+	if (PCM) return PCM->InterpSpeed;
+	return 0.f;
+}
+
+void UViewManager::RotateCharacterCameraYaw(float Angle)
+{
+	UEvergreenGameInstance* EGI = UEvergreenGameInstance::GetEvergreenGameInstance();
+	if (EGI->GetCurrentEvergreenGameMode() == EEvergreenGameMode::Interaction) return;
+
+	if (APlayerController* PlayerController = EGI->GetPrimaryPlayerController())
+	{
+		if (AEvergreenCharacter* Character = Cast<AEvergreenCharacter>(PlayerController->GetPawn()))
+		{
+			Character->RotateCameraYaw(Angle);
+		}
+	}
 }

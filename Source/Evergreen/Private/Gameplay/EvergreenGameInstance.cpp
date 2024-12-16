@@ -5,7 +5,10 @@
 
 #include "World/MiniGameBase.h"
 #include "GameFramework/GameUserSettings.h"
+#include "Gameplay/EvergreenPlayerCameraManager.h"
+#include "Kismet/GameplayStatics.h"
 #include "Manager/MiniGameManager.h"
+#include "Manager/ViewManager.h"
 
 UEvergreenGameInstance* UEvergreenGameInstance::Singleton = nullptr;
 
@@ -45,6 +48,15 @@ void UEvergreenGameInstance::SetEvergreenGameMode(EEvergreenGameMode InGameMode)
 			SetScreenResolution(CurrentScreenResolution);
 		}
 	}
+
+	if (GameMode == EEvergreenGameMode::Interaction)
+	{
+		UViewManager* ViewManager = GetSubsystem<UViewManager>();
+		AEvergreenPlayerCameraManager* PCM = Cast<AEvergreenPlayerCameraManager>(
+			UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0));
+
+		ViewManager->SetPlayerCameraManager(PCM);
+	}
 }
 
 void UEvergreenGameInstance::PauseGame()
@@ -59,16 +71,10 @@ void UEvergreenGameInstance::ResumeGame()
 
 bool UEvergreenGameInstance::IsAllowKeyboardInput() const
 {
-	bool bJudgeWithCurrentMiniGame = false;
-	if (GamePlayState.CurrentGamePlayState == EGamePlayState::MiniGame)
+	if (GetSubsystem<UMiniGameManager>()->IsAnyMiniGameOnProcess())
 	{
-		if (GetSubsystem<UMiniGameManager>()->GetCurrentMiniGame()) bJudgeWithCurrentMiniGame = true;
-		else bJudgeWithCurrentMiniGame = false;
-	}
-
-	if (bJudgeWithCurrentMiniGame)
-	{
-		return IsAllowInput() && GetSubsystem<UMiniGameManager>()->GetCurrentMiniGame()->bAllowKeyboardInput;
+		if (bTestModeEnabled) return true;
+		return false;
 	}
 
 	return GamePlayState.CurrentGamePlayState != EGamePlayState::Cutscene

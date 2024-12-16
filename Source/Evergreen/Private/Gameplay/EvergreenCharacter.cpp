@@ -11,6 +11,8 @@
 
 AEvergreenCharacter::AEvergreenCharacter()
 {
+	PrimaryActorTick.bCanEverTick = true;
+	
 	GetMesh()->SetRelativeRotation(FRotator(0, -90, 0));
 	
 	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
@@ -34,10 +36,28 @@ AEvergreenCharacter::AEvergreenCharacter()
 	GetCharacterMovement()->RotationRate = FRotator(0, 400, 0);
 }
 
+void AEvergreenCharacter::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+
+	if (bCameraRotating)
+	{
+		CurrentSpringArmRotator =
+			FMath::RInterpTo(CurrentSpringArmRotator, TargetSpringArmRotator, DeltaSeconds, InterpSpeed);
+		SpringArm->SetRelativeRotation(CurrentSpringArmRotator);
+
+		if (CurrentSpringArmRotator == TargetSpringArmRotator)
+		{
+			bCameraRotating = false;
+		}
+	}
+}
+
 void AEvergreenCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	CurrentSpringArmRotator = SpringArm->GetRelativeRotation();
 }
 
 void AEvergreenCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -58,6 +78,14 @@ void AEvergreenCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInput
 	}
 }
 
+void AEvergreenCharacter::RotateCameraYaw(float Angle)
+{
+	FRotator NewRotator = SpringArm->GetRelativeRotation();
+	NewRotator.Yaw = Angle;
+	TargetSpringArmRotator = NewRotator;
+	bCameraRotating = true;
+}
+
 void AEvergreenCharacter::Move(const FInputActionValue& InputActionValue)
 {
 	UEvergreenGameInstance* EGI = UEvergreenGameInstance::GetEvergreenGameInstance();
@@ -67,7 +95,7 @@ void AEvergreenCharacter::Move(const FInputActionValue& InputActionValue)
 
 	if (Controller != nullptr)
 	{
-		const FRotator ControlRotation = Controller->GetControlRotation();
+		const FRotator ControlRotation = SpringArm->GetRelativeRotation();
 		
 		const FRotator YawRotation(0, ControlRotation.Yaw, 0);
 		

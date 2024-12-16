@@ -12,13 +12,14 @@ class EVERGREEN_API AEvergreenPlayerCameraManager : public APlayerCameraManager
 	GENERATED_BODY()
 
 public:
-	AEvergreenPlayerCameraManager();
-
 	UPROPERTY(EditDefaultsOnly)
 	bool bCameraOffsetFollowCursorEnabled = false;
 
 	UPROPERTY(EditDefaultsOnly)
 	float OffsetScale = 0.1f;
+
+	UPROPERTY(EditDefaultsOnly)
+	float InterpSpeed = 2.f;
 	
 	UFUNCTION(BlueprintCallable)
 	bool CameraOffsetFollowCursor(AActor* CameraTarget, FVector& NewCameraLocation, FRotator& NewCameraRotation, float& NewCameraFOV);
