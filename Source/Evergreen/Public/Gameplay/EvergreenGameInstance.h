@@ -103,7 +103,7 @@ public:
 	EGamePlayState GetPreviousGamePlayState() const { return GamePlayState.PreviousGamePlayState; }
 	
 	UFUNCTION()
-	void ReturnPreviousGamePlayState();
+	void SetToPreviousGamePlayState();
 
 	UFUNCTION(BlueprintPure)
 	static void GetSupportedLanguages(TArray<FString>& OutSupportedLanguages) { OutSupportedLanguages = SupportedLanguages; }

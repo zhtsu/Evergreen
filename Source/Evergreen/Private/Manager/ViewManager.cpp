@@ -90,7 +90,7 @@ void UViewManager::PlayCutscene(ULevelSequence* LevelSequence, ALevelSequenceAct
 	}
 	
 	LevelSequencePlayer->Play();
-	LevelSequencePlayer->OnStop.AddDynamic(EGI, &UEvergreenGameInstance::ReturnPreviousGamePlayState);
+	LevelSequencePlayer->OnStop.AddDynamic(EGI, &UEvergreenGameInstance::SetToPreviousGamePlayState);
 }
 
 void UViewManager::CallOnStartObserve()
@@ -142,7 +142,7 @@ float UViewManager::GetCameraOffsetInterpSpeed() const
 	return 0.f;
 }
 
-void UViewManager::RotateCharacterCameraYaw(float Angle)
+void UViewManager::RotateCharacterCameraBoomYaw(float Yaw)
 {
 	UEvergreenGameInstance* EGI = UEvergreenGameInstance::GetEvergreenGameInstance();
 	if (EGI->GetCurrentEvergreenGameMode() == EEvergreenGameMode::Interaction) return;
@@ -151,7 +151,35 @@ void UViewManager::RotateCharacterCameraYaw(float Angle)
 	{
 		if (AEvergreenCharacter* Character = Cast<AEvergreenCharacter>(PlayerController->GetPawn()))
 		{
-			Character->RotateCameraYaw(Angle);
+			Character->K2_RotateCameraBoomYaw(Yaw);
+		}
+	}
+}
+
+void UViewManager::AdjustCharacterCameraBoom(float Length, float Pitch)
+{
+	UEvergreenGameInstance* EGI = UEvergreenGameInstance::GetEvergreenGameInstance();
+	if (EGI->GetCurrentEvergreenGameMode() == EEvergreenGameMode::Interaction) return;
+
+	if (APlayerController* PlayerController = EGI->GetPrimaryPlayerController())
+	{
+		if (AEvergreenCharacter* Character = Cast<AEvergreenCharacter>(PlayerController->GetPawn()))
+		{
+			Character->K2_AdjustCameraBoom(Length, Pitch);
+		}
+	}
+}
+
+void UViewManager::SetCharacterCameraBoom(float Length, float Pitch)
+{
+	UEvergreenGameInstance* EGI = UEvergreenGameInstance::GetEvergreenGameInstance();
+	if (EGI->GetCurrentEvergreenGameMode() == EEvergreenGameMode::Interaction) return;
+
+	if (APlayerController* PlayerController = EGI->GetPrimaryPlayerController())
+	{
+		if (AEvergreenCharacter* Character = Cast<AEvergreenCharacter>(PlayerController->GetPawn()))
+		{
+			Character->SetCameraBoom(Length, Pitch);
 		}
 	}
 }

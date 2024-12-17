@@ -66,7 +66,7 @@ void UEvergreenGameInstance::PauseGame()
 
 void UEvergreenGameInstance::ResumeGame()
 {
-	ReturnPreviousGamePlayState();
+	SetToPreviousGamePlayState();
 }
 
 bool UEvergreenGameInstance::IsAllowKeyboardInput() const
@@ -100,7 +100,7 @@ void UEvergreenGameInstance::SetCurrentGamePlayState(EGamePlayState NewGamePlayS
 	OnGamePlayStateChanged.Broadcast(GamePlayState.CurrentGamePlayState);
 }
 
-void UEvergreenGameInstance::ReturnPreviousGamePlayState()
+void UEvergreenGameInstance::SetToPreviousGamePlayState()
 {
 	SetCurrentGamePlayState(GamePlayState.PreviousGamePlayState);
 }

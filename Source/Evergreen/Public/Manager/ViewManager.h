@@ -47,7 +47,13 @@ public:
 	float GetCameraOffsetInterpSpeed() const;
 
 	UFUNCTION(BlueprintCallable)
-	void RotateCharacterCameraYaw(float Angle);
+	void RotateCharacterCameraBoomYaw(float Yaw);
+
+	UFUNCTION(BlueprintCallable)
+	void AdjustCharacterCameraBoom(float Length = 600.f, float Pitch = -25.f);
+
+	UFUNCTION(BlueprintCallable)
+	void SetCharacterCameraBoom(float Length = 600.f, float Pitch = -25.f);
 
 	FORCEINLINE void SetPlayerCameraManager(class AEvergreenPlayerCameraManager* InPCM) { PCM = InPCM; }
 	

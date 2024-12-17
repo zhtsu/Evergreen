@@ -5,14 +5,13 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "Camera/CameraComponent.h"
+#include "Common/CommonMacro.h"
 #include "Gameplay/EvergreenGameInstance.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 
 AEvergreenCharacter::AEvergreenCharacter()
 {
-	PrimaryActorTick.bCanEverTick = true;
-	
 	GetMesh()->SetRelativeRotation(FRotator(0, -90, 0));
 	
 	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
@@ -36,28 +35,10 @@ AEvergreenCharacter::AEvergreenCharacter()
 	GetCharacterMovement()->RotationRate = FRotator(0, 400, 0);
 }
 
-void AEvergreenCharacter::Tick(float DeltaSeconds)
-{
-	Super::Tick(DeltaSeconds);
-
-	if (bCameraRotating)
-	{
-		CurrentSpringArmRotator =
-			FMath::RInterpTo(CurrentSpringArmRotator, TargetSpringArmRotator, DeltaSeconds, InterpSpeed);
-		SpringArm->SetRelativeRotation(CurrentSpringArmRotator);
-
-		if (CurrentSpringArmRotator == TargetSpringArmRotator)
-		{
-			bCameraRotating = false;
-		}
-	}
-}
-
 void AEvergreenCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
-	CurrentSpringArmRotator = SpringArm->GetRelativeRotation();
 }
 
 void AEvergreenCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -78,12 +59,63 @@ void AEvergreenCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInput
 	}
 }
 
-void AEvergreenCharacter::RotateCameraYaw(float Angle)
+void AEvergreenCharacter::K2_StartRotateCameraBoomYawIfAllowed(float Yaw, bool& AllowRotation)
 {
-	FRotator NewRotator = SpringArm->GetRelativeRotation();
-	NewRotator.Yaw = Angle;
-	TargetSpringArmRotator = NewRotator;
-	bCameraRotating = true;
+	if (UEvergreenGameInstance::GetEvergreenGameInstance()->GetCurrentGamePlayState() == EGamePlayState::Cutscene)
+	{
+		AllowRotation = false;
+		return;
+	}
+	
+	StartCameraBoomRotation = SpringArm->GetRelativeRotation();
+	TargetCameraBoomRotation = StartCameraBoomRotation;
+	TargetCameraBoomRotation.Yaw = Yaw;
+	
+	if (FMath::Abs(StartCameraBoomRotation.Yaw - Yaw) < 1.f)
+	{
+		AllowRotation = false;
+		return;
+	}
+
+	UEvergreenGameInstance::GetEvergreenGameInstance()->SetCurrentGamePlayState(EGamePlayState::Cutscene);
+	
+	AllowRotation = true;
+}
+
+void AEvergreenCharacter::K2_EndRotateCameraYaw()
+{
+	SpringArm->SetRelativeRotation(TargetCameraBoomRotation);
+	UEvergreenGameInstance::GetEvergreenGameInstance()->SetCurrentGamePlayState(EGamePlayState::Exploring);
+}
+
+void AEvergreenCharacter::K2_StartAdjustCameraBoomIfAllowed(float Length, float Pitch, bool& AllowAdjust)
+{
+	if (UEvergreenGameInstance::GetEvergreenGameInstance()->GetCurrentGamePlayState() == EGamePlayState::Cutscene)
+	{
+		AllowAdjust = false;
+		return;
+	}
+	
+	StartCameraBoomRotation = SpringArm->GetRelativeRotation();
+	TargetCameraBoomRotation = StartCameraBoomRotation;
+	TargetCameraBoomRotation.Pitch = Pitch;
+
+	StartCameraBoomLength = SpringArm->TargetArmLength;
+	TargetCameraBoomLength = Length;
+	
+	if (FMath::Abs(StartCameraBoomRotation.Pitch - Pitch) < 1.f
+		&& FMath::Abs(StartCameraBoomLength - TargetCameraBoomLength) < 1.f) return;
+
+	UEvergreenGameInstance::GetEvergreenGameInstance()->SetCurrentGamePlayState(EGamePlayState::Cutscene);
+	
+	AllowAdjust = true;
+}
+
+void AEvergreenCharacter::K2_EndAdjustCameraBoom()
+{
+	SpringArm->TargetArmLength = TargetCameraBoomLength;
+	SpringArm->SetRelativeRotation(TargetCameraBoomRotation);
+	UEvergreenGameInstance::GetEvergreenGameInstance()->SetCurrentGamePlayState(EGamePlayState::Exploring);
 }
 
 void AEvergreenCharacter::Move(const FInputActionValue& InputActionValue)
@@ -105,4 +137,10 @@ void AEvergreenCharacter::Move(const FInputActionValue& InputActionValue)
 		AddMovementInput(ForwardDirection, MovementVector.Y);
 		AddMovementInput(RightDirection, MovementVector.X);
 	}
+}
+
+void AEvergreenCharacter::SetCameraBoom(float Length, float Pitch)
+{
+	SpringArm->TargetArmLength = Length;
+	SpringArm->SetRelativeRotation(FRotator(Pitch, 0.f, 0.f));
 }
