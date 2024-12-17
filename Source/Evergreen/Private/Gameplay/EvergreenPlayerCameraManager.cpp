@@ -2,9 +2,7 @@
 
 #include "Gameplay/EvergreenPlayerCameraManager.h"
 
-#include "Camera/CameraComponent.h"
 #include "Common/CommonMacro.h"
-#include "GameFramework/SpringArmComponent.h"
 #include "Gameplay/EvergreenCharacter.h"
 #include "Gameplay/EvergreenGameInstance.h"
 #include "Kismet/GameplayStatics.h"
@@ -28,7 +26,6 @@ bool AEvergreenPlayerCameraManager::CameraOffsetFollowCursor(AActor* CameraTarge
                                                              FRotator& NewCameraRotation, float& NewCameraFOV)
 {
 	if (!PCOwner) return false;
-	if (!bCameraOffsetFollowCursorEnabled) return false;
 	if (!UEvergreenGameInstance::GetEvergreenGameInstance()->IsInteractionMode()) return false;
 	
 	FVector2D MousePosition;
@@ -40,7 +37,7 @@ bool AEvergreenPlayerCameraManager::CameraOffsetFollowCursor(AActor* CameraTarge
 	FVector2D ViewportCenter = FVector2D(ViewportSize) * 0.5;
 
 	FVector2D TargetOffset;
-	if (MousePosition.X <= 0.f)
+	if (!bCameraOffsetFollowCursorEnabled && MousePosition.X <= 0.f)
 	{
 		TargetOffset = FVector2D::ZeroVector;
 	}
@@ -53,10 +50,12 @@ bool AEvergreenPlayerCameraManager::CameraOffsetFollowCursor(AActor* CameraTarge
 	CurrentOffset = FMath::Vector2DInterpTo(CurrentOffset, TargetOffset, DeltaTime, InterpSpeed);
 	
 	AEvergreenCharacter* Character = Cast<AEvergreenCharacter>(PCOwner->GetPawn());
-	if (!Character) return false;
+	if (!Character)
+	{
+		return false;
+	}
 
 	FVector TargetLocation = Character->GetActorLocation();
-	TargetLocation.Y = -6.f;
 	TargetLocation.Z = 60.f;
 	NewCameraLocation = TargetLocation;
 	NewCameraRotation = Character->GetActorRotation();

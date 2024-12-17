@@ -5,6 +5,7 @@
 
 #include "World/MiniGameBase.h"
 #include "GameFramework/GameUserSettings.h"
+#include "Gameplay/EvergreenCharacter.h"
 #include "Gameplay/EvergreenPlayerCameraManager.h"
 #include "Kismet/GameplayStatics.h"
 #include "Manager/MiniGameManager.h"
@@ -36,11 +37,22 @@ void UEvergreenGameInstance::BeginDestroy()
 
 void UEvergreenGameInstance::SetEvergreenGameMode(EEvergreenGameMode InGameMode)
 {
+	if (CurrentGameMode == InGameMode)
+	{
+		return;
+	}
+	
 	CurrentGameMode = InGameMode;
 	OnGameModeChanged.Broadcast(CurrentGameMode);
 
-	if (CurrentGameMode == EEvergreenGameMode::Interaction) SwitchToInteractionGameMode();
-	else SwitchToThirdPersonGameMode();
+	if (CurrentGameMode == EEvergreenGameMode::Interaction)
+	{
+		SwitchToInteractionGameMode();
+	}
+	else
+	{
+		SwitchToThirdPersonGameMode();
+	}
 }
 
 void UEvergreenGameInstance::PauseGame()
@@ -136,8 +148,24 @@ void UEvergreenGameInstance::SetGameLanguage(FString IetfLanguageTag)
 
 void UEvergreenGameInstance::SwitchToThirdPersonGameMode()
 {
+	if (APlayerController* PlayerController = GetPrimaryPlayerController())
+	{
+		AEvergreenCharacter* Character = Cast<AEvergreenCharacter>(PlayerController->GetPawn());
+		if (Character)
+		{
+			Character->GetMesh()->SetHiddenInGame(false);
+		}
+	}
 }
 
 void UEvergreenGameInstance::SwitchToInteractionGameMode()
 {
+	if (APlayerController* PlayerController = GetPrimaryPlayerController())
+	{
+		AEvergreenCharacter* Character = Cast<AEvergreenCharacter>(PlayerController->GetPawn());
+		if (Character)
+		{
+			Character->GetMesh()->SetHiddenInGame(true);
+		}
+	}
 }
