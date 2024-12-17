@@ -75,15 +75,19 @@ public:
 	static UEvergreenGameInstance* GetEvergreenGameInstance();
 
 	UEvergreenGameInstance();
-	bool IsAllowKeyboardInput() const;
 	bool IsAllowInput() const;
+	bool IsAllowKeyboardInput() const;
+	bool IsAllowMouseInput() const;
 	
 	UFUNCTION(BlueprintCallable)
 	void SetEvergreenGameMode(EEvergreenGameMode InGameMode);
 
 	UFUNCTION(BlueprintPure)
-	FORCEINLINE EEvergreenGameMode GetCurrentEvergreenGameMode() const { return GameMode; }
+	FORCEINLINE bool IsThirdPersonMode() const { return CurrentGameMode == EEvergreenGameMode::ThirdPerson; }
 
+	UFUNCTION(BlueprintPure)
+	FORCEINLINE bool IsInteractionMode() const { return CurrentGameMode == EEvergreenGameMode::Interaction; }
+	
 	UFUNCTION(BlueprintCallable)
 	FORCEINLINE void SetTestModeEnabled(bool bEnabled) { bTestModeEnabled = bEnabled; }
 
@@ -138,9 +142,12 @@ private:
 		"1920x1080", "1280x720", "960x540"
 	};
 	
-	EEvergreenGameMode GameMode = EEvergreenGameMode::ThirdPerson;
+	EEvergreenGameMode CurrentGameMode = EEvergreenGameMode::ThirdPerson;
 	FGamePlayState GamePlayState;
 	bool bTestModeEnabled = false;
 	FString CurrentIetfLanguageTag = "zh-CN";
 	FIntPoint CurrentScreenResolution = FIntPoint(1920, 1080);
+
+	void SwitchToThirdPersonGameMode();
+	void SwitchToInteractionGameMode();
 };

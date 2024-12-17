@@ -36,27 +36,11 @@ void UEvergreenGameInstance::BeginDestroy()
 
 void UEvergreenGameInstance::SetEvergreenGameMode(EEvergreenGameMode InGameMode)
 {
-	GameMode = InGameMode;
-	OnGameModeChanged.Broadcast(GameMode);
+	CurrentGameMode = InGameMode;
+	OnGameModeChanged.Broadcast(CurrentGameMode);
 
-	if (APlayerController* PlayerController = Cast<APlayerController>(GetPrimaryPlayerController()))
-	{
-		FIntPoint ViewportSize;
-		PlayerController->GetViewportSize(ViewportSize.X, ViewportSize.Y);
-		if (ViewportSize != CurrentScreenResolution)
-		{
-			SetScreenResolution(CurrentScreenResolution);
-		}
-	}
-
-	if (GameMode == EEvergreenGameMode::Interaction)
-	{
-		UViewManager* ViewManager = GetSubsystem<UViewManager>();
-		AEvergreenPlayerCameraManager* PCM = Cast<AEvergreenPlayerCameraManager>(
-			UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0));
-
-		ViewManager->SetPlayerCameraManager(PCM);
-	}
+	if (CurrentGameMode == EEvergreenGameMode::Interaction) SwitchToInteractionGameMode();
+	else SwitchToThirdPersonGameMode();
 }
 
 void UEvergreenGameInstance::PauseGame()
@@ -71,17 +55,12 @@ void UEvergreenGameInstance::ResumeGame()
 
 bool UEvergreenGameInstance::IsAllowKeyboardInput() const
 {
-	if (GetSubsystem<UMiniGameManager>()->IsAnyMiniGameOnProcess())
-	{
-#if WITH_EDITOR
-		if (bTestModeEnabled) return true;
-#endif
-		return false;
-	}
+	return IsAllowInput() && CurrentGameMode == EEvergreenGameMode::ThirdPerson;
+}
 
-	return GamePlayState.CurrentGamePlayState != EGamePlayState::Cutscene
-		&& GamePlayState.CurrentGamePlayState != EGamePlayState::Paused
-		&& GamePlayState.CurrentGamePlayState != EGamePlayState::MiniGame;
+bool UEvergreenGameInstance::IsAllowMouseInput() const
+{
+	return IsAllowInput() && CurrentGameMode == EEvergreenGameMode::Interaction;
 }
 
 bool UEvergreenGameInstance::IsAllowInput() const
@@ -153,4 +132,12 @@ void UEvergreenGameInstance::SetGameLanguage(FString IetfLanguageTag)
 
 	CurrentIetfLanguageTag = IetfLanguageTag;
 	OnGameLanguageChanged.Broadcast(CurrentIetfLanguageTag);
+}
+
+void UEvergreenGameInstance::SwitchToThirdPersonGameMode()
+{
+}
+
+void UEvergreenGameInstance::SwitchToInteractionGameMode()
+{
 }

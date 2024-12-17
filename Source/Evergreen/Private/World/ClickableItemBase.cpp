@@ -97,7 +97,7 @@ void AClickableItemBase::HideHoverOnlyWidget()
 void AClickableItemBase::OnClickNative(UPrimitiveComponent* TouchedComponent, FKey ButtonReleased)
 {
 	UEvergreenGameInstance* EGI = UEvergreenGameInstance::GetEvergreenGameInstance();
-	if (!EGI->IsAllowInput()) return;
+	if (!EGI->IsAllowMouseInput()) return;
 	
 	Execute_OnClick(this);
 }
@@ -105,7 +105,7 @@ void AClickableItemBase::OnClickNative(UPrimitiveComponent* TouchedComponent, FK
 void AClickableItemBase::OnHoverNative(UPrimitiveComponent* TouchedComponent)
 {
 	UEvergreenGameInstance* EGI = UEvergreenGameInstance::GetEvergreenGameInstance();
-	if (!EGI->IsAllowInput()) return;
+	if (!EGI->IsAllowMouseInput()) return;
 	
 	Execute_OnHover(this);
 }
@@ -113,7 +113,7 @@ void AClickableItemBase::OnHoverNative(UPrimitiveComponent* TouchedComponent)
 void AClickableItemBase::OnUnhoverNative(UPrimitiveComponent* TouchedComponent)
 {
 	UEvergreenGameInstance* EGI = UEvergreenGameInstance::GetEvergreenGameInstance();
-	if (!EGI->IsAllowInput()) return;
+	if (!EGI->IsAllowMouseInput()) return;
 	
 	Execute_OnUnhover(this);
 }
