@@ -73,7 +73,9 @@ bool UEvergreenGameInstance::IsAllowKeyboardInput() const
 {
 	if (GetSubsystem<UMiniGameManager>()->IsAnyMiniGameOnProcess())
 	{
+#if WITH_EDITOR
 		if (bTestModeEnabled) return true;
+#endif
 		return false;
 	}
 
@@ -107,7 +109,7 @@ void UEvergreenGameInstance::SetToPreviousGamePlayState()
 
 bool UEvergreenGameInstance::SetScreenResolutionFromString(FString ScreenResolutionString)
 {
-	FIntPoint TargetScreenResolution = FIntPoint(-1, -1);
+	FIntPoint TargetScreenResolution;
 	if (ScreenResolutionString == "1920x1080") TargetScreenResolution = FIntPoint(1920, 1080);
 	else if (ScreenResolutionString == "1280x720") TargetScreenResolution = FIntPoint(1280, 720);
 	else if (ScreenResolutionString == "960x540") TargetScreenResolution = FIntPoint(960, 540);
@@ -121,9 +123,9 @@ bool UEvergreenGameInstance::SetScreenResolution(FIntPoint TargetScreenResolutio
 	if (CurrentScreenResolution == TargetScreenResolution) return false;
 	
 	UGameUserSettings* UserSettings = GEngine->GetGameUserSettings();
-	
-	if (CurrentScreenResolution != TargetScreenResolution) UserSettings->SetScreenResolution(TargetScreenResolution);
+	UserSettings->SetScreenResolution(TargetScreenResolution);
 	UserSettings->ApplySettings(false);
+	UserSettings->ApplyResolutionSettings(false);
 
 	CurrentScreenResolution = TargetScreenResolution;
 	OnScreenResolutionChanged.Broadcast(CurrentScreenResolution);
@@ -133,9 +135,14 @@ bool UEvergreenGameInstance::SetScreenResolution(FIntPoint TargetScreenResolutio
 
 void UEvergreenGameInstance::SetFullscreenEnabled(bool FullscreenEnabled)
 {
+	EWindowMode::Type TargetWindowMode = FullscreenEnabled ? EWindowMode::Fullscreen : EWindowMode::Windowed;
+	
 	UGameUserSettings* UserSettings = GEngine->GetGameUserSettings();
-	if (FullscreenEnabled) UserSettings->SetFullscreenMode(EWindowMode::Fullscreen);
-	else UserSettings->SetFullscreenMode(EWindowMode::Windowed);
+	if (UserSettings->GetFullscreenMode() == TargetWindowMode) return;
+
+	UserSettings->SetFullscreenMode(TargetWindowMode);
+	UserSettings->ApplySettings(false);
+	UserSettings->ApplyResolutionSettings(false);
 }
 
 void UEvergreenGameInstance::SetGameLanguage(FString IetfLanguageTag)
