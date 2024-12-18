@@ -2,13 +2,31 @@
 
 #include "Gameplay/EvergreenPlayerCameraManager.h"
 
-#include "Common/CommonMacro.h"
+#include "Gameplay/EvergreenGameInstance.h"
+#include "Kismet/GameplayStatics.h"
+#include "Manager/ViewManager.h"
+
+void AEvergreenPlayerCameraManager::BeginPlay()
+{
+	Super::BeginPlay();
+
+	UEvergreenGameInstance* EGI = UEvergreenGameInstance::GetEvergreenGameInstance();
+	if (EGI && EGI->GetSubsystem<UViewManager>())
+	{
+		UViewManager* ViewManager = EGI->GetSubsystem<UViewManager>();
+		AEvergreenPlayerCameraManager* PCM = Cast<AEvergreenPlayerCameraManager>(
+			UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0));
+
+		ViewManager->SetPlayerCameraManager(PCM);
+	}
+}
 
 bool AEvergreenPlayerCameraManager::CameraOffsetFollowCursor(AActor* CameraTarget, FVector& NewCameraLocation,
                                                              FRotator& NewCameraRotation, float& NewCameraFOV)
 {
 	if (!PCOwner) return false;
 	if (!bCameraOffsetFollowCursorEnabled) return false;
+	if (!UEvergreenGameInstance::GetEvergreenGameInstance()->IsInteractionMode()) return false;
 	
 	FVector2D MousePosition;
 	PCOwner->GetMousePosition(MousePosition.X, MousePosition.Y);
@@ -16,14 +34,17 @@ bool AEvergreenPlayerCameraManager::CameraOffsetFollowCursor(AActor* CameraTarge
 	FIntPoint ViewportSize;
 	PCOwner->GetViewportSize(ViewportSize.X, ViewportSize.Y);
 
+	FVector2D ViewportCenter = FVector2D(ViewportSize) * 0.5;
+
 	bool bIsMouseInViewport = (MousePosition.X >= 0 && MousePosition.X <= ViewportSize.X)
 		&& (MousePosition.Y >= 0 && MousePosition.Y <= ViewportSize.Y);
 
-	if (!bIsMouseInViewport) return false;
-	
-	FVector2D ViewportCenter = ViewportSize * 0.5;
-
 	FVector2D TargetOffset = MousePosition - ViewportCenter;
+	if (!bIsMouseInViewport)
+	{
+		TargetOffset = FVector2D::ZeroVector;
+	}
+	
 	const float DeltaTime = GetWorld()->GetDeltaSeconds();
 	CurrentOffset = FMath::Vector2DInterpTo(CurrentOffset, TargetOffset, DeltaTime, InterpSpeed);
 

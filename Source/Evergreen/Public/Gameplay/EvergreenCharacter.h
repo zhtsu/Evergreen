@@ -13,6 +13,8 @@ class EVERGREEN_API AEvergreenCharacter : public ACharacter
 
 public:
 	AEvergreenCharacter();
+	
+	void RemoveMappingContext();
 
 protected:
 	virtual void BeginPlay() override;

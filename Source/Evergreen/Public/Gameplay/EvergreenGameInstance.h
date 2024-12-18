@@ -74,15 +74,24 @@ public:
 	UFUNCTION(BlueprintPure)
 	static UEvergreenGameInstance* GetEvergreenGameInstance();
 
+	static UInputComponent* OwnedPlayerInputComponent;
+
 	UEvergreenGameInstance();
 	bool IsAllowKeyboardInput() const;
+	bool IsAllowMouseInput() const;
 	bool IsAllowInput() const;
 	
 	UFUNCTION(BlueprintCallable)
-	void SetEvergreenGameMode(EEvergreenGameMode InGameMode);
+	void SwitchEvergreenGameModeTo(EEvergreenGameMode InGameMode);
 
 	UFUNCTION(BlueprintPure)
-	FORCEINLINE EEvergreenGameMode GetCurrentEvergreenGameMode() const { return GameMode; }
+	FORCEINLINE EEvergreenGameMode GetCurrentEvergreenGameMode() const { return CurrentGameMode; }
+
+	UFUNCTION(BlueprintPure)
+	FORCEINLINE bool IsThirdPersonMode() const { return CurrentGameMode == EEvergreenGameMode::ThirdPerson; }
+
+	UFUNCTION(BlueprintPure)
+	FORCEINLINE bool IsInteractionMode() const { return CurrentGameMode == EEvergreenGameMode::Interaction; }
 
 	UFUNCTION(BlueprintCallable)
 	FORCEINLINE void SetTestModeEnabled(bool bEnabled) { bTestModeEnabled = bEnabled; }
@@ -128,6 +137,12 @@ public:
 
 	UFUNCTION(BlueprintPure)
 	FString GetCurrentIetfLanguageTag() const { return CurrentIetfLanguageTag; }
+
+	FORCEINLINE void SetGamePlayers(class AEvergreenCharacter* InThirdPersonPlayer, class AEvergreenPawn* InInteractionPlayer)
+	{
+		ThirdPersonPlayer = InThirdPersonPlayer;
+		InteractionPlayer = InInteractionPlayer;
+	}
 	
 private:
 	static UEvergreenGameInstance* Singleton;
@@ -138,9 +153,20 @@ private:
 		"1920x1080", "1280x720", "960x540"
 	};
 	
-	EEvergreenGameMode GameMode = EEvergreenGameMode::ThirdPerson;
+	EEvergreenGameMode CurrentGameMode = EEvergreenGameMode::ThirdPerson;
 	FGamePlayState GamePlayState;
 	bool bTestModeEnabled = false;
 	FString CurrentIetfLanguageTag = "zh-CN";
 	FIntPoint CurrentScreenResolution = FIntPoint(1920, 1080);
+
+	UPROPERTY()
+	AEvergreenCharacter* ThirdPersonPlayer = nullptr;
+
+	UPROPERTY()
+	AEvergreenPawn* InteractionPlayer = nullptr;
+
+	void SwitchToThirdPersonMode();
+	void SwitchToInteractionMode();
 };
+
+UInputComponent* UEvergreenGameInstance::OwnedPlayerInputComponent = nullptr;

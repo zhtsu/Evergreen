@@ -20,6 +20,9 @@ protected:
 public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	
+	void AddMappingContext();
+	void RemoveMappingContext();
+	
 private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
 	class UInputMappingContext* MappingContext;
@@ -34,5 +37,5 @@ private:
 	class UFloatingPawnMovement* FloatingPawnMovement;
 
 	void Move(const struct FInputActionValue& InputActionValue);
-	void Look(const struct FInputActionValue& InputActionValue);
+	void Look(const FInputActionValue& InputActionValue);
 };

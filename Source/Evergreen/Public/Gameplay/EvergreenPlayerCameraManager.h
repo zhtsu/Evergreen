@@ -11,6 +11,9 @@ class EVERGREEN_API AEvergreenPlayerCameraManager : public APlayerCameraManager
 {
 	GENERATED_BODY()
 
+protected:
+	virtual void BeginPlay() override;
+	
 public:
 	UPROPERTY(EditDefaultsOnly)
 	bool bCameraOffsetFollowCursorEnabled = false;

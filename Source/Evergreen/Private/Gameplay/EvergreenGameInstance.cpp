@@ -3,12 +3,9 @@
 
 #include "Gameplay/EvergreenGameInstance.h"
 
-#include "World/MiniGameBase.h"
 #include "GameFramework/GameUserSettings.h"
-#include "Gameplay/EvergreenPlayerCameraManager.h"
-#include "Kismet/GameplayStatics.h"
-#include "Manager/MiniGameManager.h"
-#include "Manager/ViewManager.h"
+#include "Gameplay/EvergreenCharacter.h"
+#include "Gameplay/EvergreenPawn.h"
 
 UEvergreenGameInstance* UEvergreenGameInstance::Singleton = nullptr;
 
@@ -34,11 +31,14 @@ void UEvergreenGameInstance::BeginDestroy()
 	
 }
 
-void UEvergreenGameInstance::SetEvergreenGameMode(EEvergreenGameMode InGameMode)
+void UEvergreenGameInstance::SwitchEvergreenGameModeTo(EEvergreenGameMode InGameMode)
 {
-	GameMode = InGameMode;
-	OnGameModeChanged.Broadcast(GameMode);
+	if (CurrentGameMode == InGameMode) return;
+	
+	CurrentGameMode = InGameMode;
+	OnGameModeChanged.Broadcast(CurrentGameMode);
 
+	// TODO: Are this way is the best?
 	if (APlayerController* PlayerController = Cast<APlayerController>(GetPrimaryPlayerController()))
 	{
 		FIntPoint ViewportSize;
@@ -49,13 +49,13 @@ void UEvergreenGameInstance::SetEvergreenGameMode(EEvergreenGameMode InGameMode)
 		}
 	}
 
-	if (GameMode == EEvergreenGameMode::Interaction)
+	if (InGameMode == EEvergreenGameMode::Interaction)
 	{
-		UViewManager* ViewManager = GetSubsystem<UViewManager>();
-		AEvergreenPlayerCameraManager* PCM = Cast<AEvergreenPlayerCameraManager>(
-			UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0));
-
-		ViewManager->SetPlayerCameraManager(PCM);
+		SwitchToInteractionMode();
+	}
+	else if (InGameMode == EEvergreenGameMode::ThirdPerson)
+	{
+		SwitchToThirdPersonMode();
 	}
 }
 
@@ -71,17 +71,12 @@ void UEvergreenGameInstance::ResumeGame()
 
 bool UEvergreenGameInstance::IsAllowKeyboardInput() const
 {
-	if (GetSubsystem<UMiniGameManager>()->IsAnyMiniGameOnProcess())
-	{
-#if WITH_EDITOR
-		if (bTestModeEnabled) return true;
-#endif
-		return false;
-	}
+	return IsAllowInput() && IsThirdPersonMode();
+}
 
-	return GamePlayState.CurrentGamePlayState != EGamePlayState::Cutscene
-		&& GamePlayState.CurrentGamePlayState != EGamePlayState::Paused
-		&& GamePlayState.CurrentGamePlayState != EGamePlayState::MiniGame;
+bool UEvergreenGameInstance::IsAllowMouseInput() const
+{
+	return IsAllowInput() && IsInteractionMode();
 }
 
 bool UEvergreenGameInstance::IsAllowInput() const
@@ -153,4 +148,41 @@ void UEvergreenGameInstance::SetGameLanguage(FString IetfLanguageTag)
 
 	CurrentIetfLanguageTag = IetfLanguageTag;
 	OnGameLanguageChanged.Broadcast(CurrentIetfLanguageTag);
+}
+
+void UEvergreenGameInstance::SwitchToThirdPersonMode()
+{
+	if (APlayerController* PlayerController = GetPrimaryPlayerController())
+	{
+		PlayerController->bEnableClickEvents = false;
+		PlayerController->bEnableMouseOverEvents = false;
+		PlayerController->bShowMouseCursor = false;
+
+		if (ThirdPersonPlayer && InteractionPlayer)
+		{
+			PlayerController->UnPossess();
+			PlayerController->Possess(ThirdPersonPlayer);
+			InteractionPlayer->RemoveMappingContext();
+			ThirdPersonPlayer->GetMesh()->SetHiddenInGame(false);
+		}
+	}
+}
+
+void UEvergreenGameInstance::SwitchToInteractionMode()
+{
+	if (APlayerController* PlayerController = GetPrimaryPlayerController())
+	{
+		PlayerController->bEnableClickEvents = true;
+		PlayerController->bEnableMouseOverEvents = true;
+		PlayerController->bShowMouseCursor = true;
+
+		if (InteractionPlayer)
+		{
+			PlayerController->UnPossess();
+			PlayerController->Possess(InteractionPlayer);
+			ThirdPersonPlayer->RemoveMappingContext();
+			InteractionPlayer->AddMappingContext();
+			ThirdPersonPlayer->GetMesh()->SetHiddenInGame(true);
+		}
+	}
 }

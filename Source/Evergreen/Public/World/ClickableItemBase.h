@@ -19,7 +19,7 @@ public:
 	AClickableItemBase();
 
 private:
-	UPROPERTY(VisibleDefaultsOnly, Category = "Item")
+	UPROPERTY(BlueprintReadWrite, VisibleDefaultsOnly, Category = "Item", meta = (AllowPrivateAccess))
 	class UStaticMeshComponent* StaticMesh;
 
 	UPROPERTY(VisibleDefaultsOnly, Category = "Item")
