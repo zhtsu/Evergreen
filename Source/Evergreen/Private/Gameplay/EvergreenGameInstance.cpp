@@ -5,7 +5,6 @@
 
 #include "World/MiniGameBase.h"
 #include "GameFramework/GameUserSettings.h"
-#include "Gameplay/EvergreenCharacter.h"
 #include "Gameplay/EvergreenPlayerCameraManager.h"
 #include "Kismet/GameplayStatics.h"
 #include "Manager/MiniGameManager.h"
@@ -37,21 +36,26 @@ void UEvergreenGameInstance::BeginDestroy()
 
 void UEvergreenGameInstance::SetEvergreenGameMode(EEvergreenGameMode InGameMode)
 {
-	if (CurrentGameMode == InGameMode)
-	{
-		return;
-	}
-	
-	CurrentGameMode = InGameMode;
-	OnGameModeChanged.Broadcast(CurrentGameMode);
+	GameMode = InGameMode;
+	OnGameModeChanged.Broadcast(GameMode);
 
-	if (CurrentGameMode == EEvergreenGameMode::Interaction)
+	if (APlayerController* PlayerController = Cast<APlayerController>(GetPrimaryPlayerController()))
 	{
-		SwitchToInteractionGameMode();
+		FIntPoint ViewportSize;
+		PlayerController->GetViewportSize(ViewportSize.X, ViewportSize.Y);
+		if (ViewportSize != CurrentScreenResolution)
+		{
+			SetScreenResolution(CurrentScreenResolution);
+		}
 	}
-	else
+
+	if (GameMode == EEvergreenGameMode::Interaction)
 	{
-		SwitchToThirdPersonGameMode();
+		UViewManager* ViewManager = GetSubsystem<UViewManager>();
+		AEvergreenPlayerCameraManager* PCM = Cast<AEvergreenPlayerCameraManager>(
+			UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0));
+
+		ViewManager->SetPlayerCameraManager(PCM);
 	}
 }
 
@@ -67,20 +71,17 @@ void UEvergreenGameInstance::ResumeGame()
 
 bool UEvergreenGameInstance::IsAllowKeyboardInput() const
 {
-<<<<<<< HEAD
-	return IsAllowInput() && CurrentGameMode == EEvergreenGameMode::ThirdPerson;
-}
-=======
 	if (GetSubsystem<UMiniGameManager>()->IsAnyMiniGameOnProcess())
 	{
+#if WITH_EDITOR
 		if (bTestModeEnabled) return true;
+#endif
 		return false;
 	}
->>>>>>> parent of 72a32a7 (Change resolution not working in packaged game)
 
-bool UEvergreenGameInstance::IsAllowMouseInput() const
-{
-	return IsAllowInput() && CurrentGameMode == EEvergreenGameMode::Interaction;
+	return GamePlayState.CurrentGamePlayState != EGamePlayState::Cutscene
+		&& GamePlayState.CurrentGamePlayState != EGamePlayState::Paused
+		&& GamePlayState.CurrentGamePlayState != EGamePlayState::MiniGame;
 }
 
 bool UEvergreenGameInstance::IsAllowInput() const
@@ -108,7 +109,7 @@ void UEvergreenGameInstance::SetToPreviousGamePlayState()
 
 bool UEvergreenGameInstance::SetScreenResolutionFromString(FString ScreenResolutionString)
 {
-	FIntPoint TargetScreenResolution = FIntPoint(-1, -1);
+	FIntPoint TargetScreenResolution;
 	if (ScreenResolutionString == "1920x1080") TargetScreenResolution = FIntPoint(1920, 1080);
 	else if (ScreenResolutionString == "1280x720") TargetScreenResolution = FIntPoint(1280, 720);
 	else if (ScreenResolutionString == "960x540") TargetScreenResolution = FIntPoint(960, 540);
@@ -122,9 +123,9 @@ bool UEvergreenGameInstance::SetScreenResolution(FIntPoint TargetScreenResolutio
 	if (CurrentScreenResolution == TargetScreenResolution) return false;
 	
 	UGameUserSettings* UserSettings = GEngine->GetGameUserSettings();
-	
-	if (CurrentScreenResolution != TargetScreenResolution) UserSettings->SetScreenResolution(TargetScreenResolution);
+	UserSettings->SetScreenResolution(TargetScreenResolution);
 	UserSettings->ApplySettings(false);
+	UserSettings->ApplyResolutionSettings(false);
 
 	CurrentScreenResolution = TargetScreenResolution;
 	OnScreenResolutionChanged.Broadcast(CurrentScreenResolution);
@@ -134,9 +135,14 @@ bool UEvergreenGameInstance::SetScreenResolution(FIntPoint TargetScreenResolutio
 
 void UEvergreenGameInstance::SetFullscreenEnabled(bool FullscreenEnabled)
 {
+	EWindowMode::Type TargetWindowMode = FullscreenEnabled ? EWindowMode::Fullscreen : EWindowMode::Windowed;
+	
 	UGameUserSettings* UserSettings = GEngine->GetGameUserSettings();
-	if (FullscreenEnabled) UserSettings->SetFullscreenMode(EWindowMode::Fullscreen);
-	else UserSettings->SetFullscreenMode(EWindowMode::Windowed);
+	if (UserSettings->GetFullscreenMode() == TargetWindowMode) return;
+
+	UserSettings->SetFullscreenMode(TargetWindowMode);
+	UserSettings->ApplySettings(false);
+	UserSettings->ApplyResolutionSettings(false);
 }
 
 void UEvergreenGameInstance::SetGameLanguage(FString IetfLanguageTag)
@@ -147,36 +153,4 @@ void UEvergreenGameInstance::SetGameLanguage(FString IetfLanguageTag)
 
 	CurrentIetfLanguageTag = IetfLanguageTag;
 	OnGameLanguageChanged.Broadcast(CurrentIetfLanguageTag);
-}
-
-void UEvergreenGameInstance::SwitchToThirdPersonGameMode()
-{
-	if (APlayerController* PlayerController = GetPrimaryPlayerController())
-	{
-		PlayerController->bEnableClickEvents = false;
-		PlayerController->bEnableMouseOverEvents = false;
-		PlayerController->bShowMouseCursor = false;
-		
-		AEvergreenCharacter* Character = Cast<AEvergreenCharacter>(PlayerController->GetPawn());
-		if (Character)
-		{
-			Character->GetMesh()->SetHiddenInGame(false);
-		}
-	}
-}
-
-void UEvergreenGameInstance::SwitchToInteractionGameMode()
-{
-	if (APlayerController* PlayerController = GetPrimaryPlayerController())
-	{
-		PlayerController->bEnableClickEvents = true;
-		PlayerController->bEnableMouseOverEvents = true;
-		PlayerController->bShowMouseCursor = true;
-		
-		AEvergreenCharacter* Character = Cast<AEvergreenCharacter>(PlayerController->GetPawn());
-		if (Character)
-		{
-			Character->GetMesh()->SetHiddenInGame(true);
-		}
-	}
 }

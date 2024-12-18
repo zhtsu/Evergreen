@@ -19,9 +19,7 @@ protected:
 
 public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-	FORCEINLINE class UCameraComponent* GetCameraComponent() const { return Camera; }
-	FORCEINLINE class USpringArmComponent* GetSpringArmComponent() const { return SpringArm; }
-	
+
 	UFUNCTION(BlueprintImplementableEvent)
 	void K2_RotateCameraBoomYaw(float Yaw);
 
@@ -44,10 +42,10 @@ public:
 	
 private:
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, meta = (AllowPrivateAccess), Category = "Camera")
-	USpringArmComponent* SpringArm;
+	class USpringArmComponent* SpringArm;
 
 	UPROPERTY(VisibleDefaultsOnly, Category = "Camera")
-	UCameraComponent* Camera;
+	class UCameraComponent* Camera;
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
 	class UInputMappingContext* MappingContext;

@@ -12,8 +12,6 @@ class EVERGREEN_API AEvergreenPlayerCameraManager : public APlayerCameraManager
 	GENERATED_BODY()
 
 public:
-	virtual void BeginPlay() override;
-	
 	UPROPERTY(EditDefaultsOnly)
 	bool bCameraOffsetFollowCursorEnabled = false;
 
@@ -26,15 +24,6 @@ public:
 	UFUNCTION(BlueprintCallable)
 	bool CameraOffsetFollowCursor(AActor* CameraTarget, FVector& NewCameraLocation, FRotator& NewCameraRotation, float& NewCameraFOV);
 
-	FVector Location;
-	FRotator Rotation;
-
-	FORCEINLINE void SetCamera(const FVector& InLocation, const FRotator& InRotation)
-	{
-		Location = InLocation;
-		Rotation = InRotation;
-	}
-	
 private:
 	FVector2D CurrentOffset = FVector2D();
 };

@@ -145,7 +145,7 @@ float UViewManager::GetCameraOffsetInterpSpeed() const
 void UViewManager::RotateCharacterCameraBoomYaw(float Yaw)
 {
 	UEvergreenGameInstance* EGI = UEvergreenGameInstance::GetEvergreenGameInstance();
-	if (EGI->IsInteractionMode()) return;
+	if (EGI->GetCurrentEvergreenGameMode() == EEvergreenGameMode::Interaction) return;
 
 	if (APlayerController* PlayerController = EGI->GetPrimaryPlayerController())
 	{
@@ -159,7 +159,7 @@ void UViewManager::RotateCharacterCameraBoomYaw(float Yaw)
 void UViewManager::AdjustCharacterCameraBoom(float Length, float Pitch)
 {
 	UEvergreenGameInstance* EGI = UEvergreenGameInstance::GetEvergreenGameInstance();
-	if (EGI->IsInteractionMode()) return;
+	if (EGI->GetCurrentEvergreenGameMode() == EEvergreenGameMode::Interaction) return;
 
 	if (APlayerController* PlayerController = EGI->GetPrimaryPlayerController())
 	{
@@ -173,7 +173,7 @@ void UViewManager::AdjustCharacterCameraBoom(float Length, float Pitch)
 void UViewManager::SetCharacterCameraBoom(float Length, float Pitch)
 {
 	UEvergreenGameInstance* EGI = UEvergreenGameInstance::GetEvergreenGameInstance();
-	if (EGI->IsInteractionMode()) return;
+	if (EGI->GetCurrentEvergreenGameMode() == EEvergreenGameMode::Interaction) return;
 
 	if (APlayerController* PlayerController = EGI->GetPrimaryPlayerController())
 	{
@@ -181,16 +181,5 @@ void UViewManager::SetCharacterCameraBoom(float Length, float Pitch)
 		{
 			Character->SetCameraBoom(Length, Pitch);
 		}
-	}
-}
-
-void UViewManager::SetInteractionCamera(FVector Location, FRotator Rotation)
-{
-	UEvergreenGameInstance* EGI = UEvergreenGameInstance::GetEvergreenGameInstance();
-	if (EGI->IsThirdPersonMode()) return;
-
-	if (PCM)
-	{
-		PCM->SetCamera(Location, Rotation);
 	}
 }

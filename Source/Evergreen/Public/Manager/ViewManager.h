@@ -55,9 +55,6 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SetCharacterCameraBoom(float Length = 600.f, float Pitch = -25.f);
 
-	UFUNCTION(BlueprintCallable)
-	void SetInteractionCamera(FVector Location, FRotator Rotation);
-
 	FORCEINLINE void SetPlayerCameraManager(class AEvergreenPlayerCameraManager* InPCM) { PCM = InPCM; }
 	
 private:

@@ -19,10 +19,10 @@ AClickableItemBase::AClickableItemBase()
 	InteractionVolume = CreateDefaultSubobject<UBoxComponent>(TEXT("InteractionVolume"));
 	InteractionVolume->Mobility = EComponentMobility::Static;
 	InteractionVolume->SetCollisionProfileName("UI");
+	InteractionVolume->SetupAttachment(RootScene);
 	InteractionVolume->OnClicked.AddUniqueDynamic(this, &AClickableItemBase::OnClickNative);
 	InteractionVolume->OnBeginCursorOver.AddUniqueDynamic(this, &AClickableItemBase::OnHoverNative);
 	InteractionVolume->OnEndCursorOver.AddUniqueDynamic(this, &AClickableItemBase::OnUnhoverNative);
-	InteractionVolume->SetupAttachment(RootScene);
 	
 	StaticMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMesh"));
 	StaticMesh->Mobility = EComponentMobility::Static;
@@ -97,7 +97,7 @@ void AClickableItemBase::HideHoverOnlyWidget()
 void AClickableItemBase::OnClickNative(UPrimitiveComponent* TouchedComponent, FKey ButtonReleased)
 {
 	UEvergreenGameInstance* EGI = UEvergreenGameInstance::GetEvergreenGameInstance();
-	if (!EGI->IsAllowMouseInput()) return;
+	if (!EGI->IsAllowInput()) return;
 	
 	Execute_OnClick(this);
 }
@@ -105,7 +105,7 @@ void AClickableItemBase::OnClickNative(UPrimitiveComponent* TouchedComponent, FK
 void AClickableItemBase::OnHoverNative(UPrimitiveComponent* TouchedComponent)
 {
 	UEvergreenGameInstance* EGI = UEvergreenGameInstance::GetEvergreenGameInstance();
-	if (!EGI->IsAllowMouseInput()) return;
+	if (!EGI->IsAllowInput()) return;
 	
 	Execute_OnHover(this);
 }
@@ -113,7 +113,7 @@ void AClickableItemBase::OnHoverNative(UPrimitiveComponent* TouchedComponent)
 void AClickableItemBase::OnUnhoverNative(UPrimitiveComponent* TouchedComponent)
 {
 	UEvergreenGameInstance* EGI = UEvergreenGameInstance::GetEvergreenGameInstance();
-	if (!EGI->IsAllowMouseInput()) return;
+	if (!EGI->IsAllowInput()) return;
 	
 	Execute_OnUnhover(this);
 }

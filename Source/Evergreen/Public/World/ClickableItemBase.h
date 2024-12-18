@@ -7,10 +7,11 @@
 #include "Components/WidgetComponent.h"
 #include "GameFramework/Actor.h"
 #include "Interface/ClickableInterface.h"
+#include "Interface/ObservableInterface.h"
 #include "ClickableItemBase.generated.h"
 
 UCLASS(Abstract)
-class EVERGREEN_API AClickableItemBase : public AEvergreenItemBase, public IClickableInterface, public IObservableInterface
+class EVERGREEN_API AClickableItemBase : public AEvergreenItemBase, public IClickableInterface
 {
 	GENERATED_BODY()
 
@@ -18,20 +19,20 @@ public:
 	AClickableItemBase();
 
 private:
-	UPROPERTY(BlueprintReadWrite, VisibleDefaultsOnly, meta = (AllowPrivateAccess), Category = "Item")
-	USceneComponent* RootScene;
-	
+	UPROPERTY(VisibleDefaultsOnly, Category = "Item")
+	class UStaticMeshComponent* StaticMesh;
+
 	UPROPERTY(VisibleDefaultsOnly, Category = "Item")
 	class UBoxComponent* InteractionVolume;
-	
-	UPROPERTY(BlueprintReadWrite, VisibleDefaultsOnly, meta = (AllowPrivateAccess), Category = "Item")
-	UStaticMeshComponent* StaticMesh;
 
 	UPROPERTY(VisibleDefaultsOnly, Category = "Item")
-	UWidgetComponent* DescriptionTextWidget;
+	class USceneComponent* RootScene;
 
 	UPROPERTY(VisibleDefaultsOnly, Category = "Item")
-	UWidgetComponent* HoverOnlyWidget;
+	class UWidgetComponent* DescriptionTextWidget;
+
+	UPROPERTY(VisibleDefaultsOnly, Category = "Item")
+	class UWidgetComponent* HoverOnlyWidget;
 	
 public:
 	UFUNCTION(BlueprintCallable)
