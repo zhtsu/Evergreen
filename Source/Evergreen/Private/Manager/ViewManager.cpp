@@ -183,3 +183,14 @@ void UViewManager::SetCharacterCameraBoom(float Length, float Pitch)
 		}
 	}
 }
+
+void UViewManager::SetInteractionCamera(FVector Location, FRotator Rotation)
+{
+	UEvergreenGameInstance* EGI = UEvergreenGameInstance::GetEvergreenGameInstance();
+	if (EGI->IsThirdPersonMode()) return;
+
+	if (PCM)
+	{
+		PCM->SetCamera(Location, Rotation);
+	}
+}

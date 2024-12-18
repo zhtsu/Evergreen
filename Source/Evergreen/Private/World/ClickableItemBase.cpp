@@ -19,10 +19,10 @@ AClickableItemBase::AClickableItemBase()
 	InteractionVolume = CreateDefaultSubobject<UBoxComponent>(TEXT("InteractionVolume"));
 	InteractionVolume->Mobility = EComponentMobility::Static;
 	InteractionVolume->SetCollisionProfileName("UI");
-	InteractionVolume->SetupAttachment(RootScene);
 	InteractionVolume->OnClicked.AddUniqueDynamic(this, &AClickableItemBase::OnClickNative);
 	InteractionVolume->OnBeginCursorOver.AddUniqueDynamic(this, &AClickableItemBase::OnHoverNative);
 	InteractionVolume->OnEndCursorOver.AddUniqueDynamic(this, &AClickableItemBase::OnUnhoverNative);
+	InteractionVolume->SetupAttachment(RootScene);
 	
 	StaticMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMesh"));
 	StaticMesh->Mobility = EComponentMobility::Static;

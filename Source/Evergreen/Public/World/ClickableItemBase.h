@@ -7,7 +7,6 @@
 #include "Components/WidgetComponent.h"
 #include "GameFramework/Actor.h"
 #include "Interface/ClickableInterface.h"
-#include "Interface/ObservableInterface.h"
 #include "ClickableItemBase.generated.h"
 
 UCLASS(Abstract)
@@ -19,20 +18,20 @@ public:
 	AClickableItemBase();
 
 private:
-	UPROPERTY(VisibleDefaultsOnly, Category = "Item")
-	class UStaticMeshComponent* StaticMesh;
-
+	UPROPERTY(BlueprintReadWrite, VisibleDefaultsOnly, meta = (AllowPrivateAccess), Category = "Item")
+	USceneComponent* RootScene;
+	
 	UPROPERTY(VisibleDefaultsOnly, Category = "Item")
 	class UBoxComponent* InteractionVolume;
+	
+	UPROPERTY(BlueprintReadWrite, VisibleDefaultsOnly, meta = (AllowPrivateAccess), Category = "Item")
+	UStaticMeshComponent* StaticMesh;
 
 	UPROPERTY(VisibleDefaultsOnly, Category = "Item")
-	class USceneComponent* RootScene;
+	UWidgetComponent* DescriptionTextWidget;
 
 	UPROPERTY(VisibleDefaultsOnly, Category = "Item")
-	class UWidgetComponent* DescriptionTextWidget;
-
-	UPROPERTY(VisibleDefaultsOnly, Category = "Item")
-	class UWidgetComponent* HoverOnlyWidget;
+	UWidgetComponent* HoverOnlyWidget;
 	
 public:
 	UFUNCTION(BlueprintCallable)

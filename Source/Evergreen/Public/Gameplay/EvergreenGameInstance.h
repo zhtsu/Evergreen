@@ -87,6 +87,9 @@ public:
 
 	UFUNCTION(BlueprintPure)
 	FORCEINLINE bool IsInteractionMode() const { return CurrentGameMode == EEvergreenGameMode::Interaction; }
+
+	UFUNCTION(BlueprintPure)
+	FORCEINLINE bool IsCutscenePlaying() const { return GamePlayState.CurrentGamePlayState == EGamePlayState::Cutscene; }
 	
 	UFUNCTION(BlueprintCallable)
 	FORCEINLINE void SetTestModeEnabled(bool bEnabled) { bTestModeEnabled = bEnabled; }

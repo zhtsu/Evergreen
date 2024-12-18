@@ -37,7 +37,11 @@ bool AEvergreenPlayerCameraManager::CameraOffsetFollowCursor(AActor* CameraTarge
 	FVector2D ViewportCenter = FVector2D(ViewportSize) * 0.5;
 
 	FVector2D TargetOffset;
-	if (!bCameraOffsetFollowCursorEnabled && MousePosition.X <= 0.f)
+
+	bool bMouseInViewport = MousePosition.X > 0 && MousePosition.Y > 0 &&
+			MousePosition.X < ViewportSize.X && MousePosition.Y < ViewportSize.Y;
+	
+	if (!bCameraOffsetFollowCursorEnabled || !bMouseInViewport)
 	{
 		TargetOffset = FVector2D::ZeroVector;
 	}
@@ -48,7 +52,7 @@ bool AEvergreenPlayerCameraManager::CameraOffsetFollowCursor(AActor* CameraTarge
 	
 	const float DeltaTime = GetWorld()->GetDeltaSeconds();
 	CurrentOffset = FMath::Vector2DInterpTo(CurrentOffset, TargetOffset, DeltaTime, InterpSpeed);
-	
+
 	AEvergreenCharacter* Character = Cast<AEvergreenCharacter>(PCOwner->GetPawn());
 	if (!Character)
 	{
@@ -57,8 +61,8 @@ bool AEvergreenPlayerCameraManager::CameraOffsetFollowCursor(AActor* CameraTarge
 
 	FVector TargetLocation = Character->GetActorLocation();
 	TargetLocation.Z = 60.f;
-	NewCameraLocation = TargetLocation;
-	NewCameraRotation = Character->GetActorRotation();
+	NewCameraLocation = TargetLocation + Location;
+	NewCameraRotation = Character->GetActorRotation() + Rotation;
 	NewCameraFOV = 90.f;
 
 	FVector ModifiedOffset = FVector::ZeroVector;

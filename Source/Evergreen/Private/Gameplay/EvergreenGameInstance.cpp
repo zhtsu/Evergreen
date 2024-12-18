@@ -150,6 +150,10 @@ void UEvergreenGameInstance::SwitchToThirdPersonGameMode()
 {
 	if (APlayerController* PlayerController = GetPrimaryPlayerController())
 	{
+		PlayerController->bEnableClickEvents = false;
+		PlayerController->bEnableMouseOverEvents = false;
+		PlayerController->bShowMouseCursor = false;
+		
 		AEvergreenCharacter* Character = Cast<AEvergreenCharacter>(PlayerController->GetPawn());
 		if (Character)
 		{
@@ -162,6 +166,10 @@ void UEvergreenGameInstance::SwitchToInteractionGameMode()
 {
 	if (APlayerController* PlayerController = GetPrimaryPlayerController())
 	{
+		PlayerController->bEnableClickEvents = true;
+		PlayerController->bEnableMouseOverEvents = true;
+		PlayerController->bShowMouseCursor = true;
+		
 		AEvergreenCharacter* Character = Cast<AEvergreenCharacter>(PlayerController->GetPawn());
 		if (Character)
 		{
