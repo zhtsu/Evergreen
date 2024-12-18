@@ -10,7 +10,7 @@
 #include "ClickableItemBase.generated.h"
 
 UCLASS(Abstract)
-class EVERGREEN_API AClickableItemBase : public AEvergreenItemBase, public IClickableInterface
+class EVERGREEN_API AClickableItemBase : public AEvergreenItemBase, public IClickableInterface, public IObservableInterface
 {
 	GENERATED_BODY()
 

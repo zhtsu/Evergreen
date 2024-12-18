@@ -67,8 +67,16 @@ void UEvergreenGameInstance::ResumeGame()
 
 bool UEvergreenGameInstance::IsAllowKeyboardInput() const
 {
+<<<<<<< HEAD
 	return IsAllowInput() && CurrentGameMode == EEvergreenGameMode::ThirdPerson;
 }
+=======
+	if (GetSubsystem<UMiniGameManager>()->IsAnyMiniGameOnProcess())
+	{
+		if (bTestModeEnabled) return true;
+		return false;
+	}
+>>>>>>> parent of 72a32a7 (Change resolution not working in packaged game)
 
 bool UEvergreenGameInstance::IsAllowMouseInput() const
 {
@@ -100,7 +108,7 @@ void UEvergreenGameInstance::SetToPreviousGamePlayState()
 
 bool UEvergreenGameInstance::SetScreenResolutionFromString(FString ScreenResolutionString)
 {
-	FIntPoint TargetScreenResolution;
+	FIntPoint TargetScreenResolution = FIntPoint(-1, -1);
 	if (ScreenResolutionString == "1920x1080") TargetScreenResolution = FIntPoint(1920, 1080);
 	else if (ScreenResolutionString == "1280x720") TargetScreenResolution = FIntPoint(1280, 720);
 	else if (ScreenResolutionString == "960x540") TargetScreenResolution = FIntPoint(960, 540);
@@ -114,9 +122,9 @@ bool UEvergreenGameInstance::SetScreenResolution(FIntPoint TargetScreenResolutio
 	if (CurrentScreenResolution == TargetScreenResolution) return false;
 	
 	UGameUserSettings* UserSettings = GEngine->GetGameUserSettings();
-	UserSettings->SetScreenResolution(TargetScreenResolution);
+	
+	if (CurrentScreenResolution != TargetScreenResolution) UserSettings->SetScreenResolution(TargetScreenResolution);
 	UserSettings->ApplySettings(false);
-	UserSettings->ApplyResolutionSettings(false);
 
 	CurrentScreenResolution = TargetScreenResolution;
 	OnScreenResolutionChanged.Broadcast(CurrentScreenResolution);
@@ -126,14 +134,9 @@ bool UEvergreenGameInstance::SetScreenResolution(FIntPoint TargetScreenResolutio
 
 void UEvergreenGameInstance::SetFullscreenEnabled(bool FullscreenEnabled)
 {
-	EWindowMode::Type TargetWindowMode = FullscreenEnabled ? EWindowMode::Fullscreen : EWindowMode::Windowed;
-	
 	UGameUserSettings* UserSettings = GEngine->GetGameUserSettings();
-	if (UserSettings->GetFullscreenMode() == TargetWindowMode) return;
-
-	UserSettings->SetFullscreenMode(TargetWindowMode);
-	UserSettings->ApplySettings(false);
-	UserSettings->ApplyResolutionSettings(false);
+	if (FullscreenEnabled) UserSettings->SetFullscreenMode(EWindowMode::Fullscreen);
+	else UserSettings->SetFullscreenMode(EWindowMode::Windowed);
 }
 
 void UEvergreenGameInstance::SetGameLanguage(FString IetfLanguageTag)
