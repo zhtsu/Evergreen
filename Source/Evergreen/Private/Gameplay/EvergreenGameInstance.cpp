@@ -160,7 +160,6 @@ void UEvergreenGameInstance::SwitchToThirdPersonMode()
 
 		if (ThirdPersonPlayer && InteractionPlayer)
 		{
-			PlayerController->UnPossess();
 			PlayerController->Possess(ThirdPersonPlayer);
 			InteractionPlayer->RemoveMappingContext();
 			ThirdPersonPlayer->GetMesh()->SetHiddenInGame(false);
@@ -178,7 +177,6 @@ void UEvergreenGameInstance::SwitchToInteractionMode()
 
 		if (InteractionPlayer)
 		{
-			PlayerController->UnPossess();
 			PlayerController->Possess(InteractionPlayer);
 			ThirdPersonPlayer->RemoveMappingContext();
 			InteractionPlayer->AddMappingContext();

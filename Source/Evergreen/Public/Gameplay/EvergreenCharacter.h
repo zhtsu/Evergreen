@@ -18,7 +18,7 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
-
+	
 public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
@@ -46,8 +46,8 @@ private:
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, meta = (AllowPrivateAccess), Category = "Camera")
 	class USpringArmComponent* SpringArm;
 
-	UPROPERTY(VisibleDefaultsOnly, Category = "Camera")
-	class UCameraComponent* Camera;
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, meta = (AllowPrivateAccess), Category = "Camera")
+	class UCineCameraComponent* Camera;
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
 	class UInputMappingContext* MappingContext;

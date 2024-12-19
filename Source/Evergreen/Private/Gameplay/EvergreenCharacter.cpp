@@ -4,13 +4,12 @@
 #include "Gameplay/EvergreenCharacter.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
-#include "Camera/CameraComponent.h"
 #include "Common/AssetPathHub.h"
-#include "Common/CommonMacro.h"
 #include "Gameplay/EvergreenGameInstance.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Gameplay/EvergreenPawn.h"
+#include "CineCameraComponent.h"
 
 AEvergreenCharacter::AEvergreenCharacter()
 {
@@ -18,11 +17,12 @@ AEvergreenCharacter::AEvergreenCharacter()
 	
 	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
 	SpringArm->SetupAttachment(RootComponent);
-	SpringArm->TargetArmLength = 600;
+	SpringArm->TargetArmLength = 2000;
 	SpringArm->SetRelativeRotation(FRotator(-25, 0, 0));
 	SpringArm->SetRelativeLocation(FVector(0, 0, 40));
+	SpringArm->bDoCollisionTest = false;
 
-	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
+	Camera = CreateDefaultSubobject<UCineCameraComponent>(TEXT("Camera"));
 	Camera->SetupAttachment(SpringArm, USpringArmComponent::SocketName);
 
 	bUseControllerRotationPitch = false;
@@ -44,6 +44,7 @@ void AEvergreenCharacter::BeginPlay()
 	if (UClass* LoadedClass = LoadClass<AEvergreenPawn>(nullptr, *UAssetPathHub::BP_Interactor_Path.ToString()))
 	{
 		AEvergreenPawn* InteractionPlayer = Cast<AEvergreenPawn>(GetWorld()->SpawnActor(LoadedClass));
+		if (InteractionPlayer) InteractionPlayer->SetActorTransform(GetActorTransform());
 		UEvergreenGameInstance::GetEvergreenGameInstance()->SetGamePlayers(this, InteractionPlayer);
 	}
 }
@@ -59,6 +60,7 @@ void AEvergreenCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInput
 		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
 		{
 			Subsystem->AddMappingContext(MappingContext, 0);
+			Subsystem->RequestRebuildControlMappings();
 		}
 	}
 
@@ -160,7 +162,7 @@ void AEvergreenCharacter::RemoveMappingContext()
 	{
 		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
 		{
-			Subsystem->RemoveMappingContext(MappingContext);
+			Subsystem->ClearAllMappings();
 		}
 	}
 }

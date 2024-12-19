@@ -10,7 +10,7 @@
 #include "Interface/ObservableInterface.h"
 #include "Camera/CameraActor.h"
 #include "Gameplay/EvergreenCharacter.h"
-#include "Gameplay/EvergreenPlayerCameraManager.h"
+#include "Gameplay/EvergreenPawn.h"
 
 UViewManager::UViewManager()
 {
@@ -111,34 +111,61 @@ void UViewManager::CallOnAttainPlayerView()
 
 void UViewManager::SetCameraOffsetFollowCursorEnabled(bool bEnabled)
 {
-	if (PCM) PCM->bCameraOffsetFollowCursorEnabled = bEnabled;
+	UEvergreenGameInstance* EGI = UEvergreenGameInstance::GetEvergreenGameInstance();
+	if (EGI->GetInteractionPlayer())
+	{
+		EGI->GetInteractionPlayer()->SetCameraOffsetFollowCursorEnabled(bEnabled);
+	}
 }
 
-void UViewManager::SetCameraOffsetScale(float OffsetScale)
+void UViewManager::SetCameraOffsetScale_X(float Scale)
 {
-	if (PCM) PCM->OffsetScale = OffsetScale;
+	UEvergreenGameInstance* EGI = UEvergreenGameInstance::GetEvergreenGameInstance();
+	if (EGI->GetInteractionPlayer())
+	{
+		EGI->GetInteractionPlayer()->SetCameraOffsetScale_X(Scale);
+	}
+}
+
+void UViewManager::SetCameraOffsetScale_Y(float Scale)
+{
+	UEvergreenGameInstance* EGI = UEvergreenGameInstance::GetEvergreenGameInstance();
+	if (EGI->GetInteractionPlayer())
+	{
+		EGI->GetInteractionPlayer()->SetCameraOffsetScale_Y(Scale);
+	}
 }
 
 bool UViewManager::GetCameraOffsetFollowCursorEnabled() const
 {
-	if (PCM) return PCM->bCameraOffsetFollowCursorEnabled;
+	UEvergreenGameInstance* EGI = UEvergreenGameInstance::GetEvergreenGameInstance();
+	if (EGI->GetInteractionPlayer())
+	{
+		return EGI->GetInteractionPlayer()->GetCameraOffsetFollowCursorEnabled();
+	}
+	
 	return false;
 }
 
-float UViewManager::GetCameraOffsetScale() const
+float UViewManager::GetCameraOffsetScale_X() const
 {
-	if (PCM) return PCM->OffsetScale;
+	UEvergreenGameInstance* EGI = UEvergreenGameInstance::GetEvergreenGameInstance();
+	if (EGI->GetInteractionPlayer())
+	{
+		return EGI->GetInteractionPlayer()->GetCameraOffsetScale_X();
+	}
+	
 	return 0.f;
 }
 
-void UViewManager::SetCameraOffsetInterpSpeed(float InterpSpeed)
+float UViewManager::GetCameraOffsetScale_Y() const
 {
-	if (PCM) PCM->InterpSpeed = InterpSpeed;
-}
-
-float UViewManager::GetCameraOffsetInterpSpeed() const
-{
-	if (PCM) return PCM->InterpSpeed;
+	UEvergreenGameInstance* EGI = UEvergreenGameInstance::GetEvergreenGameInstance();
+	if (EGI->GetInteractionPlayer())
+	{
+		return EGI->GetInteractionPlayer()->GetCameraOffsetScale_Y();
+	}
+	
 	return 0.f;
 }
 

@@ -35,16 +35,16 @@ public:
 	bool GetCameraOffsetFollowCursorEnabled() const;
 
 	UFUNCTION(BlueprintCallable)
-	void SetCameraOffsetScale(float OffsetScale);
+	void SetCameraOffsetScale_X(float Scale);
 
-	UFUNCTION(BlueprintPure)
-	float GetCameraOffsetScale() const;
-	
 	UFUNCTION(BlueprintCallable)
-	void SetCameraOffsetInterpSpeed(float InterpSpeed);
+	void SetCameraOffsetScale_Y(float Scale);
+	
+	UFUNCTION(BlueprintPure)
+	float GetCameraOffsetScale_X() const;
 
 	UFUNCTION(BlueprintPure)
-	float GetCameraOffsetInterpSpeed() const;
+	float GetCameraOffsetScale_Y() const;
 
 	UFUNCTION(BlueprintCallable)
 	void RotateCharacterCameraBoomYaw(float Yaw);
@@ -54,15 +54,10 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void SetCharacterCameraBoom(float Length = 600.f, float Pitch = -25.f);
-
-	FORCEINLINE void SetPlayerCameraManager(class AEvergreenPlayerCameraManager* InPCM) { PCM = InPCM; }
 	
 private:
 	static UObject* CurrentObservedObject;
 	FTimerHandle TimerHandle;
-
-	UPROPERTY()
-	AEvergreenPlayerCameraManager* PCM = nullptr;
 	
 	void CallOnStartObserve();
 	void CallOnAttainPlayerView();

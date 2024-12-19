@@ -3,20 +3,47 @@
 
 #include "Gameplay/EvergreenPawn.h"
 
+#include "CineCameraComponent.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "Common/CommonMacro.h"
 #include "GameFramework/FloatingPawnMovement.h"
+#include "GameFramework/SpringArmComponent.h"
 #include "Gameplay/EvergreenGameInstance.h"
 
 AEvergreenPawn::AEvergreenPawn()
 {
+	RootScene = CreateDefaultSubobject<USceneComponent>(TEXT("RootScene"));
+	RootScene->Mobility = EComponentMobility::Movable;
+	RootComponent = RootScene;
+
+	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
+	SpringArm->SetupAttachment(RootComponent);
+	SpringArm->TargetArmLength = 2000;
+	SpringArm->SetRelativeRotation(FRotator(-25, 0, 0));
+	SpringArm->SetRelativeLocation(FVector(0, 0, 40));
+	SpringArm->bDoCollisionTest = false;
+	
+	Camera = CreateDefaultSubobject<UCineCameraComponent>(TEXT("Camera"));
+	Camera->SetupAttachment(SpringArm, USpringArmComponent::SocketName);
+	
 	FloatingPawnMovement = CreateDefaultSubobject<UFloatingPawnMovement>(TEXT("Movement"));
+
+	bUseControllerRotationPitch = false;
+	bUseControllerRotationRoll = false;
+	bUseControllerRotationYaw = false;
+
+	SpringArm->bUsePawnControlRotation = false;
+	SpringArm->bInheritYaw = false;
+	Camera->bUsePawnControlRotation = false;
 }
 
 void AEvergreenPawn::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	if (Controller && Controller->GetControlRotation() != SpringArm->GetRelativeRotation())
+		Controller->SetControlRotation(SpringArm->GetRelativeRotation());
 }
 
 void AEvergreenPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -49,7 +76,7 @@ void AEvergreenPawn::RemoveMappingContext()
 	{
 		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
 		{
-			Subsystem->RemoveMappingContext(MappingContext);
+			Subsystem->ClearAllMappings();
 		}
 	}
 }
@@ -63,7 +90,7 @@ void AEvergreenPawn::Move(const FInputActionValue& InputActionValue)
 
 	if (Controller != nullptr)
 	{
-		const FRotator ControlRotation = Controller->GetControlRotation();
+		const FRotator ControlRotation = SpringArm->GetRelativeRotation();
 		
 		const FVector ForwardDirection = FRotationMatrix(ControlRotation).GetUnitAxis(EAxis::X);
 		const FVector RightDirection = FRotationMatrix(ControlRotation).GetUnitAxis(EAxis::Y);
@@ -87,5 +114,46 @@ void AEvergreenPawn::Look(const FInputActionValue& InputActionValue)
 		AddControllerYawInput(LookVector.X);
 		AddControllerPitchInput(LookVector.Y);
 		AddControllerRollInput(LookVector.Z);
+		SpringArm->SetRelativeRotation(Controller->GetControlRotation());
 	}
+}
+
+void AEvergreenPawn::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+	
+	if (!bCameraOffsetFollowCursorEnabled) return;
+	if (!UEvergreenGameInstance::GetEvergreenGameInstance()->IsInteractionMode()) return;
+
+	APlayerController* PlayerController = Cast<APlayerController>(Controller);
+	if (!PlayerController) return;
+	
+	FVector2D MousePosition;
+	PlayerController->GetMousePosition(MousePosition.X, MousePosition.Y);
+	
+	FIntPoint ViewportSize;
+	PlayerController->GetViewportSize(ViewportSize.X, ViewportSize.Y);
+
+	FVector2D ViewportCenter = FVector2D(ViewportSize) * 0.5;
+
+	bool bIsMouseInViewport = (MousePosition.X >= 0 && MousePosition.X <= ViewportSize.X)
+		&& (MousePosition.Y >= 0 && MousePosition.Y <= ViewportSize.Y);
+	
+	if (!bIsMouseInViewport)
+	{
+		MouseOffset = FMath::Vector2DInterpTo(MouseOffset,
+			FVector2D::ZeroVector, DeltaSeconds, InterpSpeed);
+	}
+	else
+	{
+		MouseOffset = MousePosition - ViewportCenter;
+	}
+	
+	FVector TargetOffset = FVector(0.f,
+		MouseOffset.X * CameraOffsetScale_X,
+		MouseOffset.Y * CameraOffsetScale_Y);
+
+	SpringArm->SocketOffset = TargetOffset;
+
+	FAST_PRINT(TargetOffset.ToString())
 }

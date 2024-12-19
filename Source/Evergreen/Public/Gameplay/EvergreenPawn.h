@@ -14,14 +14,25 @@ class EVERGREEN_API AEvergreenPawn : public APawn
 public:
 	AEvergreenPawn();
 
+	FORCEINLINE class USpringArmComponent* GetSpringArm() const { return SpringArm; }
+	FORCEINLINE class UCineCameraComponent* GetCamera() const { return Camera; }
+
 protected:
 	virtual void BeginPlay() override;
+	virtual void Tick(float DeltaSeconds) override;
 
 public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	
 	void AddMappingContext();
 	void RemoveMappingContext();
+
+	FORCEINLINE void SetCameraOffsetFollowCursorEnabled(bool bEnabled) { bCameraOffsetFollowCursorEnabled = bEnabled; }
+	FORCEINLINE void SetCameraOffsetScale_X(float Scale) { CameraOffsetScale_X = Scale; }
+	FORCEINLINE void SetCameraOffsetScale_Y(float Scale) { CameraOffsetScale_Y = Scale; }
+	FORCEINLINE bool GetCameraOffsetFollowCursorEnabled() const { return bCameraOffsetFollowCursorEnabled; }
+	FORCEINLINE float GetCameraOffsetScale_X() const { return CameraOffsetScale_X; }
+	FORCEINLINE float GetCameraOffsetScale_Y() const { return CameraOffsetScale_Y; }
 	
 private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
@@ -31,11 +42,27 @@ private:
 	class UInputAction* MoveAction;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
-	class UInputAction* LookAction;
+	UInputAction* LookAction;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
+	UCineCameraComponent* Camera;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, meta = (AllowPrivateAccess), Category = "Camera")
+	USpringArmComponent* SpringArm;
+	
 	UPROPERTY(VisibleDefaultsOnly, Category = "Movement")
 	class UFloatingPawnMovement* FloatingPawnMovement;
 
+	UPROPERTY(VisibleDefaultsOnly, Category = "Item")
+	USceneComponent* RootScene;
+
 	void Move(const struct FInputActionValue& InputActionValue);
 	void Look(const FInputActionValue& InputActionValue);
+
+	bool bCameraOffsetFollowCursorEnabled = false;
+	float CameraOffsetScale_X = 0.1f;
+	float CameraOffsetScale_Y = 0.1f;
+	float InterpSpeed = 2.f;
+	
+	FVector2D MouseOffset;
 };

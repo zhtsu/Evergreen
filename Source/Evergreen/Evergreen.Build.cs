@@ -20,7 +20,8 @@ public class Evergreen : ModuleRules
 		{
 			"EnhancedInput",
 			"LevelSequence",
-			"MovieScene"
+			"MovieScene",
+			"CinematicCamera"
 		});
 
 		if (Target.bBuildEditor)

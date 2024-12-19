@@ -87,6 +87,12 @@ public:
 	UFUNCTION(BlueprintPure)
 	FORCEINLINE EEvergreenGameMode GetCurrentEvergreenGameMode() const { return CurrentGameMode; }
 
+	UFUNCTION(Blueprintable)
+	FORCEINLINE class AEvergreenCharacter* GetThirdPersonPlayer() const { return ThirdPersonPlayer; }
+
+	UFUNCTION(Blueprintable)
+	FORCEINLINE class AEvergreenPawn* GetInteractionPlayer() const { return InteractionPlayer; }
+	
 	UFUNCTION(BlueprintPure)
 	FORCEINLINE bool IsThirdPersonMode() const { return CurrentGameMode == EEvergreenGameMode::ThirdPerson; }
 
