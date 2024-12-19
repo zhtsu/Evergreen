@@ -3,7 +3,7 @@
 #pragma once
 
 #define FAST_PRINT(Message) \
-	if (GEngine) { GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, Message); }
+	{ if (GEngine) { GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, Message); } }
 
 #define FAST_LOG(Message, ...) \
 	UE_LOG(LogTemp, Display, TEXT(Message), ##__VA_ARGS__)\

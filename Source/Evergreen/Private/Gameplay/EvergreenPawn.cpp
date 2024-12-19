@@ -124,7 +124,7 @@ void AEvergreenPawn::Tick(float DeltaSeconds)
 	
 	if (!bCameraOffsetFollowCursorEnabled) return;
 	if (!UEvergreenGameInstance::GetEvergreenGameInstance()->IsInteractionMode()) return;
-
+	
 	APlayerController* PlayerController = Cast<APlayerController>(Controller);
 	if (!PlayerController) return;
 	
@@ -133,27 +133,22 @@ void AEvergreenPawn::Tick(float DeltaSeconds)
 	
 	FIntPoint ViewportSize;
 	PlayerController->GetViewportSize(ViewportSize.X, ViewportSize.Y);
-
+	
 	FVector2D ViewportCenter = FVector2D(ViewportSize) * 0.5;
-
-	bool bIsMouseInViewport = (MousePosition.X >= 0 && MousePosition.X <= ViewportSize.X)
-		&& (MousePosition.Y >= 0 && MousePosition.Y <= ViewportSize.Y);
 	
-	if (!bIsMouseInViewport)
+	FVector2D MouseOffset = MousePosition - ViewportCenter;
+
+	bool bIsMouseInViewport = (MousePosition.X > 0.f && MousePosition.X < ViewportSize.X)
+		&& (MousePosition.Y > 0.f && MousePosition.Y < ViewportSize.Y);
+	
+	FAST_PRINT(FString(bIsMouseInViewport ? "true" : "false"))
+
+	FVector TargetOffset = FVector::ZeroVector;
+	if (bIsMouseInViewport)
 	{
-		MouseOffset = FMath::Vector2DInterpTo(MouseOffset,
-			FVector2D::ZeroVector, DeltaSeconds, InterpSpeed);
-	}
-	else
-	{
-		MouseOffset = MousePosition - ViewportCenter;
+		TargetOffset += (MouseOffset.X * CameraOffsetScale_X) * FVector::RightVector;
+		TargetOffset += (-MouseOffset.Y * CameraOffsetScale_Y) * FVector::UpVector;
 	}
 	
-	FVector TargetOffset = FVector(0.f,
-		MouseOffset.X * CameraOffsetScale_X,
-		MouseOffset.Y * CameraOffsetScale_Y);
-
 	SpringArm->SocketOffset = TargetOffset;
-
-	FAST_PRINT(TargetOffset.ToString())
 }

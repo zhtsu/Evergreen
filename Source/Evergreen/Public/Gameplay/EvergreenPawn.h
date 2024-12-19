@@ -63,6 +63,4 @@ private:
 	float CameraOffsetScale_X = 0.1f;
 	float CameraOffsetScale_Y = 0.1f;
 	float InterpSpeed = 2.f;
-	
-	FVector2D MouseOffset;
 };
