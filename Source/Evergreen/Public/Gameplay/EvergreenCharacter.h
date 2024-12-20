@@ -14,13 +14,11 @@ class EVERGREEN_API AEvergreenCharacter : public ACharacter
 public:
 	AEvergreenCharacter();
 	
-	void RemoveMappingContext();
-
 protected:
 	virtual void BeginPlay() override;
 	
 public:
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void K2_RotateCameraBoomYaw(float Yaw);
@@ -66,6 +64,9 @@ private:
 	
 	UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess))
 	float TargetCameraBoomLength;
+	
+	void ActivateMappingContext(class AEvergreenPlayerController* PlayerController, UInputComponent* PlayerInputComponent);
+	void RemoveMappingContext(AEvergreenPlayerController* PlayerController);
 	
 	void Move(const struct FInputActionValue& InputActionValue);
 };

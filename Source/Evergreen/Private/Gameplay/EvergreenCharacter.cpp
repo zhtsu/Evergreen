@@ -10,6 +10,9 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Gameplay/EvergreenPawn.h"
 #include "CineCameraComponent.h"
+#include "Gameplay/EvergreenPlayerController.h"
+#include "Manager/ViewManager.h"
+#include "Common/CommonMacro.h"
 
 AEvergreenCharacter::AEvergreenCharacter()
 {
@@ -44,8 +47,13 @@ void AEvergreenCharacter::BeginPlay()
 	if (UClass* LoadedClass = LoadClass<AEvergreenPawn>(nullptr, *UAssetPathHub::BP_Interactor_Path.ToString()))
 	{
 		AEvergreenPawn* InteractionPlayer = Cast<AEvergreenPawn>(GetWorld()->SpawnActor(LoadedClass));
-		if (InteractionPlayer) InteractionPlayer->SetActorTransform(GetActorTransform());
-		UEvergreenGameInstance::GetEvergreenGameInstance()->SetGamePlayers(this, InteractionPlayer);
+		if (InteractionPlayer)
+		{
+			InteractionPlayer->SetActorTransform(GetActorTransform());
+
+			AEvergreenPlayerController::SetGamePlayers(this, InteractionPlayer);
+			UViewManager::SetGamePlayers(this, InteractionPlayer);
+		}
 	}
 }
 
@@ -53,21 +61,8 @@ void AEvergreenCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInput
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
-	UEvergreenGameInstance::OwnedPlayerInputComponent = PlayerInputComponent;
-	
-	if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
-	{
-		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
-		{
-			Subsystem->AddMappingContext(MappingContext, 0);
-			Subsystem->RequestRebuildControlMappings();
-		}
-	}
-
-	if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent))
-	{
-		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AEvergreenCharacter::Move);
-	}
+	ActivateMappingContext(
+		UEvergreenGameInstance::GetEvergreenPlayerController(), PlayerInputComponent);
 }
 
 void AEvergreenCharacter::K2_StartRotateCameraBoomYawIfAllowed(float Yaw, bool& AllowRotation)
@@ -156,13 +151,32 @@ void AEvergreenCharacter::SetCameraBoom(float Length, float Pitch)
 	SpringArm->SetRelativeRotation(FRotator(Pitch, 0.f, 0.f));
 }
 
-void AEvergreenCharacter::RemoveMappingContext()
+void AEvergreenCharacter::ActivateMappingContext(AEvergreenPlayerController* PlayerController, UInputComponent* PlayerInputComponent)
 {
-	if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
+	if (!PlayerController) return;
+
+	RemoveMappingContext(PlayerController);
+	
+	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
 	{
-		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
-		{
-			Subsystem->ClearAllMappings();
-		}
+		Subsystem->AddMappingContext(MappingContext, 0);
+	}
+
+	if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent))
+	{
+		EnhancedInputComponent->ClearActionValueBindings();
+		EnhancedInputComponent->ClearActionEventBindings();
+		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AEvergreenCharacter::Move);
+	}
+}
+
+void AEvergreenCharacter::RemoveMappingContext(AEvergreenPlayerController* PlayerController)
+{
+	if (!PlayerController) return;
+	
+	if (UEnhancedInputLocalPlayerSubsystem* Subsystem =
+		ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
+	{
+		Subsystem->ClearAllMappings();
 	}
 }

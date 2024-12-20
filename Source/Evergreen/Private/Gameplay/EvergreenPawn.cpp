@@ -10,6 +10,7 @@
 #include "GameFramework/FloatingPawnMovement.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Gameplay/EvergreenGameInstance.h"
+#include "Gameplay/EvergreenPlayerController.h"
 
 AEvergreenPawn::AEvergreenPawn()
 {
@@ -50,34 +51,38 @@ void AEvergreenPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
-	UEvergreenGameInstance::OwnedPlayerInputComponent = PlayerInputComponent;
+	ActivateMappingContext(
+		UEvergreenGameInstance::GetEvergreenPlayerController(), PlayerInputComponent);
 }
 
-void AEvergreenPawn::AddMappingContext()
+void AEvergreenPawn::ActivateMappingContext(AEvergreenPlayerController* PlayerController, UInputComponent* PlayerInputComponent)
 {
-	if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
+	if (!PlayerController) return;
+
+	RemoveMappingContext(PlayerController);
+	
+	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
 	{
-		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
-		{
-			Subsystem->AddMappingContext(MappingContext, 0);
-		}
+		Subsystem->AddMappingContext(MappingContext, 0);
 	}
 
-	if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(UEvergreenGameInstance::OwnedPlayerInputComponent))
+	if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent))
 	{
+		EnhancedInputComponent->ClearActionValueBindings();
+		EnhancedInputComponent->ClearActionEventBindings();
 		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AEvergreenPawn::Move);
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AEvergreenPawn::Look);
 	}
 }
 
-void AEvergreenPawn::RemoveMappingContext()
+void AEvergreenPawn::RemoveMappingContext(AEvergreenPlayerController* PlayerController)
 {
-	if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
+	if (!PlayerController) return;
+	
+	if (UEnhancedInputLocalPlayerSubsystem* Subsystem =
+		ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
 	{
-		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
-		{
-			Subsystem->ClearAllMappings();
-		}
+		Subsystem->ClearAllMappings();
 	}
 }
 
@@ -140,8 +145,6 @@ void AEvergreenPawn::Tick(float DeltaSeconds)
 
 	bool bIsMouseInViewport = (MousePosition.X > KINDA_SMALL_NUMBER && MousePosition.X < ViewportSize.X)
 		&& (MousePosition.Y > KINDA_SMALL_NUMBER && MousePosition.Y < ViewportSize.Y);
-	
-	FAST_PRINT(FString(bIsMouseInViewport ? "true" : "false"))
 
 	FVector TargetOffset = FVector::ZeroVector;
 	if (bIsMouseInViewport)

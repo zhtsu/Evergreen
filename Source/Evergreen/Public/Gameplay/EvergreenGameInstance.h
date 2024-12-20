@@ -73,9 +73,12 @@ public:
 
 	UFUNCTION(BlueprintPure)
 	static UEvergreenGameInstance* GetEvergreenGameInstance();
+	
+	UFUNCTION(BlueprintPure)
+	static class AEvergreenPlayerController* GetEvergreenPlayerController();
 
-	static UInputComponent* OwnedPlayerInputComponent;
-
+	static void SetEvergreenPlayerController(AEvergreenPlayerController* InPlayerController);
+	
 	UEvergreenGameInstance();
 	bool IsAllowKeyboardInput() const;
 	bool IsAllowMouseInput() const;
@@ -86,12 +89,6 @@ public:
 
 	UFUNCTION(BlueprintPure)
 	FORCEINLINE EEvergreenGameMode GetCurrentEvergreenGameMode() const { return CurrentGameMode; }
-
-	UFUNCTION(Blueprintable)
-	FORCEINLINE class AEvergreenCharacter* GetThirdPersonPlayer() const { return ThirdPersonPlayer; }
-
-	UFUNCTION(Blueprintable)
-	FORCEINLINE class AEvergreenPawn* GetInteractionPlayer() const { return InteractionPlayer; }
 	
 	UFUNCTION(BlueprintPure)
 	FORCEINLINE bool IsThirdPersonMode() const { return CurrentGameMode == EEvergreenGameMode::ThirdPerson; }
@@ -143,15 +140,10 @@ public:
 
 	UFUNCTION(BlueprintPure)
 	FString GetCurrentIetfLanguageTag() const { return CurrentIetfLanguageTag; }
-
-	FORCEINLINE void SetGamePlayers(class AEvergreenCharacter* InThirdPersonPlayer, class AEvergreenPawn* InInteractionPlayer)
-	{
-		ThirdPersonPlayer = InThirdPersonPlayer;
-		InteractionPlayer = InInteractionPlayer;
-	}
 	
 private:
 	static UEvergreenGameInstance* Singleton;
+	static AEvergreenPlayerController* EvergreenPlayerController;
 	inline static TArray<FString> SupportedLanguages = {
 		"en", "zh-CN"
 	};
@@ -164,15 +156,4 @@ private:
 	bool bTestModeEnabled = false;
 	FString CurrentIetfLanguageTag = "zh-CN";
 	FIntPoint CurrentScreenResolution = FIntPoint(1920, 1080);
-
-	UPROPERTY()
-	AEvergreenCharacter* ThirdPersonPlayer = nullptr;
-
-	UPROPERTY()
-	AEvergreenPawn* InteractionPlayer = nullptr;
-
-	void SwitchToThirdPersonMode();
-	void SwitchToInteractionMode();
 };
-
-UInputComponent* UEvergreenGameInstance::OwnedPlayerInputComponent = nullptr;

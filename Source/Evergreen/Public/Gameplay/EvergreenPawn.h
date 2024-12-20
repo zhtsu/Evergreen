@@ -16,16 +16,13 @@ public:
 
 	FORCEINLINE class USpringArmComponent* GetSpringArm() const { return SpringArm; }
 	FORCEINLINE class UCineCameraComponent* GetCamera() const { return Camera; }
-
+	
 protected:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaSeconds) override;
 
 public:
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-	
-	void AddMappingContext();
-	void RemoveMappingContext();
+	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 
 	FORCEINLINE void SetCameraOffsetFollowCursorEnabled(bool bEnabled) { bCameraOffsetFollowCursorEnabled = bEnabled; }
 	FORCEINLINE void SetCameraOffsetScale_X(float Scale) { CameraOffsetScale_X = Scale; }
@@ -55,10 +52,13 @@ private:
 
 	UPROPERTY(VisibleDefaultsOnly, Category = "Item")
 	USceneComponent* RootScene;
-
+	
+	void ActivateMappingContext(class AEvergreenPlayerController* PlayerController, UInputComponent* PlayerInputComponent);
+	void RemoveMappingContext(AEvergreenPlayerController* PlayerController);
+	
 	void Move(const struct FInputActionValue& InputActionValue);
 	void Look(const FInputActionValue& InputActionValue);
-
+	
 	bool bCameraOffsetFollowCursorEnabled = false;
 	float CameraOffsetScale_X = 0.1f;
 	float CameraOffsetScale_Y = 0.1f;

@@ -111,37 +111,33 @@ void UViewManager::CallOnAttainPlayerView()
 
 void UViewManager::SetCameraOffsetFollowCursorEnabled(bool bEnabled)
 {
-	UEvergreenGameInstance* EGI = UEvergreenGameInstance::GetEvergreenGameInstance();
-	if (EGI->GetInteractionPlayer())
+	if (InteractionPlayer)
 	{
-		EGI->GetInteractionPlayer()->SetCameraOffsetFollowCursorEnabled(bEnabled);
+		InteractionPlayer->SetCameraOffsetFollowCursorEnabled(bEnabled);
 	}
 }
 
 void UViewManager::SetCameraOffsetScale_X(float Scale)
 {
-	UEvergreenGameInstance* EGI = UEvergreenGameInstance::GetEvergreenGameInstance();
-	if (EGI->GetInteractionPlayer())
+	if (InteractionPlayer)
 	{
-		EGI->GetInteractionPlayer()->SetCameraOffsetScale_X(Scale);
+		InteractionPlayer->SetCameraOffsetScale_X(Scale);
 	}
 }
 
 void UViewManager::SetCameraOffsetScale_Y(float Scale)
 {
-	UEvergreenGameInstance* EGI = UEvergreenGameInstance::GetEvergreenGameInstance();
-	if (EGI->GetInteractionPlayer())
+	if (InteractionPlayer)
 	{
-		EGI->GetInteractionPlayer()->SetCameraOffsetScale_Y(Scale);
+		InteractionPlayer->SetCameraOffsetScale_Y(Scale);
 	}
 }
 
 bool UViewManager::GetCameraOffsetFollowCursorEnabled() const
 {
-	UEvergreenGameInstance* EGI = UEvergreenGameInstance::GetEvergreenGameInstance();
-	if (EGI->GetInteractionPlayer())
+	if (InteractionPlayer)
 	{
-		return EGI->GetInteractionPlayer()->GetCameraOffsetFollowCursorEnabled();
+		return InteractionPlayer->GetCameraOffsetFollowCursorEnabled();
 	}
 	
 	return false;
@@ -149,10 +145,9 @@ bool UViewManager::GetCameraOffsetFollowCursorEnabled() const
 
 float UViewManager::GetCameraOffsetScale_X() const
 {
-	UEvergreenGameInstance* EGI = UEvergreenGameInstance::GetEvergreenGameInstance();
-	if (EGI->GetInteractionPlayer())
+	if (InteractionPlayer)
 	{
-		return EGI->GetInteractionPlayer()->GetCameraOffsetScale_X();
+		return InteractionPlayer->GetCameraOffsetScale_X();
 	}
 	
 	return 0.f;
@@ -160,10 +155,9 @@ float UViewManager::GetCameraOffsetScale_X() const
 
 float UViewManager::GetCameraOffsetScale_Y() const
 {
-	UEvergreenGameInstance* EGI = UEvergreenGameInstance::GetEvergreenGameInstance();
-	if (EGI->GetInteractionPlayer())
+	if (InteractionPlayer)
 	{
-		return EGI->GetInteractionPlayer()->GetCameraOffsetScale_Y();
+		return InteractionPlayer->GetCameraOffsetScale_Y();
 	}
 	
 	return 0.f;

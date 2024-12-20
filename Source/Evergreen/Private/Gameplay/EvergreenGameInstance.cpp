@@ -4,10 +4,10 @@
 #include "Gameplay/EvergreenGameInstance.h"
 
 #include "GameFramework/GameUserSettings.h"
-#include "Gameplay/EvergreenCharacter.h"
-#include "Gameplay/EvergreenPawn.h"
+#include "Gameplay/EvergreenPlayerController.h"
 
 UEvergreenGameInstance* UEvergreenGameInstance::Singleton = nullptr;
+AEvergreenPlayerController* UEvergreenGameInstance::EvergreenPlayerController = nullptr;
 
 UEvergreenGameInstance* UEvergreenGameInstance::GetEvergreenGameInstance()
 {
@@ -17,6 +17,16 @@ UEvergreenGameInstance* UEvergreenGameInstance::GetEvergreenGameInstance()
 UEvergreenGameInstance::UEvergreenGameInstance()
 {
 	Singleton = this;
+}
+
+AEvergreenPlayerController* UEvergreenGameInstance::GetEvergreenPlayerController()
+{
+	return EvergreenPlayerController;
+}
+
+void UEvergreenGameInstance::SetEvergreenPlayerController(AEvergreenPlayerController* InPlayerController)
+{
+	EvergreenPlayerController = InPlayerController;
 }
 
 void UEvergreenGameInstance::OnStart()
@@ -51,11 +61,11 @@ void UEvergreenGameInstance::SwitchEvergreenGameModeTo(EEvergreenGameMode InGame
 
 	if (InGameMode == EEvergreenGameMode::Interaction)
 	{
-		SwitchToInteractionMode();
+		EvergreenPlayerController->PossessInteractionPlayer();
 	}
 	else if (InGameMode == EEvergreenGameMode::ThirdPerson)
 	{
-		SwitchToThirdPersonMode();
+		EvergreenPlayerController->PossessThirdPersonPlayer();
 	}
 }
 
@@ -148,39 +158,4 @@ void UEvergreenGameInstance::SetGameLanguage(FString IetfLanguageTag)
 
 	CurrentIetfLanguageTag = IetfLanguageTag;
 	OnGameLanguageChanged.Broadcast(CurrentIetfLanguageTag);
-}
-
-void UEvergreenGameInstance::SwitchToThirdPersonMode()
-{
-	if (APlayerController* PlayerController = GetPrimaryPlayerController())
-	{
-		PlayerController->bEnableClickEvents = false;
-		PlayerController->bEnableMouseOverEvents = false;
-		PlayerController->bShowMouseCursor = false;
-
-		if (ThirdPersonPlayer && InteractionPlayer)
-		{
-			PlayerController->Possess(ThirdPersonPlayer);
-			InteractionPlayer->RemoveMappingContext();
-			ThirdPersonPlayer->GetMesh()->SetHiddenInGame(false);
-		}
-	}
-}
-
-void UEvergreenGameInstance::SwitchToInteractionMode()
-{
-	if (APlayerController* PlayerController = GetPrimaryPlayerController())
-	{
-		PlayerController->bEnableClickEvents = true;
-		PlayerController->bEnableMouseOverEvents = true;
-		PlayerController->bShowMouseCursor = true;
-
-		if (InteractionPlayer)
-		{
-			PlayerController->Possess(InteractionPlayer);
-			ThirdPersonPlayer->RemoveMappingContext();
-			InteractionPlayer->AddMappingContext();
-			ThirdPersonPlayer->GetMesh()->SetHiddenInGame(true);
-		}
-	}
 }

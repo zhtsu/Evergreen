@@ -54,8 +54,17 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void SetCharacterCameraBoom(float Length = 600.f, float Pitch = -25.f);
+
+	static void SetGamePlayers(class AEvergreenCharacter* InThirdPersonPlayer, class AEvergreenPawn* InInteractionPlayer)
+	{
+		ThirdPersonPlayer = InThirdPersonPlayer;
+		InteractionPlayer = InInteractionPlayer;
+	}
 	
 private:
+	static AEvergreenCharacter* ThirdPersonPlayer;
+	static AEvergreenPawn* InteractionPlayer;
+	
 	static UObject* CurrentObservedObject;
 	FTimerHandle TimerHandle;
 	
@@ -64,3 +73,5 @@ private:
 };
 
 UObject* UViewManager::CurrentObservedObject = nullptr;
+AEvergreenCharacter* UViewManager::ThirdPersonPlayer = nullptr;
+AEvergreenPawn* UViewManager::InteractionPlayer = nullptr;
