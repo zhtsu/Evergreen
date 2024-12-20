@@ -21,19 +21,19 @@ public:
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 
 	UFUNCTION(BlueprintImplementableEvent)
-	void K2_RotateCameraBoomYaw(float Yaw);
+	void K2_RotateCameraBoomYaw(float Yaw, bool bAllowMove);
 
 	UFUNCTION(BlueprintCallable)
-	void K2_StartRotateCameraBoomYawIfAllowed(float Yaw, bool& AllowRotation);
+	void K2_StartRotateCameraBoomYawIfAllowed(float Yaw, bool bAllowMove, bool& AllowRotation);
 
 	UFUNCTION(BlueprintCallable)
 	void K2_EndRotateCameraYaw();
 	
 	UFUNCTION(BlueprintImplementableEvent)
-	void K2_AdjustCameraBoom(float Length, float Pitch);
+	void K2_AdjustCameraBoom(float Length, float Pitch, bool bAllowMove);
 
 	UFUNCTION(BlueprintCallable)
-	void K2_StartAdjustCameraBoomIfAllowed(float Length, float Pitch, bool& AllowAdjust);
+	void K2_StartAdjustCameraBoomIfAllowed(float Length, float Pitch, bool bAllowMove, bool& AllowAdjust);
 
 	UFUNCTION(BlueprintCallable)
 	void K2_EndAdjustCameraBoom();

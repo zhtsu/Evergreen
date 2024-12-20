@@ -47,10 +47,10 @@ public:
 	float GetCameraOffsetScale_Y() const;
 
 	UFUNCTION(BlueprintCallable)
-	void RotateCharacterCameraBoomYaw(float Yaw);
+	void RotateCharacterCameraBoomYaw(float Yaw, bool bAllowMove);
 
 	UFUNCTION(BlueprintCallable)
-	void AdjustCharacterCameraBoom(float Length = 600.f, float Pitch = -25.f);
+	void AdjustCharacterCameraBoom(float Length = 600.f, float Pitch = -25.f, bool bAllowMove = false);
 
 	UFUNCTION(BlueprintCallable)
 	void SetCharacterCameraBoom(float Length = 600.f, float Pitch = -25.f);

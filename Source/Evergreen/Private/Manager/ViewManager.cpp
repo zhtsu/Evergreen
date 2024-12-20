@@ -163,7 +163,7 @@ float UViewManager::GetCameraOffsetScale_Y() const
 	return 0.f;
 }
 
-void UViewManager::RotateCharacterCameraBoomYaw(float Yaw)
+void UViewManager::RotateCharacterCameraBoomYaw(float Yaw, bool bAllowMove)
 {
 	UEvergreenGameInstance* EGI = UEvergreenGameInstance::GetEvergreenGameInstance();
 	if (EGI->GetCurrentEvergreenGameMode() == EEvergreenGameMode::Interaction) return;
@@ -172,12 +172,12 @@ void UViewManager::RotateCharacterCameraBoomYaw(float Yaw)
 	{
 		if (AEvergreenCharacter* Character = Cast<AEvergreenCharacter>(PlayerController->GetPawn()))
 		{
-			Character->K2_RotateCameraBoomYaw(Yaw);
+			Character->K2_RotateCameraBoomYaw(Yaw, bAllowMove);
 		}
 	}
 }
 
-void UViewManager::AdjustCharacterCameraBoom(float Length, float Pitch)
+void UViewManager::AdjustCharacterCameraBoom(float Length, float Pitch, bool bAllowMove)
 {
 	UEvergreenGameInstance* EGI = UEvergreenGameInstance::GetEvergreenGameInstance();
 	if (EGI->GetCurrentEvergreenGameMode() == EEvergreenGameMode::Interaction) return;
@@ -186,7 +186,7 @@ void UViewManager::AdjustCharacterCameraBoom(float Length, float Pitch)
 	{
 		if (AEvergreenCharacter* Character = Cast<AEvergreenCharacter>(PlayerController->GetPawn()))
 		{
-			Character->K2_AdjustCameraBoom(Length, Pitch);
+			Character->K2_AdjustCameraBoom(Length, Pitch, bAllowMove);
 		}
 	}
 }

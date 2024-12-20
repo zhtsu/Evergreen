@@ -61,7 +61,7 @@ void AEvergreenCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInput
 		UEvergreenGameInstance::GetEvergreenPlayerController(), PlayerInputComponent);
 }
 
-void AEvergreenCharacter::K2_StartRotateCameraBoomYawIfAllowed(float Yaw, bool& AllowRotation)
+void AEvergreenCharacter::K2_StartRotateCameraBoomYawIfAllowed(float Yaw, bool bAllowMove, bool& AllowRotation)
 {
 	if (UEvergreenGameInstance::GetEvergreenGameInstance()->GetCurrentGamePlayState() == EGamePlayState::Cutscene)
 	{
@@ -79,7 +79,10 @@ void AEvergreenCharacter::K2_StartRotateCameraBoomYawIfAllowed(float Yaw, bool& 
 		return;
 	}
 
-	UEvergreenGameInstance::GetEvergreenGameInstance()->SetCurrentGamePlayState(EGamePlayState::Cutscene);
+	if (!bAllowMove)
+	{
+		UEvergreenGameInstance::GetEvergreenGameInstance()->SetCurrentGamePlayState(EGamePlayState::Cutscene);
+	}
 	
 	AllowRotation = true;
 }
@@ -90,7 +93,7 @@ void AEvergreenCharacter::K2_EndRotateCameraYaw()
 	UEvergreenGameInstance::GetEvergreenGameInstance()->SetCurrentGamePlayState(EGamePlayState::Exploring);
 }
 
-void AEvergreenCharacter::K2_StartAdjustCameraBoomIfAllowed(float Length, float Pitch, bool& AllowAdjust)
+void AEvergreenCharacter::K2_StartAdjustCameraBoomIfAllowed(float Length, float Pitch, bool bAllowMove, bool& AllowAdjust)
 {
 	if (UEvergreenGameInstance::GetEvergreenGameInstance()->GetCurrentGamePlayState() == EGamePlayState::Cutscene)
 	{
@@ -108,7 +111,10 @@ void AEvergreenCharacter::K2_StartAdjustCameraBoomIfAllowed(float Length, float 
 	if (FMath::Abs(StartCameraBoomRotation.Pitch - Pitch) < 1.f
 		&& FMath::Abs(StartCameraBoomLength - TargetCameraBoomLength) < 1.f) return;
 
-	UEvergreenGameInstance::GetEvergreenGameInstance()->SetCurrentGamePlayState(EGamePlayState::Cutscene);
+	if (!bAllowMove)
+	{
+		UEvergreenGameInstance::GetEvergreenGameInstance()->SetCurrentGamePlayState(EGamePlayState::Cutscene);
+	}
 	
 	AllowAdjust = true;
 }
