@@ -151,10 +151,6 @@
 			"Enabled": false
 		},
 		{
-			"Name": "Metasound",
-			"Enabled": false
-		},
-		{
 			"Name": "Paper2D",
 			"Enabled": false
 		},
@@ -237,6 +233,10 @@
 		},
 		{
 			"Name": "CommonUI",
+			"Enabled": true
+		},
+		{
+			"Name": "Text3D",
 			"Enabled": true
 		}
 	]
