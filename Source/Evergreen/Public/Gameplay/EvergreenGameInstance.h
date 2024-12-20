@@ -50,8 +50,7 @@ class EVERGREEN_API UEvergreenGameInstance : public UGameInstance
 	
 protected:
 	virtual void OnStart() override;
-	virtual void BeginDestroy() override;
-	
+
 public:
 	UPROPERTY(BlueprintAssignable)
 	FOnGameModeChanged OnGameModeChanged;
@@ -80,6 +79,7 @@ public:
 	static void SetEvergreenPlayerController(AEvergreenPlayerController* InPlayerController);
 	
 	UEvergreenGameInstance();
+	
 	bool IsAllowKeyboardInput() const;
 	bool IsAllowMouseInput() const;
 	bool IsAllowInput() const;
@@ -155,5 +155,5 @@ private:
 	FGamePlayState GamePlayState;
 	bool bTestModeEnabled = false;
 	FString CurrentIetfLanguageTag = "zh-CN";
-	FIntPoint CurrentScreenResolution = FIntPoint(1920, 1080);
+	FIntPoint CurrentScreenResolution = FIntPoint(-1, -1);
 };

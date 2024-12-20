@@ -12,7 +12,6 @@
 #include "CineCameraComponent.h"
 #include "Gameplay/EvergreenPlayerController.h"
 #include "Manager/ViewManager.h"
-#include "Common/CommonMacro.h"
 
 AEvergreenCharacter::AEvergreenCharacter()
 {
@@ -43,17 +42,14 @@ AEvergreenCharacter::AEvergreenCharacter()
 void AEvergreenCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-
-	if (UClass* LoadedClass = LoadClass<AEvergreenPawn>(nullptr, *UAssetPathHub::BP_Interactor_Path.ToString()))
+	
+	AEvergreenPawn* InteractionPlayer = Cast<AEvergreenPawn>(GetWorld()->SpawnActor(InteractorClass));
+	if (InteractionPlayer)
 	{
-		AEvergreenPawn* InteractionPlayer = Cast<AEvergreenPawn>(GetWorld()->SpawnActor(LoadedClass));
-		if (InteractionPlayer)
-		{
-			InteractionPlayer->SetActorTransform(GetActorTransform());
+		InteractionPlayer->SetActorTransform(GetActorTransform());
 
-			AEvergreenPlayerController::SetGamePlayers(this, InteractionPlayer);
-			UViewManager::SetGamePlayers(this, InteractionPlayer);
-		}
+		AEvergreenPlayerController::SetGamePlayers(this, InteractionPlayer);
+		UViewManager::SetGamePlayers(this, InteractionPlayer);
 	}
 }
 

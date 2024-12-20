@@ -3,11 +3,17 @@
 
 #include "Gameplay/EvergreenGameInstance.h"
 
+#include "Common/StringTableHelper.h"
 #include "GameFramework/GameUserSettings.h"
 #include "Gameplay/EvergreenPlayerController.h"
 
 UEvergreenGameInstance* UEvergreenGameInstance::Singleton = nullptr;
 AEvergreenPlayerController* UEvergreenGameInstance::EvergreenPlayerController = nullptr;
+
+void UEvergreenGameInstance::OnStart()
+{
+	SetScreenResolution({ 1920, 1080 });
+}
 
 UEvergreenGameInstance* UEvergreenGameInstance::GetEvergreenGameInstance()
 {
@@ -17,6 +23,12 @@ UEvergreenGameInstance* UEvergreenGameInstance::GetEvergreenGameInstance()
 UEvergreenGameInstance::UEvergreenGameInstance()
 {
 	Singleton = this;
+	
+#if WITH_EDITOR
+	(void)0;
+#else
+	UStringTableHelper::ImportAllStringTableFromCSV();
+#endif
 }
 
 AEvergreenPlayerController* UEvergreenGameInstance::GetEvergreenPlayerController()
@@ -29,35 +41,12 @@ void UEvergreenGameInstance::SetEvergreenPlayerController(AEvergreenPlayerContro
 	EvergreenPlayerController = InPlayerController;
 }
 
-void UEvergreenGameInstance::OnStart()
-{
-	Super::OnStart();
-	
-}
-
-void UEvergreenGameInstance::BeginDestroy()
-{
-	Super::BeginDestroy();
-	
-}
-
 void UEvergreenGameInstance::SwitchEvergreenGameModeTo(EEvergreenGameMode InGameMode)
 {
 	if (CurrentGameMode == InGameMode) return;
 	
 	CurrentGameMode = InGameMode;
 	OnGameModeChanged.Broadcast(CurrentGameMode);
-
-	// TODO: Are this way is the best?
-	if (APlayerController* PlayerController = Cast<APlayerController>(GetPrimaryPlayerController()))
-	{
-		FIntPoint ViewportSize;
-		PlayerController->GetViewportSize(ViewportSize.X, ViewportSize.Y);
-		if (ViewportSize != CurrentScreenResolution)
-		{
-			SetScreenResolution(CurrentScreenResolution);
-		}
-	}
 
 	if (InGameMode == EEvergreenGameMode::Interaction)
 	{
@@ -128,9 +117,9 @@ bool UEvergreenGameInstance::SetScreenResolution(FIntPoint TargetScreenResolutio
 	if (CurrentScreenResolution == TargetScreenResolution) return false;
 	
 	UGameUserSettings* UserSettings = GEngine->GetGameUserSettings();
+	UserSettings->SetFullscreenMode(EWindowMode::Windowed);
 	UserSettings->SetScreenResolution(TargetScreenResolution);
 	UserSettings->ApplySettings(false);
-	UserSettings->ApplyResolutionSettings(false);
 
 	CurrentScreenResolution = TargetScreenResolution;
 	OnScreenResolutionChanged.Broadcast(CurrentScreenResolution);
@@ -140,14 +129,13 @@ bool UEvergreenGameInstance::SetScreenResolution(FIntPoint TargetScreenResolutio
 
 void UEvergreenGameInstance::SetFullscreenEnabled(bool FullscreenEnabled)
 {
-	EWindowMode::Type TargetWindowMode = FullscreenEnabled ? EWindowMode::Fullscreen : EWindowMode::Windowed;
+	EWindowMode::Type TargetWindowMode = FullscreenEnabled ? EWindowMode::WindowedFullscreen : EWindowMode::Windowed;
 	
 	UGameUserSettings* UserSettings = GEngine->GetGameUserSettings();
 	if (UserSettings->GetFullscreenMode() == TargetWindowMode) return;
 
 	UserSettings->SetFullscreenMode(TargetWindowMode);
 	UserSettings->ApplySettings(false);
-	UserSettings->ApplyResolutionSettings(false);
 }
 
 void UEvergreenGameInstance::SetGameLanguage(FString IetfLanguageTag)
