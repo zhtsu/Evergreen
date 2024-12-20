@@ -138,8 +138,8 @@ void AEvergreenPawn::Tick(float DeltaSeconds)
 	
 	FVector2D MouseOffset = MousePosition - ViewportCenter;
 
-	bool bIsMouseInViewport = (MousePosition.X > 0.f && MousePosition.X < ViewportSize.X)
-		&& (MousePosition.Y > 0.f && MousePosition.Y < ViewportSize.Y);
+	bool bIsMouseInViewport = (MousePosition.X > KINDA_SMALL_NUMBER && MousePosition.X < ViewportSize.X)
+		&& (MousePosition.Y > KINDA_SMALL_NUMBER && MousePosition.Y < ViewportSize.Y);
 	
 	FAST_PRINT(FString(bIsMouseInViewport ? "true" : "false"))
 
