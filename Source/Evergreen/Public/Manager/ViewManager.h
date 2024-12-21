@@ -5,6 +5,18 @@
 #include "CoreMinimal.h"
 #include "ViewManager.generated.h"
 
+UENUM(BlueprintType)
+enum ECameraViewType
+{
+	SuperFarView,
+	FarView,
+	FullView,
+	MidView,
+	CloseView,
+	CloseUpView,
+	SuperCloseUpView
+};
+
 UCLASS()
 class UViewManager : public UGameInstanceSubsystem
 {
@@ -47,13 +59,16 @@ public:
 	float GetCameraOffsetScale_Y() const;
 
 	UFUNCTION(BlueprintCallable)
-	void RotateCharacterCameraBoomYaw(float Yaw, bool bAllowMove);
+	void RotateCameraBoomYaw_ThirdPerson(float Yaw = -1.f, bool bAllowMove = true);
 
 	UFUNCTION(BlueprintCallable)
-	void AdjustCharacterCameraBoom(float Length = 600.f, float Pitch = -25.f, bool bAllowMove = false);
+	void RotateCameraBoomPitch_ThirdPerson(float Pitch = -1.f, bool bAllowMove = true);
+	
+	UFUNCTION(BlueprintCallable)
+	void AdjustCameraBoomLength_ThirdPerson(float Length = -1.f, bool bAllowMove = true);
 
 	UFUNCTION(BlueprintCallable)
-	void SetCharacterCameraBoom(float Length = 600.f, float Pitch = -25.f);
+	void ChangeCameraParamsTo(ECameraViewType ViewType, bool bBlend = false, bool bAllowMove = true);
 
 	static void SetGamePlayers(class AEvergreenCharacter* InThirdPersonPlayer, class AEvergreenPawn* InInteractionPlayer)
 	{

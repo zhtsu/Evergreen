@@ -18,7 +18,7 @@ AEvergreenPawn::AEvergreenPawn()
 	RootScene->Mobility = EComponentMobility::Movable;
 	RootComponent = RootScene;
 
-	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
+	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
 	SpringArm->SetupAttachment(RootComponent);
 	SpringArm->TargetArmLength = 2000;
 	SpringArm->SetRelativeRotation(FRotator(-25, 0, 0));

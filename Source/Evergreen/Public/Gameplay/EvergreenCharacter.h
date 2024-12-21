@@ -20,6 +20,7 @@ protected:
 public:
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 
+	// Yaw
 	UFUNCTION(BlueprintImplementableEvent)
 	void K2_RotateCameraBoomYaw(float Yaw, bool bAllowMove);
 
@@ -28,17 +29,28 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void K2_EndRotateCameraYaw();
-	
+
+	// Pitch
 	UFUNCTION(BlueprintImplementableEvent)
-	void K2_AdjustCameraBoom(float Length, float Pitch, bool bAllowMove);
+	void K2_RotateCameraBoomPitch(float Pitch, bool bAllowMove);
 
 	UFUNCTION(BlueprintCallable)
-	void K2_StartAdjustCameraBoomIfAllowed(float Length, float Pitch, bool bAllowMove, bool& AllowAdjust);
+	void K2_StartRotateCameraBoomPitchIfAllowed(float Pitch, bool bAllowMove, bool& AllowRotation);
 
 	UFUNCTION(BlueprintCallable)
-	void K2_EndAdjustCameraBoom();
+	void K2_EndRotateCameraPitch();
 
-	void SetCameraBoom(float Length, float Pitch);
+	// Boom length
+	UFUNCTION(BlueprintImplementableEvent)
+	void K2_AdjustCameraBoomLength(float Length, bool bAllowMove);
+
+	UFUNCTION(BlueprintCallable)
+	void K2_StartAdjustCameraBoomLengthIfAllowed(float Length, bool bAllowMove, bool& AllowAdjust);
+
+	UFUNCTION(BlueprintCallable)
+	void K2_EndAdjustCameraBoomLength();
+
+	void SetCameraParams(float Yaw, float Pitch, float Length);
 	
 private:
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, meta = (AllowPrivateAccess), Category = "Camera")
@@ -56,11 +68,18 @@ private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
 	class UInputAction* MoveAction;
 
+	// Camera movement
 	UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess))
-	FRotator StartCameraBoomRotation;
+	float StartCameraBoomYaw;
+
+	UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess))
+	float StartCameraBoomPitch;
 	
 	UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess))
-	FRotator TargetCameraBoomRotation;
+	float TargetCameraBoomYaw;
+
+	UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess))
+	float TargetCameraBoomPitch;
 
 	UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess))
 	float StartCameraBoomLength;

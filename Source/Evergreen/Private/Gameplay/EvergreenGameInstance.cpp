@@ -3,7 +3,6 @@
 
 #include "Gameplay/EvergreenGameInstance.h"
 
-#include "Common/StringTableHelper.h"
 #include "GameFramework/GameUserSettings.h"
 #include "Gameplay/EvergreenPlayerController.h"
 
@@ -120,9 +119,10 @@ bool UEvergreenGameInstance::SetScreenResolution(FIntPoint TargetScreenResolutio
 	UserSettings->SetFullscreenMode(EWindowMode::Windowed);
 	UserSettings->SetScreenResolution(TargetScreenResolution);
 	UserSettings->ApplySettings(false);
-
+	
 	CurrentScreenResolution = TargetScreenResolution;
 	OnScreenResolutionChanged.Broadcast(CurrentScreenResolution);
+	OnFullscreenModeChanged.Broadcast("Windowed");
 
 	return true;
 }
@@ -136,6 +136,8 @@ void UEvergreenGameInstance::SetFullscreenEnabled(bool FullscreenEnabled)
 
 	UserSettings->SetFullscreenMode(TargetWindowMode);
 	UserSettings->ApplySettings(false);
+
+	OnFullscreenModeChanged.Broadcast(TargetWindowMode == EWindowMode::WindowedFullscreen ? "Fullscreen" : "Windowed");
 }
 
 void UEvergreenGameInstance::SetGameLanguage(FString IetfLanguageTag)

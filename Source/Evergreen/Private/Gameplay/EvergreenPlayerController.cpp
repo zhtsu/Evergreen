@@ -14,14 +14,20 @@ AEvergreenPlayerController::AEvergreenPlayerController()
 
 void AEvergreenPlayerController::PossessThirdPersonPlayer()
 {
-	Possess(ThirdPersonPlayer);
-	SwitchToThirdPersonMode();
+	if (ThirdPersonPlayer)
+	{
+		Possess(ThirdPersonPlayer);
+		SwitchToThirdPersonMode();
+	}
 }
 
 void AEvergreenPlayerController::PossessInteractionPlayer()
 {
-	Possess(InteractionPlayer);
-	SwitchToInteractionMode();
+	if (InteractionPlayer)
+	{
+		Possess(InteractionPlayer);
+		SwitchToInteractionMode();
+	}
 }
 
 void AEvergreenPlayerController::SwitchToThirdPersonMode()

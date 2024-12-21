@@ -9,6 +9,7 @@
 #include "Gameplay/EvergreenGameInstance.h"
 #include "Interface/ObservableInterface.h"
 #include "Camera/CameraActor.h"
+#include "..\..\Public\Config\EvergreenCameraSettings.h"
 #include "Gameplay/EvergreenCharacter.h"
 #include "Gameplay/EvergreenPawn.h"
 
@@ -163,44 +164,63 @@ float UViewManager::GetCameraOffsetScale_Y() const
 	return 0.f;
 }
 
-void UViewManager::RotateCharacterCameraBoomYaw(float Yaw, bool bAllowMove)
+void UViewManager::RotateCameraBoomYaw_ThirdPerson(float Yaw, bool bAllowMove)
 {
 	UEvergreenGameInstance* EGI = UEvergreenGameInstance::GetEvergreenGameInstance();
 	if (EGI->GetCurrentEvergreenGameMode() == EEvergreenGameMode::Interaction) return;
-
-	if (APlayerController* PlayerController = EGI->GetPrimaryPlayerController())
+	
+	if (ThirdPersonPlayer)
 	{
-		if (AEvergreenCharacter* Character = Cast<AEvergreenCharacter>(PlayerController->GetPawn()))
-		{
-			Character->K2_RotateCameraBoomYaw(Yaw, bAllowMove);
-		}
+		ThirdPersonPlayer->K2_RotateCameraBoomYaw(Yaw, bAllowMove);
 	}
 }
 
-void UViewManager::AdjustCharacterCameraBoom(float Length, float Pitch, bool bAllowMove)
+void UViewManager::RotateCameraBoomPitch_ThirdPerson(float Pitch, bool bAllowMove)
 {
 	UEvergreenGameInstance* EGI = UEvergreenGameInstance::GetEvergreenGameInstance();
 	if (EGI->GetCurrentEvergreenGameMode() == EEvergreenGameMode::Interaction) return;
 
-	if (APlayerController* PlayerController = EGI->GetPrimaryPlayerController())
+	if (ThirdPersonPlayer)
 	{
-		if (AEvergreenCharacter* Character = Cast<AEvergreenCharacter>(PlayerController->GetPawn()))
-		{
-			Character->K2_AdjustCameraBoom(Length, Pitch, bAllowMove);
-		}
+		ThirdPersonPlayer->K2_RotateCameraBoomPitch(Pitch, bAllowMove);
 	}
 }
 
-void UViewManager::SetCharacterCameraBoom(float Length, float Pitch)
+void UViewManager::AdjustCameraBoomLength_ThirdPerson(float Length, bool bAllowMove)
 {
 	UEvergreenGameInstance* EGI = UEvergreenGameInstance::GetEvergreenGameInstance();
 	if (EGI->GetCurrentEvergreenGameMode() == EEvergreenGameMode::Interaction) return;
 
-	if (APlayerController* PlayerController = EGI->GetPrimaryPlayerController())
+	if (ThirdPersonPlayer)
 	{
-		if (AEvergreenCharacter* Character = Cast<AEvergreenCharacter>(PlayerController->GetPawn()))
-		{
-			Character->SetCameraBoom(Length, Pitch);
-		}
+		ThirdPersonPlayer->K2_AdjustCameraBoomLength(Length, bAllowMove);
+	}
+}
+
+void UViewManager::ChangeCameraParamsTo(ECameraViewType ViewType, bool bBlend, bool bAllowMove)
+{
+	FCameraParams TargetCameraParams;
+
+	UEvergreenCameraSettings* ECS = UEvergreenCameraSettings::GetEvergreenCameraSettings();
+	if (!ECS || !ThirdPersonPlayer) return;
+	
+	if (ViewType == ECameraViewType::SuperFarView) TargetCameraParams = ECS->SuperFarView;
+	else if (ViewType == ECameraViewType::FarView) TargetCameraParams = ECS->FarView;
+	else if (ViewType == ECameraViewType::FullView) TargetCameraParams = ECS->FullView;
+	else if (ViewType == ECameraViewType::MidView) TargetCameraParams = ECS->MidView;
+	else if (ViewType == ECameraViewType::CloseView) TargetCameraParams = ECS->CloseView;
+	else if (ViewType == ECameraViewType::CloseUpView) TargetCameraParams = ECS->CloseUpView;
+	else if (ViewType == ECameraViewType::SuperCloseUpView) TargetCameraParams = ECS->SuperCloseUpView;
+	
+	if (bBlend)
+	{
+		ThirdPersonPlayer->K2_AdjustCameraBoomLength(TargetCameraParams.CameraBoomLength, bAllowMove);
+		ThirdPersonPlayer->K2_RotateCameraBoomYaw(TargetCameraParams.CameraBoomYaw, bAllowMove);
+		ThirdPersonPlayer->K2_RotateCameraBoomPitch(TargetCameraParams.CameraBoomPitch, bAllowMove);
+	}
+	else
+	{
+		ThirdPersonPlayer->SetCameraParams(
+			TargetCameraParams.CameraBoomYaw, TargetCameraParams.CameraBoomPitch, TargetCameraParams.CameraBoomLength);
 	}
 }

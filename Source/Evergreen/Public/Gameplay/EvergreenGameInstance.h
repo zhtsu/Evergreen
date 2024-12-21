@@ -39,6 +39,7 @@ struct FGamePlayState
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnGameModeChanged, EEvergreenGameMode, CurrentMode);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnGamePlayStateChanged, EGamePlayState, CurrentGamePlayState);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnScreenResolutionChanged, FIntPoint, CurrentScreenResolution);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnFullscreenModeChanged, FString, CurrentFullscreenMode);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnGameLanguageChanged, FString, CurrentIetfLanguageTag);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnGamePaused);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnGameResumed);
@@ -69,6 +70,9 @@ public:
 
 	UPROPERTY(BlueprintAssignable)
 	FOnGameLanguageChanged OnGameLanguageChanged;
+
+	UPROPERTY(BlueprintAssignable)
+	FOnFullscreenModeChanged OnFullscreenModeChanged;
 
 	UFUNCTION(BlueprintPure)
 	static UEvergreenGameInstance* GetEvergreenGameInstance();
