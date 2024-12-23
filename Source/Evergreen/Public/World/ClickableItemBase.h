@@ -7,7 +7,6 @@
 #include "Components/WidgetComponent.h"
 #include "GameFramework/Actor.h"
 #include "Interface/ClickableInterface.h"
-#include "Interface/ObservableInterface.h"
 #include "ClickableItemBase.generated.h"
 
 UCLASS(Abstract)
@@ -19,22 +18,25 @@ public:
 	AClickableItemBase();
 
 private:
-	UPROPERTY(BlueprintReadWrite, VisibleDefaultsOnly, Category = "Item", meta = (AllowPrivateAccess))
-	class UStaticMeshComponent* StaticMesh;
+	UPROPERTY(BlueprintReadWrite, VisibleDefaultsOnly, Category = "ClickableItem", meta = (AllowPrivateAccess))
+	UStaticMeshComponent* StaticMesh;
 
-	UPROPERTY(VisibleDefaultsOnly, Category = "Item")
+	UPROPERTY(VisibleDefaultsOnly, Category = "ClickableItem")
 	class UBoxComponent* InteractionVolume;
 
-	UPROPERTY(VisibleDefaultsOnly, Category = "Item")
-	class USceneComponent* RootScene;
+	UPROPERTY(VisibleDefaultsOnly, Category = "ClickableItem")
+	USceneComponent* RootScene;
 
-	UPROPERTY(VisibleDefaultsOnly, Category = "Item")
-	class UWidgetComponent* DescriptionTextWidget;
+	UPROPERTY(VisibleDefaultsOnly, Category = "ClickableItem")
+	UWidgetComponent* DescriptionTextWidget;
 
-	UPROPERTY(VisibleDefaultsOnly, Category = "Item")
-	class UWidgetComponent* HoverOnlyWidget;
+	UPROPERTY(VisibleDefaultsOnly, Category = "ClickableItem")
+	UWidgetComponent* HoverOnlyWidget;
 	
 public:
+	UPROPERTY(BlueprintReadOnly, EditInstanceOnly, Category = "ClickableItem")
+	ACameraActor* TargetViewCamera;
+	
 	UFUNCTION(BlueprintCallable)
 	void ShowDescriptionWidget(FText Text = FText(), bool bAutoPlay = false, bool bFadeIn = false, float Delay = 0.2, int CharNumPerDelay = 1);
 
@@ -46,13 +48,6 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void HideHoverOnlyWidget();
-	
-	virtual void OnClick_Implementation() override;
-	virtual void OnHover_Implementation() override;
-	virtual void OnUnhover_Implementation() override;
-
-	UPROPERTY(BlueprintReadOnly, EditInstanceOnly, Category = "Item")
-	ACameraActor* TargetViewCamera;
 	
 private:
 	UFUNCTION()

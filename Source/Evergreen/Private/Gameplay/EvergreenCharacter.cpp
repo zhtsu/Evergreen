@@ -9,8 +9,10 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Gameplay/EvergreenPawn.h"
 #include "CineCameraComponent.h"
+#include "Common/CommonMacro.h"
 #include "Gameplay/EvergreenPlayerController.h"
 #include "Manager/ViewManager.h"
+#include "World/InteractableItemBase.h"
 
 AEvergreenCharacter::AEvergreenCharacter()
 {
@@ -209,6 +211,14 @@ void AEvergreenCharacter::Move(const FInputActionValue& InputActionValue)
 	}
 }
 
+void AEvergreenCharacter::Interact(const FInputActionValue& InputActionValue)
+{
+	if (ActiveInteractableItem)
+	{
+		ActiveInteractableItem->Execute_OnInteract(ActiveInteractableItem);
+	}
+}
+
 void AEvergreenCharacter::SetCameraParams(float Yaw, float Pitch, float Length)
 {
 	if (Length != -1.f) SpringArm->TargetArmLength = Length;
@@ -235,6 +245,7 @@ void AEvergreenCharacter::ActivateMappingContext(AEvergreenPlayerController* Pla
 		EnhancedInputComponent->ClearActionValueBindings();
 		EnhancedInputComponent->ClearActionEventBindings();
 		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AEvergreenCharacter::Move);
+		EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Triggered, this, &AEvergreenCharacter::Interact);
 	}
 }
 

@@ -13,6 +13,9 @@ class EVERGREEN_API AEvergreenCharacter : public ACharacter
 
 public:
 	AEvergreenCharacter();
+
+	UPROPERTY()
+	class AInteractableItemBase* ActiveInteractableItem = nullptr;
 	
 protected:
 	virtual void BeginPlay() override;
@@ -67,6 +70,9 @@ private:
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
 	class UInputAction* MoveAction;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
+	class UInputAction* InteractAction;
 
 	// Camera movement
 	UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess))
@@ -91,6 +97,7 @@ private:
 	void RemoveMappingContext(AEvergreenPlayerController* PlayerController);
 	
 	void Move(const struct FInputActionValue& InputActionValue);
+	void Interact(const FInputActionValue& InputActionValue);
 
 	bool bCameraBoomYawBlending = false;
 	bool bCameraBoomPitchBlending = false;

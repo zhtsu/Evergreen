@@ -20,13 +20,10 @@ class EVERGREEN_API IClickableInterface
 public:
 	UFUNCTION(BlueprintNativeEvent, Category = "ClickableItem")
 	void OnClick();
-	virtual void OnClick_Implementation() = 0;
 	
 	UFUNCTION(BlueprintNativeEvent, Category = "ClickableItem")
 	void OnHover();
-	virtual void OnHover_Implementation() = 0;
 
 	UFUNCTION(BlueprintNativeEvent, Category = "ClickableItem")
 	void OnUnhover();
-	virtual void OnUnhover_Implementation() = 0;
 };

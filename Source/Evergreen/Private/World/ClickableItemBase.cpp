@@ -34,26 +34,26 @@ AClickableItemBase::AClickableItemBase()
 	DescriptionTextWidget->SetupAttachment(StaticMesh);
 	DescriptionTextWidget->SetWidgetSpace(EWidgetSpace::Screen);
 	DescriptionTextWidget->SetDrawAtDesiredSize(true);
-	if (UClass* LoadedClass = LoadClass<UTypewriterTextWidget>(nullptr, *UAssetPathHub::WBP_ItemDescriptionText_Path.ToString()))
+	if (UClass* LoadedClass = LoadClass<UTypewriterTextWidget>(nullptr, *UAssetPathHub::WBP_Item_DescriptionText_Path.ToString()))
 	{
 		DescriptionTextWidget->SetWidgetClass(LoadedClass);
 	}
 	else
 	{
-		FAST_WARNING("Fail to load blueprint '%s'", *UAssetPathHub::WBP_ItemDescriptionText_Path.ToString());
+		FAST_WARNING("Fail to load blueprint '%s'", *UAssetPathHub::WBP_Item_DescriptionText_Path.ToString());
 	}
 	
 	HoverOnlyWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("ShowOnHovered"));
 	HoverOnlyWidget->SetupAttachment(StaticMesh);
 	HoverOnlyWidget->SetWidgetSpace(EWidgetSpace::Screen);
 	HoverOnlyWidget->SetDrawAtDesiredSize(true);
-	if (UClass* LoadedClass = LoadClass<UUserWidget>(nullptr, *UAssetPathHub::WBP_ItemShowOnHovered_Path.ToString()))
+	if (UClass* LoadedClass = LoadClass<UUserWidget>(nullptr, *UAssetPathHub::WBP_Item_ShowOnHover_Path.ToString()))
 	{
 		HoverOnlyWidget->SetWidgetClass(LoadedClass);
 	}
 	else
 	{
-		FAST_WARNING("Fail to load blueprint '%s'", *UAssetPathHub::WBP_ItemDescriptionText_Path.ToString());
+		FAST_WARNING("Fail to load blueprint '%s'", *UAssetPathHub::WBP_Item_ShowOnHover_Path.ToString());
 	}
 }
 
@@ -116,19 +116,4 @@ void AClickableItemBase::OnUnhoverNative(UPrimitiveComponent* TouchedComponent)
 	if (!EGI->IsAllowInput()) return;
 	
 	Execute_OnUnhover(this);
-}
-
-void AClickableItemBase::OnClick_Implementation()
-{
-	FAST_LOG("Default OnClick")
-}
-
-void AClickableItemBase::OnHover_Implementation()
-{
-	FAST_LOG("Default OnHover")
-}
-
-void AClickableItemBase::OnUnhover_Implementation()
-{
-	FAST_LOG("Default OnUnhover")
 }

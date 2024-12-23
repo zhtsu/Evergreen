@@ -35,8 +35,9 @@ public:
 	inline static FName ST_UI_CSV_Path = "Evergreen/DataTables/CSV/ui.csv";
 	inline static FName ST_UI_Test_CSV_Path = "Evergreen/DataTables/CSV/ui_test.csv";
 
-	inline static FName WBP_ItemDescriptionText_Path = "Blueprint'/Game/Evergreen/Blueprints/UI/WBP_ItemDescriptionText.WBP_ItemDescriptionText_C'";
-	inline static FName WBP_ItemShowOnHovered_Path = "Blueprint'/Game/Evergreen/Blueprints/UI/WBP_ItemShowOnHovered.WBP_ItemShowOnHovered_C'";
-
+	inline static FName WBP_Item_DescriptionText_Path = "Blueprint'/Game/Evergreen/Blueprints/UI/WBP_Item_DescriptionText.WBP_Item_DescriptionText_C'";
+	inline static FName WBP_Item_ShowOnHover_Path = "Blueprint'/Game/Evergreen/Blueprints/UI/WBP_Item_ShowOnHover.WBP_Item_ShowOnHover_C'";
+	inline static FName WBP_Item_ShowOnActorEnter_Path = "Blueprint'/Game/Evergreen/Blueprints/UI/WBP_Item_ShowOnActorEnter.WBP_Item_ShowOnActorEnter_C'";
+	
 	inline static FName BP_Interactor_Path = "Blueprint'/Game/Evergreen/Blueprints/Characters/BP_Interactor.BP_Interactor_C'";
 };
