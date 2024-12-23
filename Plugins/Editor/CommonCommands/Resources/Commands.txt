@@ -1,3 +1,4 @@
 Stat FPS
 Stat Unit
 ShowDebug abilitysystem
+au.Debug.Modulation.Enable.Matrix 1
