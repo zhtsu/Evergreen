@@ -68,7 +68,7 @@ public:
 	void AdjustCameraBoomLength_ThirdPerson(float Length = -1.f, bool bAllowMove = true);
 
 	UFUNCTION(BlueprintCallable)
-	void ChangeCameraParamsTo(ECameraViewType ViewType, bool bBlend = false, bool bAllowMove = true);
+	void ChangeCameraParamsTo(ECameraViewType ViewType, bool bBlend = true, bool bAllowMove = true);
 
 	static void SetGamePlayers(class AEvergreenCharacter* InThirdPersonPlayer, class AEvergreenPawn* InInteractionPlayer)
 	{

@@ -6,8 +6,8 @@
 #include "Engine/TriggerBox.h"
 #include "EvergreenTriggerBox.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnTriggerActorEnter, AActor*, TriggerActor);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnTriggerActorLeave, AActor*, TriggerActor);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnActorEnter, AActor*, TriggerActor);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnActorLeave, AActor*, TriggerActor);
 
 UCLASS()
 class EVERGREEN_API AEvergreenTriggerBox : public ATriggerBox
@@ -18,13 +18,13 @@ public:
 	AEvergreenTriggerBox();
 	
 	UPROPERTY(BlueprintAssignable)
-	FOnTriggerActorEnter OnTriggerActorEnter;
+	FOnActorEnter OnActorEnter;
 
 	UPROPERTY(BlueprintAssignable)
-	FOnTriggerActorLeave OnTriggerActorLeave;
+	FOnActorLeave OnActorLeave;
 
 	UPROPERTY(EditInstanceOnly, Category = "EvergreenTriggerBox")
-	TArray<TSubclassOf<AActor>> AllowedTriggerActorClasses;
+	TArray<TSubclassOf<AActor>> AllowedActorClasses;
 
 private:
 	UFUNCTION()

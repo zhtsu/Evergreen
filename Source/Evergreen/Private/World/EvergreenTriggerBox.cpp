@@ -11,25 +11,25 @@ AEvergreenTriggerBox::AEvergreenTriggerBox()
 
 void AEvergreenTriggerBox::OnActorBeginOverlapFunction(AActor* OverlappedActor, AActor* OtherActor)
 {
-	if (IsAllowedClass(OverlappedActor))
+	if (IsAllowedClass(OtherActor))
 	{
-		OnTriggerActorEnter.Broadcast(OverlappedActor);
+		OnActorEnter.Broadcast(OtherActor);
 	}
 }
 
 void AEvergreenTriggerBox::OnActorEndOverlapFunction(AActor* OverlappedActor, AActor* OtherActor)
 {
-	if (IsAllowedClass(OverlappedActor))
+	if (IsAllowedClass(OtherActor))
 	{
-		OnTriggerActorLeave.Broadcast(OverlappedActor);
+		OnActorLeave.Broadcast(OtherActor);
 	}
 }
 
-bool AEvergreenTriggerBox::IsAllowedClass(AActor* OverlappedActor)
+bool AEvergreenTriggerBox::IsAllowedClass(AActor* TriggerActor)
 {
-	for (const TSubclassOf<AActor>& Iter : AllowedTriggerActorClasses)
+	for (const TSubclassOf<AActor>& Iter : AllowedActorClasses)
 	{
-		if (OverlappedActor->GetClass() == Iter)
+		if (TriggerActor->GetClass() == Iter)
 			return true;
 	}
 	return false;

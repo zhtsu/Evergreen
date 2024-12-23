@@ -91,4 +91,8 @@ private:
 	void RemoveMappingContext(AEvergreenPlayerController* PlayerController);
 	
 	void Move(const struct FInputActionValue& InputActionValue);
+
+	bool bCameraBoomYawBlending = false;
+	bool bCameraBoomPitchBlending = false;
+	bool bCameraBoomLengthBlending = false;
 };
