@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
-#include "Components/SizeBox.h"
 #include "Components/TextBlock.h"
 #include "TypewriterTextWidget.generated.h"
 

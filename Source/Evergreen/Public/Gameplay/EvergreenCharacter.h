@@ -22,7 +22,7 @@ protected:
 	
 public:
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
-
+	
 	// Yaw
 	UFUNCTION(BlueprintImplementableEvent)
 	void K2_RotateCameraBoomYaw(float Yaw, bool bAllowMove);
@@ -56,12 +56,15 @@ public:
 	void SetCameraParams(float Yaw, float Pitch, float Length);
 	
 private:
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, meta = (AllowPrivateAccess), Category = "Camera")
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, meta = (AllowPrivateAccess))
 	class USpringArmComponent* SpringArm;
 
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, meta = (AllowPrivateAccess), Category = "Camera")
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, meta = (AllowPrivateAccess))
 	class UCineCameraComponent* Camera;
 
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, meta = (AllowPrivateAccess))
+	class UWidgetComponent* BubbleWidget;
+	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
 	TSubclassOf<class AEvergreenPawn> InteractorClass;
 	
@@ -72,7 +75,7 @@ private:
 	class UInputAction* MoveAction;
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
-	class UInputAction* InteractAction;
+	UInputAction* InteractAction;
 
 	// Camera movement
 	UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess))

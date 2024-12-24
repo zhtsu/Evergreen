@@ -9,9 +9,11 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Gameplay/EvergreenPawn.h"
 #include "CineCameraComponent.h"
+#include "Common/AssetPathHub.h"
 #include "Common/CommonMacro.h"
 #include "Gameplay/EvergreenPlayerController.h"
 #include "Manager/ViewManager.h"
+#include "UI/CharacterBubbleWidget.h"
 #include "World/InteractableItemBase.h"
 
 AEvergreenCharacter::AEvergreenCharacter()

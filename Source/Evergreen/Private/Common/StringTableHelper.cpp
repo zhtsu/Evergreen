@@ -10,11 +10,11 @@
 #define IMPORT_STRING_TABLE(StringTableID)\
 	FStringTableRegistry::Get().UnregisterStringTable(#StringTableID);\
 	FStringTableRegistry::Get().Internal_LocTableFromFile(#StringTableID, #StringTableID,\
-		UAssetPathHub::ST_##StringTableID##_CSV_Path.ToString(), FPaths::ProjectContentDir());\
+		UAssetPathHub::CSV_##StringTableID##_Path.ToString(), FPaths::ProjectContentDir());\
 	FStringTablePtr StringTableID##_StringTable = FStringTableRegistry::Get().FindMutableStringTable(#StringTableID);\
 	if (!StringTableID##_StringTable)\
 	{\
-		UE_LOG(LogTemp, Warning, TEXT("%s"), *UAssetPathHub::ST_##StringTableID##_CSV_Path.ToString());\
+		UE_LOG(LogTemp, Warning, TEXT("%s"), *UAssetPathHub::CSV_##StringTableID##_Path.ToString());\
 	}\
 
 void UStringTableHelper::ImportAllStringTableFromCSV()

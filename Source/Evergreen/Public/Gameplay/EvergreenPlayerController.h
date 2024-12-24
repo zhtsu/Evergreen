@@ -14,10 +14,10 @@ class EVERGREEN_API AEvergreenPlayerController : public APlayerController
 public:
 	AEvergreenPlayerController();
 	
-	UFUNCTION(Blueprintable)
+	UFUNCTION(BlueprintPure)
 	FORCEINLINE class AEvergreenCharacter* GetThirdPersonPlayer() const { return ThirdPersonPlayer; }
 
-	UFUNCTION(Blueprintable)
+	UFUNCTION(BlueprintPure)
 	FORCEINLINE class AEvergreenPawn* GetInteractionPlayer() const { return InteractionPlayer; }
 
 	static void SetGamePlayers(class AEvergreenCharacter* InThirdPersonPlayer, class AEvergreenPawn* InInteractionPlayer)
