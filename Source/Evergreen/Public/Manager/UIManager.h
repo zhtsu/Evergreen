@@ -12,7 +12,22 @@ class UUIManager : public UGameInstanceSubsystem
 
 public:
 	UUIManager();
+	
+	FORCEINLINE void SetMainUI(class UMainUIWidget* InMainUI) { MainUI = InMainUI; }
 
-	UFUNCTION(BlueprintCallable)
-	void ShowBubble(FText InText = FText(), float Duration = 3.f);
+	static void SetGamePlayers(class AEvergreenCharacter* InThirdPersonPlayer, class AEvergreenPawn* InInteractionPlayer)
+	{
+		ThirdPersonPlayer = InThirdPersonPlayer;
+		InteractionPlayer = InInteractionPlayer;
+	}
+	
+private:
+	UPROPERTY()
+	UMainUIWidget* MainUI;
+
+	static AEvergreenCharacter* ThirdPersonPlayer;
+	static AEvergreenPawn* InteractionPlayer;
 };
+
+AEvergreenCharacter* UUIManager::ThirdPersonPlayer = nullptr;
+AEvergreenPawn* UUIManager::InteractionPlayer = nullptr;

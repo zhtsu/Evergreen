@@ -13,8 +13,4 @@ class EVERGREEN_API AEvergreenHUD : public AHUD
 
 protected:
 	void BeginPlay() override;
-	
-public:
-	UPROPERTY(BlueprintReadOnly)
-	class UMainUIWidget* MainUI;
 };

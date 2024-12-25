@@ -5,16 +5,6 @@
 
 #include "Animation/UMGSequencePlayer.h"
 
-void UCharacterBubbleWidget::NativeConstruct()
-{
-	
-}
-
-void UCharacterBubbleWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
-{
-	
-}
-
 void UCharacterBubbleWidget::SetText(FText InText)
 {
 	Text->SetText(InText);

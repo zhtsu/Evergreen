@@ -22,6 +22,12 @@ protected:
 	
 public:
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
+
+	UFUNCTION(BlueprintCallable)
+	void ShowBubble(FText InText = FText(), float Duration = 9.f);
+
+	UFUNCTION()
+	void HideBubble();
 	
 	// Yaw
 	UFUNCTION(BlueprintImplementableEvent)
@@ -105,4 +111,6 @@ private:
 	bool bCameraBoomYawBlending = false;
 	bool bCameraBoomPitchBlending = false;
 	bool bCameraBoomLengthBlending = false;
+
+	bool bBubbleShown = false;
 };

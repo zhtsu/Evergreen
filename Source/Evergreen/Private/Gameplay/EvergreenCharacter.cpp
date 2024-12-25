@@ -12,6 +12,7 @@
 #include "Common/AssetPathHub.h"
 #include "Common/CommonMacro.h"
 #include "Gameplay/EvergreenPlayerController.h"
+#include "Manager/UIManager.h"
 #include "Manager/ViewManager.h"
 #include "UI/CharacterBubbleWidget.h"
 #include "World/InteractableItemBase.h"
@@ -48,6 +49,19 @@ AEvergreenCharacter::AEvergreenCharacter()
 	TargetCameraBoomYaw = StartCameraBoomYaw;
 	TargetCameraBoomPitch = StartCameraBoomPitch;
 	TargetCameraBoomLength = StartCameraBoomLength;
+
+	BubbleWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("BubbleWidget"));
+	BubbleWidget->SetupAttachment(RootComponent);
+	BubbleWidget->SetWidgetSpace(EWidgetSpace::Screen);
+	BubbleWidget->SetDrawAtDesiredSize(true);
+	if (UClass* LoadedClass = LoadClass<UCharacterBubbleWidget>(nullptr, *UAssetPathHub::WBP_Character_Bubble_Path.ToString()))
+	{
+		BubbleWidget->SetWidgetClass(LoadedClass);
+	}
+	else
+	{
+		FAST_WARNING("Fail to load blueprint '%s'", *UAssetPathHub::WBP_Character_Bubble_Path.ToString());
+	}
 }
 
 void AEvergreenCharacter::BeginPlay()
@@ -61,6 +75,7 @@ void AEvergreenCharacter::BeginPlay()
 
 		AEvergreenPlayerController::SetGamePlayers(this, InteractionPlayer);
 		UViewManager::SetGamePlayers(this, InteractionPlayer);
+		UUIManager::SetGamePlayers(this, InteractionPlayer);
 	}
 }
 
@@ -70,6 +85,36 @@ void AEvergreenCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInput
 
 	ActivateMappingContext(
 		UEvergreenGameInstance::GetEvergreenPlayerController(), PlayerInputComponent);
+}
+
+void AEvergreenCharacter::ShowBubble(FText InText, float Duration)
+{
+	if (bBubbleShown) return;
+
+	bBubbleShown = true;
+
+	UCharacterBubbleWidget* CharacterBubbleWidget = Cast<UCharacterBubbleWidget>(BubbleWidget->GetWidget());
+	if (CharacterBubbleWidget)
+	{
+		CharacterBubbleWidget->SetText(InText);
+		CharacterBubbleWidget->Show();
+
+		FTimerHandle TimerHandle;
+		if (TimerHandle.IsValid()) GetWorld()->GetTimerManager().ClearTimer(TimerHandle);
+		GetWorld()->GetTimerManager().SetTimer(
+			TimerHandle, this, &AEvergreenCharacter::HideBubble, Duration);
+	}
+}
+
+void AEvergreenCharacter::HideBubble()
+{
+	bBubbleShown = false;
+	
+	UCharacterBubbleWidget* CharacterBubbleWidget = Cast<UCharacterBubbleWidget>(BubbleWidget->GetWidget());
+	if (CharacterBubbleWidget)
+	{
+		CharacterBubbleWidget->Hide();
+	}
 }
 
 void AEvergreenCharacter::K2_StartRotateCameraBoomYawIfAllowed(float Yaw, bool bAllowMove, bool& AllowRotation)
