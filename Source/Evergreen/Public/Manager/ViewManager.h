@@ -70,6 +70,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void ChangeCameraParamsTo(ECameraViewType ViewType, bool bBlend = true, bool bAllowMove = true);
 
+	UFUNCTION(BlueprintCallable)
+	void ChangeCameraTo(const FString& CameraID, bool& Success);
+	
 	static void SetGamePlayers(class AEvergreenCharacter* InThirdPersonPlayer, class AEvergreenPawn* InInteractionPlayer)
 	{
 		ThirdPersonPlayer = InThirdPersonPlayer;

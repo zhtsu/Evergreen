@@ -12,6 +12,8 @@
 #include "..\..\Public\Config\EvergreenCameraSettings.h"
 #include "Gameplay/EvergreenCharacter.h"
 #include "Gameplay/EvergreenPawn.h"
+#include "Gameplay/EvergreenPlayerController.h"
+#include "World/EvergreenCamera.h"
 
 UViewManager::UViewManager()
 {
@@ -40,7 +42,8 @@ void UViewManager::Observe(UObject* ObservableObject, FViewTargetTransitionParam
 	{
 		EGI->SetCurrentGamePlayState(EGamePlayState::Cutscene);
 		CurrentObservedObject = ObservableObject;
-		ACameraActor* TargetViewCamera = IObservableInterface::Execute_GetViewTarget(ObservableObject);
+		AEvergreenCamera* TargetViewCamera = IObservableInterface::Execute_GetViewTarget(ObservableObject);
+		if (!TargetViewCamera) return;
 		
 		PlayerController->SetViewTarget(Cast<AActor>(TargetViewCamera), ViewTargetTransitionParams);
 
@@ -222,5 +225,20 @@ void UViewManager::ChangeCameraParamsTo(ECameraViewType ViewType, bool bBlend, b
 	{
 		ThirdPersonPlayer->SetCameraParams(
 			TargetCameraParams.CameraBoomYaw, TargetCameraParams.CameraBoomPitch, TargetCameraParams.CameraBoomLength);
+	}
+}
+
+void UViewManager::ChangeCameraTo(const FString& CameraID, bool& Success)
+{
+	AEvergreenCamera* Camera = AEvergreenCamera::FindFirstFixedCamera(CameraID);
+	if (!Camera)
+	{
+		Success = false;
+		return;
+	}
+
+	if (AEvergreenPlayerController* PlayerController = UEvergreenGameInstance::GetEvergreenPlayerController())
+	{
+		PlayerController->SetViewTarget(Camera);
 	}
 }

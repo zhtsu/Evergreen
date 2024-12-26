@@ -89,7 +89,7 @@ public:
 	bool IsAllowInput() const;
 	
 	UFUNCTION(BlueprintCallable)
-	void SwitchEvergreenGameModeTo(EEvergreenGameMode InGameMode);
+	void ChangeEvergreenGameModeTo(EEvergreenGameMode InGameMode);
 
 	UFUNCTION(BlueprintPure)
 	FORCEINLINE EEvergreenGameMode GetCurrentEvergreenGameMode() const { return CurrentGameMode; }

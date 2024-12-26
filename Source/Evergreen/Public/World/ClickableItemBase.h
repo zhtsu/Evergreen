@@ -35,7 +35,7 @@ private:
 	
 public:
 	UPROPERTY(BlueprintReadOnly, EditInstanceOnly, Category = "ClickableItem")
-	ACameraActor* TargetViewCamera;
+	class AEvergreenCamera* TargetViewCamera;
 	
 	UFUNCTION(BlueprintCallable)
 	void ShowDescriptionWidget(FText Text = FText(), bool bAutoPlay = false, bool bFadeIn = false, float Delay = 0.2, int CharNumPerDelay = 1);

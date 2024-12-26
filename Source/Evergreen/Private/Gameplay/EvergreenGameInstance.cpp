@@ -40,7 +40,7 @@ void UEvergreenGameInstance::SetEvergreenPlayerController(AEvergreenPlayerContro
 	EvergreenPlayerController = InPlayerController;
 }
 
-void UEvergreenGameInstance::SwitchEvergreenGameModeTo(EEvergreenGameMode InGameMode)
+void UEvergreenGameInstance::ChangeEvergreenGameModeTo(EEvergreenGameMode InGameMode)
 {
 	if (CurrentGameMode == InGameMode) return;
 	
