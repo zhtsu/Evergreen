@@ -20,6 +20,9 @@ class EVERGREEN_API IClickableInterface
 public:
 	UFUNCTION(BlueprintNativeEvent, Category = "ClickableItem")
 	void OnClick();
+
+	UFUNCTION(BlueprintNativeEvent, Category = "ClickableItem")
+	void OnRelease();
 	
 	UFUNCTION(BlueprintNativeEvent, Category = "ClickableItem")
 	void OnHover();

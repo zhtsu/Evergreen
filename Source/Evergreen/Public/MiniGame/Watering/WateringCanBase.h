@@ -4,23 +4,26 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "World/ClickableItemBase.h"
 #include "WateringCanBase.generated.h"
 
 UCLASS()
-class EVERGREEN_API AWateringCanBase : public AActor
+class EVERGREEN_API AWateringCanBase : public AClickableItemBase
 {
 	GENERATED_BODY()
 	
 public:
 	AWateringCanBase();
 
-private:
-	UPROPERTY(VisibleDefaultsOnly, Category = "ClickableItem")
-	USceneComponent* RootScene;
-	
-	UPROPERTY(BlueprintReadWrite, VisibleDefaultsOnly, Category = "FlowerPot", meta = (AllowPrivateAccess))
-	UStaticMeshComponent* BottleMesh;
+	UFUNCTION(BlueprintCallable)
+	FORCEINLINE void SetPressed(bool InPressed) { Pressed = InPressed; }
 
+	UFUNCTION(BlueprintPure)
+	FORCEINLINE bool IsPressed() { return Pressed; }
+
+private:
 	UPROPERTY(BlueprintReadWrite, VisibleDefaultsOnly, Category = "FlowerPot", meta = (AllowPrivateAccess))
 	UStaticMeshComponent* CapMesh;
+
+	bool Pressed = false;
 };

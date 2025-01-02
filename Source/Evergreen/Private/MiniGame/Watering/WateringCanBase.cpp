@@ -5,16 +5,6 @@
 
 AWateringCanBase::AWateringCanBase()
 {
-	RootScene = CreateDefaultSubobject<USceneComponent>(TEXT("RootScene"));
-	RootScene->Mobility = EComponentMobility::Static;
-	RootComponent = RootScene;
-	
-	BottleMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Bottle"));
-	BottleMesh->Mobility = EComponentMobility::Static;
-	BottleMesh->SetGenerateOverlapEvents(false);
-	BottleMesh->SetCollisionProfileName("NoCollision");
-	BottleMesh->SetupAttachment(RootScene);
-
 	CapMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Cap"));
 	CapMesh->Mobility = EComponentMobility::Static;
 	CapMesh->SetGenerateOverlapEvents(false);

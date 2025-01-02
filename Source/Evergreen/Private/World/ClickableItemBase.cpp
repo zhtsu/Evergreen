@@ -21,6 +21,7 @@ AClickableItemBase::AClickableItemBase()
 	InteractionVolume->SetCollisionProfileName("UI");
 	InteractionVolume->SetupAttachment(RootScene);
 	InteractionVolume->OnClicked.AddUniqueDynamic(this, &AClickableItemBase::OnClickNative);
+	InteractionVolume->OnReleased.AddUniqueDynamic(this, &AClickableItemBase::OnReleaseNative);
 	InteractionVolume->OnBeginCursorOver.AddUniqueDynamic(this, &AClickableItemBase::OnHoverNative);
 	InteractionVolume->OnEndCursorOver.AddUniqueDynamic(this, &AClickableItemBase::OnUnhoverNative);
 	
@@ -100,6 +101,14 @@ void AClickableItemBase::OnClickNative(UPrimitiveComponent* TouchedComponent, FK
 	if (!EGI->IsAllowInput()) return;
 	
 	Execute_OnClick(this);
+}
+
+void AClickableItemBase::OnReleaseNative(UPrimitiveComponent* TouchedComponent, FKey ButtonReleased)
+{
+	UEvergreenGameInstance* EGI = UEvergreenGameInstance::GetEvergreenGameInstance();
+	if (!EGI->IsAllowInput()) return;
+
+	Execute_OnRelease(this);
 }
 
 void AClickableItemBase::OnHoverNative(UPrimitiveComponent* TouchedComponent)

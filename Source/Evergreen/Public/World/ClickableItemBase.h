@@ -17,7 +17,7 @@ class EVERGREEN_API AClickableItemBase : public AEvergreenItemBase, public IClic
 public:
 	AClickableItemBase();
 
-private:
+protected:
 	UPROPERTY(BlueprintReadWrite, VisibleDefaultsOnly, Category = "ClickableItem", meta = (AllowPrivateAccess))
 	UStaticMeshComponent* StaticMesh;
 
@@ -52,6 +52,9 @@ public:
 private:
 	UFUNCTION()
 	void OnClickNative(UPrimitiveComponent* TouchedComponent, FKey ButtonReleased);
+
+	UFUNCTION()
+	void OnReleaseNative(UPrimitiveComponent* TouchedComponent, FKey ButtonReleased);
 
 	UFUNCTION()
 	void OnHoverNative(UPrimitiveComponent* TouchedComponent);
