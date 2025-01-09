@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "CommonActivatableWidget.h"
 #include "UIManager.generated.h"
 
 UCLASS()
@@ -21,10 +22,25 @@ public:
 		InteractionPlayer = InInteractionPlayer;
 	}
 	
+	UFUNCTION(BlueprintCallable)
+	UCommonActivatableWidget* OpenUI(TSubclassOf<UCommonActivatableWidget> ActivatableWidgetClass);
+
+	UFUNCTION(BlueprintCallable)
+	UCommonActivatableWidget* OpenUniqueUI(TSubclassOf<UCommonActivatableWidget> ActivatableWidgetClass, bool& Success);
+	
+	UFUNCTION(BlueprintCallable)
+	void CloseUI(UCommonActivatableWidget* WidgetToRemove);
+
+	UFUNCTION(BlueprintCallable)
+	void CloseUniqueUI(TSubclassOf<UCommonActivatableWidget> WidgetClassToRemove, bool& Success);
+	
 private:
 	UPROPERTY()
-	UMainUIWidget* MainUI;
+	UMainUIWidget* MainUI = nullptr;
 
+	TMap<int32, TSharedPtr<UCommonActivatableWidget>> WidgetMap;
+	TMap<TSubclassOf<UCommonActivatableWidget>, TSharedPtr<UCommonActivatableWidget>> UniqueWidgetMap;
+	
 	static AEvergreenCharacter* ThirdPersonPlayer;
 	static AEvergreenPawn* InteractionPlayer;
 };

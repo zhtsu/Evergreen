@@ -22,7 +22,8 @@ public class Evergreen : ModuleRules
 			"LevelSequence",
 			"MovieScene",
 			"CinematicCamera",
-			"DeveloperSettings"
+			"DeveloperSettings",
+			"CommonUI"
 		});
 
 		if (Target.bBuildEditor)
