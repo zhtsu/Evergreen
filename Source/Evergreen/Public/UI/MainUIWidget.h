@@ -16,9 +16,9 @@ public:
 	void RemoveWidgetFromStack(UCommonActivatableWidget& WidgetToRemove);
 	
 private:
-	UPROPERTY(Transient, meta = (BindWidget))
+	UPROPERTY(BlueprintReadOnly, meta = (BindWidget, AllowPrivateAccess = "true"))
 	class UCanvasPanel* RootCanvasPanel;
 
-	UPROPERTY(Transient, meta = (BindWidget))
+	UPROPERTY(BlueprintReadOnly, meta = (BindWidget, AllowPrivateAccess = "true"))
 	class UCommonActivatableWidgetContainerBase* WidgetStack;
 };

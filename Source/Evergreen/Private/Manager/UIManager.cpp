@@ -9,55 +9,61 @@
 
 UUIManager::UUIManager()
 {
-	WidgetMap = TMap<int32, TSharedPtr<UCommonActivatableWidget>>();
-	UniqueWidgetMap = TMap<TSubclassOf<UCommonActivatableWidget>, TSharedPtr<UCommonActivatableWidget>>();
+	WidgetMap = TMap<int32, UEvergreenWidgetBase*>();
+	UniqueWidgetMap = TMap<TSubclassOf<UEvergreenWidgetBase>, UEvergreenWidgetBase*>();
 }
 
-UCommonActivatableWidget* UUIManager::OpenUI(TSubclassOf<UCommonActivatableWidget> ActivatableWidgetClass)
+UCommonActivatableWidget* UUIManager::OpenUI(TSubclassOf<UEvergreenWidgetBase> WidgetClass)
 {
 	if (MainUI)
 	{
-		TSharedPtr<UCommonActivatableWidget> WidgetPtr = MakeShareable(MainUI->PushWidgetToStack(ActivatableWidgetClass));
-		if (WidgetPtr)
+		UEvergreenWidgetBase* Widget = Cast<UEvergreenWidgetBase>(MainUI->PushWidgetToStack(WidgetClass));
+		if (Widget)
 		{
-			WidgetMap.Add(WidgetPtr->GetUniqueID(), WidgetPtr);
+			WidgetMap.Add(Widget->GetUniqueID(), Widget);
 		}
 	}
 
 	return nullptr;
 }
 
-UCommonActivatableWidget* UUIManager::OpenUniqueUI(TSubclassOf<UCommonActivatableWidget> ActivatableWidgetClass, bool& Success)
+UCommonActivatableWidget* UUIManager::OpenUniqueUI(TSubclassOf<UEvergreenWidgetBase> WidgetClass, bool& Success)
 {
-	if (MainUI && UniqueWidgetMap.Find(ActivatableWidgetClass) == nullptr)
+	if (MainUI && UniqueWidgetMap.Find(WidgetClass) == nullptr)
 	{
-		TSharedPtr<UCommonActivatableWidget> WidgetPtr = MakeShareable(MainUI->PushWidgetToStack(ActivatableWidgetClass));
-		if (WidgetPtr)
-		{
-			UniqueWidgetMap.Add(ActivatableWidgetClass, WidgetPtr);
-		}
-		
 		Success = true;
-		return MainUI->PushWidgetToStack(ActivatableWidgetClass);
+
+		UEvergreenWidgetBase* Widget = Cast<UEvergreenWidgetBase>(MainUI->PushWidgetToStack(WidgetClass));
+		UniqueWidgetMap.Add(WidgetClass, Widget);
+		
+		return Widget;
 	}
 
 	Success = false;
+	
 	return nullptr;
 }
 
-void UUIManager::CloseUI(UCommonActivatableWidget* WidgetToRemove)
+void UUIManager::CloseUI(UEvergreenWidgetBase* WidgetToRemove)
 {
 	if (WidgetToRemove && WidgetMap.Find(WidgetToRemove->GetUniqueID()) != nullptr)
 	{
+		UCommonActivatableWidget* Widget = *WidgetMap.Find(WidgetToRemove->GetUniqueID());
+		MainUI->RemoveWidgetFromStack(*WidgetToRemove);
+		
 		WidgetMap.Remove(WidgetToRemove->GetUniqueID());
 	}
 }
 
-void UUIManager::CloseUniqueUI(TSubclassOf<UCommonActivatableWidget> WidgetClassToRemove, bool& Success)
+void UUIManager::CloseUniqueUI(TSubclassOf<UEvergreenWidgetBase> WidgetClassToRemove, bool& Success)
 {
 	if (MainUI && UniqueWidgetMap.Find(WidgetClassToRemove) != nullptr)
 	{
 		Success = true;
+		
+		UCommonActivatableWidget* Widget = *UniqueWidgetMap.Find(WidgetClassToRemove);
+		MainUI->RemoveWidgetFromStack(*Widget);
+		
 		UniqueWidgetMap.Remove(WidgetClassToRemove);
 	}
 

@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "CommonActivatableWidget.h"
+#include "UI/EvergreenWidgetBase.h"
 #include "UIManager.generated.h"
 
 UCLASS()
@@ -23,23 +23,31 @@ public:
 	}
 	
 	UFUNCTION(BlueprintCallable)
-	UCommonActivatableWidget* OpenUI(TSubclassOf<UCommonActivatableWidget> ActivatableWidgetClass);
+	UCommonActivatableWidget* OpenUI(
+		UPARAM(meta=(AllowAbstract=false)) TSubclassOf<UEvergreenWidgetBase> WidgetClass);
 
 	UFUNCTION(BlueprintCallable)
-	UCommonActivatableWidget* OpenUniqueUI(TSubclassOf<UCommonActivatableWidget> ActivatableWidgetClass, bool& Success);
+	UCommonActivatableWidget* OpenUniqueUI(
+		UPARAM(meta=(AllowAbstract=false)) TSubclassOf<UEvergreenWidgetBase> WidgetClass,
+		bool& Success);
 	
 	UFUNCTION(BlueprintCallable)
-	void CloseUI(UCommonActivatableWidget* WidgetToRemove);
+	void CloseUI(UEvergreenWidgetBase* WidgetToRemove);
 
 	UFUNCTION(BlueprintCallable)
-	void CloseUniqueUI(TSubclassOf<UCommonActivatableWidget> WidgetClassToRemove, bool& Success);
+	void CloseUniqueUI(
+		UPARAM(meta=(AllowAbstract=false)) TSubclassOf<UEvergreenWidgetBase> WidgetClassToRemove,
+		bool& Success);
 	
 private:
 	UPROPERTY()
 	UMainUIWidget* MainUI = nullptr;
 
-	TMap<int32, TSharedPtr<UCommonActivatableWidget>> WidgetMap;
-	TMap<TSubclassOf<UCommonActivatableWidget>, TSharedPtr<UCommonActivatableWidget>> UniqueWidgetMap;
+	UPROPERTY()
+	TMap<int32, UEvergreenWidgetBase*> WidgetMap;
+
+	UPROPERTY()
+	TMap<TSubclassOf<UEvergreenWidgetBase>, UEvergreenWidgetBase*> UniqueWidgetMap;
 	
 	static AEvergreenCharacter* ThirdPersonPlayer;
 	static AEvergreenPawn* InteractionPlayer;

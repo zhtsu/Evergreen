@@ -3,14 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "EvergreenWidgetBase.h"
-#include "ObserveViewWidget.generated.h"
+#include "CommonActivatableWidget.h"
+#include "EvergreenWidgetBase.generated.h"
 
 /**
  * 
  */
 UCLASS(Abstract)
-class EVERGREEN_API UObserveViewWidget : public UEvergreenWidgetBase
+class EVERGREEN_API UEvergreenWidgetBase : public UCommonActivatableWidget
 {
 	GENERATED_BODY()
 	
