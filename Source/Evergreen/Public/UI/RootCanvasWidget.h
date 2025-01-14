@@ -4,10 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
-#include "MainUIWidget.generated.h"
+#include "RootCanvasWidget.generated.h"
 
 UCLASS(Abstract)
-class EVERGREEN_API UMainUIWidget : public UUserWidget
+class EVERGREEN_API URootCanvasWidget : public UUserWidget
 {
 	GENERATED_BODY()
 

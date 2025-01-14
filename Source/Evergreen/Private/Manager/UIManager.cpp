@@ -5,7 +5,7 @@
 #include "Manager/UIManager.h"
 
 #include "CommonActivatableWidget.h"
-#include "UI/MainUIWidget.h"
+#include "..\..\Public\UI\RootCanvasWidget.h"
 
 UUIManager::UUIManager()
 {
@@ -15,9 +15,9 @@ UUIManager::UUIManager()
 
 UCommonActivatableWidget* UUIManager::OpenUI(TSubclassOf<UEvergreenWidgetBase> WidgetClass)
 {
-	if (MainUI)
+	if (RootCanvas)
 	{
-		UEvergreenWidgetBase* Widget = Cast<UEvergreenWidgetBase>(MainUI->PushWidgetToStack(WidgetClass));
+		UEvergreenWidgetBase* Widget = Cast<UEvergreenWidgetBase>(RootCanvas->PushWidgetToStack(WidgetClass));
 		if (Widget)
 		{
 			WidgetMap.Add(Widget->GetUniqueID(), Widget);
@@ -29,11 +29,11 @@ UCommonActivatableWidget* UUIManager::OpenUI(TSubclassOf<UEvergreenWidgetBase> W
 
 UCommonActivatableWidget* UUIManager::OpenUniqueUI(TSubclassOf<UEvergreenWidgetBase> WidgetClass, bool& Success)
 {
-	if (MainUI && UniqueWidgetMap.Find(WidgetClass) == nullptr)
+	if (RootCanvas && UniqueWidgetMap.Find(WidgetClass) == nullptr)
 	{
 		Success = true;
 
-		UEvergreenWidgetBase* Widget = Cast<UEvergreenWidgetBase>(MainUI->PushWidgetToStack(WidgetClass));
+		UEvergreenWidgetBase* Widget = Cast<UEvergreenWidgetBase>(RootCanvas->PushWidgetToStack(WidgetClass));
 		UniqueWidgetMap.Add(WidgetClass, Widget);
 		
 		return Widget;
@@ -49,7 +49,7 @@ void UUIManager::CloseUI(UEvergreenWidgetBase* WidgetToRemove)
 	if (WidgetToRemove && WidgetMap.Find(WidgetToRemove->GetUniqueID()) != nullptr)
 	{
 		UCommonActivatableWidget* Widget = *WidgetMap.Find(WidgetToRemove->GetUniqueID());
-		MainUI->RemoveWidgetFromStack(*WidgetToRemove);
+		RootCanvas->RemoveWidgetFromStack(*WidgetToRemove);
 		
 		WidgetMap.Remove(WidgetToRemove->GetUniqueID());
 	}
@@ -57,12 +57,12 @@ void UUIManager::CloseUI(UEvergreenWidgetBase* WidgetToRemove)
 
 void UUIManager::CloseUniqueUI(TSubclassOf<UEvergreenWidgetBase> WidgetClassToRemove, bool& Success)
 {
-	if (MainUI && UniqueWidgetMap.Find(WidgetClassToRemove) != nullptr)
+	if (RootCanvas && UniqueWidgetMap.Find(WidgetClassToRemove) != nullptr)
 	{
 		Success = true;
 		
 		UCommonActivatableWidget* Widget = *UniqueWidgetMap.Find(WidgetClassToRemove);
-		MainUI->RemoveWidgetFromStack(*Widget);
+		RootCanvas->RemoveWidgetFromStack(*Widget);
 		
 		UniqueWidgetMap.Remove(WidgetClassToRemove);
 	}

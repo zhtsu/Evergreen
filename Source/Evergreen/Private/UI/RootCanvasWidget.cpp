@@ -1,17 +1,17 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "UI/MainUIWidget.h"
+#include "UI/RootCanvasWidget.h"
 
 #include "CommonActivatableWidget.h"
 #include "Widgets/CommonActivatableWidgetContainer.h"
 
-UCommonActivatableWidget* UMainUIWidget::PushWidgetToStack(TSubclassOf<UCommonActivatableWidget> ActivatableWidgetClass)
+UCommonActivatableWidget* URootCanvasWidget::PushWidgetToStack(TSubclassOf<UCommonActivatableWidget> ActivatableWidgetClass)
 {
 	return WidgetStack->AddWidget(ActivatableWidgetClass);
 }
 
-void UMainUIWidget::RemoveWidgetFromStack(UCommonActivatableWidget& WidgetToRemove)
+void URootCanvasWidget::RemoveWidgetFromStack(UCommonActivatableWidget& WidgetToRemove)
 {
 	WidgetStack->RemoveWidget(WidgetToRemove);
 }

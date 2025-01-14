@@ -39,7 +39,7 @@ public:
 	inline static FName WBP_Item_ShowOnHover_Path = "Blueprint'/Game/Evergreen/Blueprints/UI/World/WBP_Item_ShowOnHover.WBP_Item_ShowOnHover_C'";
 	inline static FName WBP_Item_ShowOnActorEnter_Path = "Blueprint'/Game/Evergreen/Blueprints/UI/World/WBP_Item_ShowOnActorEnter.WBP_Item_ShowOnActorEnter_C'";
 	inline static FName WBP_Character_Bubble_Path = "Blueprint'/Game/Evergreen/Blueprints/UI/World/WBP_Character_Bubble.WBP_Character_Bubble_C'";
-	inline static FName WBP_MainUI_Path = "Blueprint'/Game/Evergreen/Blueprints/UI/WBP_MainUI.WBP_MainUI_C'";
+	inline static FName WBP_RootCanvas_Path = "Blueprint'/Game/Evergreen/Blueprints/UI/WBP_RootCanvas.WBP_RootCanvas_C'";
 	inline static FName WBP_ObserveView_Path = "Blueprint'/Game/Evergreen/Blueprints/UI/WBP_ObserveView.WBP_ObserveView_C'";
 	
 	inline static FName BP_Interactor_Path = "Blueprint'/Game/Evergreen/Blueprints/Characters/BP_Interactor.BP_Interactor_C'";

@@ -3,10 +3,10 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "EvergreenBFL.generated.h"
+#include "EvergreenBPFL.generated.h"
 
 UCLASS()
-class UEvergreenBFL : public UBlueprintFunctionLibrary
+class UEvergreenBPFL : public UBlueprintFunctionLibrary
 {
 	GENERATED_BODY()
 

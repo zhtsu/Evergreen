@@ -14,7 +14,7 @@ class UUIManager : public UGameInstanceSubsystem
 public:
 	UUIManager();
 	
-	FORCEINLINE void SetMainUI(class UMainUIWidget* InMainUI) { MainUI = InMainUI; }
+	FORCEINLINE void SetRootCanvas(class URootCanvasWidget* InRootCanvas) { RootCanvas = InRootCanvas; }
 
 	static void SetGamePlayers(class AEvergreenCharacter* InThirdPersonPlayer, class AEvergreenPawn* InInteractionPlayer)
 	{
@@ -41,7 +41,7 @@ public:
 	
 private:
 	UPROPERTY()
-	UMainUIWidget* MainUI = nullptr;
+	URootCanvasWidget* RootCanvas = nullptr;
 
 	UPROPERTY()
 	TMap<int32, UEvergreenWidgetBase*> WidgetMap;

@@ -1,8 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#include "Common/EvergreenBFL.h"
+#include "Common/EvergreenBPFL.h"
 
-FVector UEvergreenBFL::GenerateLocationFromCircle(const FVector& Center, float Radius)
+FVector UEvergreenBPFL::GenerateLocationFromCircle(const FVector& Center, float Radius)
 {
 	float RandomAngle = FMath::RandRange(0.f, 2.f * PI);
 	float RandomRadius = FMath::RandRange(0.f, Radius);

@@ -8,26 +8,26 @@
 #include "Common/CommonMacro.h"
 #include "Gameplay/EvergreenGameInstance.h"
 #include "Manager/UIManager.h"
-#include "UI/MainUIWidget.h"
+#include "UI/RootCanvasWidget.h"
 
 void AEvergreenHUD::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if (UClass* LoadedClass = LoadClass<UUserWidget>(nullptr, *UAssetPathHub::WBP_MainUI_Path.ToString()))
+	if (UClass* LoadedClass = LoadClass<UUserWidget>(nullptr, *UAssetPathHub::WBP_RootCanvas_Path.ToString()))
 	{
 		UEvergreenGameInstance* EGI = UEvergreenGameInstance::GetEvergreenGameInstance();
-		UMainUIWidget* MainUI = CreateWidget<UMainUIWidget>(EGI, LoadedClass, "MainUI");
-		if (MainUI)
+		URootCanvasWidget* RootCanvas = CreateWidget<URootCanvasWidget>(EGI, LoadedClass, "RootCanvas");
+		if (RootCanvas)
 		{
-			MainUI->AddToViewport();
+			RootCanvas->AddToViewport();
 			
 			UUIManager* UIM = EGI->GetSubsystem<UUIManager>();
-			UIM->SetMainUI(MainUI);
+			UIM->SetRootCanvas(RootCanvas);
 		}
 	}
 	else
 	{
-		FAST_WARNING("Fail to load blueprint '%s'", *UAssetPathHub::WBP_MainUI_Path.ToString());
+		FAST_WARNING("Fail to load blueprint '%s'", *UAssetPathHub::WBP_RootCanvas_Path.ToString());
 	}
 }
