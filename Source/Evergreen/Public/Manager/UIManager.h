@@ -16,9 +16,13 @@ public:
 	
 	FORCEINLINE void SetRootCanvas(class URootCanvasWidget* InRootCanvas) { RootCanvas = InRootCanvas; }
 
-	static void SetGamePlayers(class AEvergreenCharacter* InThirdPersonPlayer, class AEvergreenPawn* InInteractionPlayer)
+	void SetThirdPersonPlayer(class AEvergreenCharacter* InThirdPersonPlayer)
 	{
 		ThirdPersonPlayer = InThirdPersonPlayer;
+	}
+
+	void SetInteractionPlayer(class AEvergreenPawn* InInteractionPlayer)
+	{
 		InteractionPlayer = InInteractionPlayer;
 	}
 	
@@ -48,10 +52,10 @@ private:
 
 	UPROPERTY()
 	TMap<TSubclassOf<UEvergreenWidgetBase>, UEvergreenWidgetBase*> UniqueWidgetMap;
-	
-	static AEvergreenCharacter* ThirdPersonPlayer;
-	static AEvergreenPawn* InteractionPlayer;
-};
 
-AEvergreenCharacter* UUIManager::ThirdPersonPlayer = nullptr;
-AEvergreenPawn* UUIManager::InteractionPlayer = nullptr;
+	UPROPERTY()
+	AEvergreenCharacter* ThirdPersonPlayer;
+
+	UPROPERTY()
+	AEvergreenPawn* InteractionPlayer;
+};

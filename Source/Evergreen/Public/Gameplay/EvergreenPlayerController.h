@@ -20,9 +20,13 @@ public:
 	UFUNCTION(BlueprintPure)
 	FORCEINLINE class AEvergreenPawn* GetInteractionPlayer() const { return InteractionPlayer; }
 
-	static void SetGamePlayers(class AEvergreenCharacter* InThirdPersonPlayer, class AEvergreenPawn* InInteractionPlayer)
+	void SetThirdPersonPlayer(AEvergreenCharacter* InThirdPersonPlayer)
 	{
 		ThirdPersonPlayer = InThirdPersonPlayer;
+	}
+
+	void SetInteractionPlayer(AEvergreenPawn* InInteractionPlayer)
+	{
 		InteractionPlayer = InInteractionPlayer;
 	}
 
@@ -30,12 +34,12 @@ public:
 	void PossessInteractionPlayer();
 	
 private:
-	static AEvergreenCharacter* ThirdPersonPlayer;
-	static AEvergreenPawn* InteractionPlayer;
+	UPROPERTY()
+	AEvergreenCharacter* ThirdPersonPlayer;
+
+	UPROPERTY()
+	AEvergreenPawn* InteractionPlayer;
 
 	void SwitchToThirdPersonMode();
 	void SwitchToInteractionMode();
 };
-
-AEvergreenCharacter* AEvergreenPlayerController::ThirdPersonPlayer = nullptr;
-AEvergreenPawn* AEvergreenPlayerController::InteractionPlayer = nullptr;

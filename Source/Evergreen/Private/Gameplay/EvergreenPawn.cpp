@@ -6,11 +6,14 @@
 #include "CineCameraComponent.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
-#include "Common/CommonMacro.h"
 #include "GameFramework/FloatingPawnMovement.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Gameplay/EvergreenGameInstance.h"
 #include "Gameplay/EvergreenPlayerController.h"
+#include <Manager/ViewManager.h>
+#include <Manager/UIManager.h>
+
+#include "Gameplay/EvergreenCharacter.h"
 
 AEvergreenPawn::AEvergreenPawn()
 {
@@ -43,8 +46,28 @@ void AEvergreenPawn::BeginPlay()
 {
 	Super::BeginPlay();
 
+	UEvergreenGameInstance* EGI = UEvergreenGameInstance::GetEvergreenGameInstance();
+	if (AEvergreenPlayerController* EPC = UEvergreenGameInstance::GetEvergreenPlayerController())
+		EPC->SetInteractionPlayer(this);
+	if (UViewManager* ViewManager = EGI->GetSubsystem<UViewManager>())
+		ViewManager->SetInteractionPlayer(this);
+	if (UUIManager* UIManager = EGI->GetSubsystem<UUIManager>())
+		UIManager->SetInteractionPlayer(this);
+
 	if (Controller && Controller->GetControlRotation() != SpringArm->GetRelativeRotation())
+	{
 		Controller->SetControlRotation(SpringArm->GetRelativeRotation());
+	}
+
+	AEvergreenPlayerController* EPC = UEvergreenGameInstance::GetEvergreenPlayerController();
+	if (EPC && !EPC->GetThirdPersonPlayer())
+	{
+		if (AEvergreenCharacter* ThirdPersonPlayer = Cast<AEvergreenCharacter>(GetWorld()->SpawnActor(ThirdPersonPlayerClass)))
+		{
+			ThirdPersonPlayer->SetActorTransform(GetActorTransform());
+			ThirdPersonPlayer->GetMesh()->SetHiddenInGame(true);
+		}
+	}
 }
 
 void AEvergreenPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)

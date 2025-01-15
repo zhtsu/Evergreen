@@ -71,7 +71,7 @@ private:
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, meta = (AllowPrivateAccess))
 	class UWidgetComponent* BubbleWidget;
 	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Evergreen Player", meta = (AllowPrivateAccess = "true"))
 	TSubclassOf<class AEvergreenPawn> InteractorClass;
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))

@@ -26,10 +26,10 @@ public:
 	UViewManager();
 
 	UFUNCTION(BlueprintPure)
-	static bool IsObserved(UObject* ObservableObject);
+	bool IsObserved(UObject* ObservableObject);
 
 	UFUNCTION(BlueprintPure)
-	static UObject* GetCurrentObservedObject() { return CurrentObservedObject; }
+	UObject* GetCurrentObservedObject() const { return CurrentObservedObject; }
 
 	UFUNCTION(BlueprintCallable)
 	void Observe(UObject* ObservableObject, FViewTargetTransitionParams ViewTargetTransitionParams);
@@ -72,24 +72,29 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void ChangeCameraTo(const FString& CameraID, bool& Success);
-	
-	static void SetGamePlayers(class AEvergreenCharacter* InThirdPersonPlayer, class AEvergreenPawn* InInteractionPlayer)
+
+	void SetThirdPersonPlayer(class AEvergreenCharacter* InThirdPersonPlayer)
 	{
 		ThirdPersonPlayer = InThirdPersonPlayer;
+	}
+
+	void SetInteractionPlayer(class AEvergreenPawn* InInteractionPlayer)
+	{
 		InteractionPlayer = InInteractionPlayer;
 	}
 	
 private:
-	static AEvergreenCharacter* ThirdPersonPlayer;
-	static AEvergreenPawn* InteractionPlayer;
+	UPROPERTY()
+	AEvergreenCharacter* ThirdPersonPlayer;
+
+	UPROPERTY()
+	AEvergreenPawn* InteractionPlayer;
+
+	UPROPERTY()
+	UObject* CurrentObservedObject = nullptr;
 	
-	static UObject* CurrentObservedObject;
 	FTimerHandle TimerHandle;
 	
 	void CallOnStartObserve();
 	void CallOnAttainPlayerView();
 };
-
-UObject* UViewManager::CurrentObservedObject = nullptr;
-AEvergreenCharacter* UViewManager::ThirdPersonPlayer = nullptr;
-AEvergreenPawn* UViewManager::InteractionPlayer = nullptr;

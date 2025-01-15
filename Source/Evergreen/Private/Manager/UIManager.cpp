@@ -5,7 +5,7 @@
 #include "Manager/UIManager.h"
 
 #include "CommonActivatableWidget.h"
-#include "..\..\Public\UI\RootCanvasWidget.h"
+#include "UI/RootCanvasWidget.h"
 
 UUIManager::UUIManager()
 {

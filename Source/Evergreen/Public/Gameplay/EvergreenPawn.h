@@ -32,6 +32,9 @@ public:
 	FORCEINLINE float GetCameraOffsetScale_Y() const { return CameraOffsetScale_Y; }
 	
 private:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Evergreen Player", meta = (AllowPrivateAccess = "true"))
+	TSubclassOf<class AEvergreenCharacter> ThirdPersonPlayerClass;
+	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
 	class UInputMappingContext* MappingContext;
 	

@@ -67,15 +67,22 @@ AEvergreenCharacter::AEvergreenCharacter()
 void AEvergreenCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	
-	AEvergreenPawn* InteractionPlayer = Cast<AEvergreenPawn>(GetWorld()->SpawnActor(InteractorClass));
-	if (InteractionPlayer)
-	{
-		InteractionPlayer->SetActorTransform(GetActorTransform());
 
-		AEvergreenPlayerController::SetGamePlayers(this, InteractionPlayer);
-		UViewManager::SetGamePlayers(this, InteractionPlayer);
-		UUIManager::SetGamePlayers(this, InteractionPlayer);
+	UEvergreenGameInstance* EGI = UEvergreenGameInstance::GetEvergreenGameInstance();
+	if (AEvergreenPlayerController* EPC = UEvergreenGameInstance::GetEvergreenPlayerController())
+		EPC->SetThirdPersonPlayer(this);
+	if (UViewManager* ViewManager = EGI->GetSubsystem<UViewManager>())
+		ViewManager->SetThirdPersonPlayer(this);
+	if (UUIManager* UIManager = EGI->GetSubsystem<UUIManager>())
+		UIManager->SetThirdPersonPlayer(this);
+
+	AEvergreenPlayerController* EPC = UEvergreenGameInstance::GetEvergreenPlayerController();
+	if (EPC && !EPC->GetInteractionPlayer())
+	{
+		if (AEvergreenPawn* InteractionPlayer = Cast<AEvergreenPawn>(GetWorld()->SpawnActor(InteractorClass)))
+		{
+			InteractionPlayer->SetActorTransform(GetActorTransform());
+		}
 	}
 }
 
