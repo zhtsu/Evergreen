@@ -6,19 +6,14 @@ Evergreen.sln
 .idea/
 .vscode/
 
-Binaries/
+
 DerivedDataCache/
-Intermediate/
 Saved/
 Output/
 Build/
 
-Plugins/Editor/AssetRepo/Binaries/
-Plugins/Editor/AssetRepo/Intermediate/
-Plugins/Editor/CommonCommands/Binaries/
-Plugins/Editor/CommonCommands/Intermediate/
-Plugins/Editor/LanguageSwitcher/Binaries/
-Plugins/Editor/LanguageSwitcher/Intermediate/
+**/Binaries/
+**/Intermediate/
 
 Content/Collections/
 Content/Developers/
