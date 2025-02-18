@@ -29,10 +29,9 @@ class UGeoScriptBPLibrary : public UBlueprintFunctionLibrary
 
 	UFUNCTION(BlueprintCallable, Category = "GeoScript")
 	static class UDynamicMesh* GenerateConeArea(
+		AActor* DynamicMeshActor,
 		UDynamicMesh* TargetMesh,
 		float MaxDistance,
 		int32 RayCount,
-		float Angle,
-		FVector Location,
-		FRotator Rotator);
+		float ConeAngle);
 };

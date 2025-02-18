@@ -14,52 +14,62 @@ UGeoScriptBPLibrary::UGeoScriptBPLibrary(const FObjectInitializer& ObjectInitial
 }
 
 UDynamicMesh* UGeoScriptBPLibrary::GenerateConeArea(
-	UDynamicMesh* TargetMesh,
-	float MaxDistance, int32 RayCount,
-	float Angle, FVector Location, FRotator Rotator)
+		AActor* DynamicMeshActor,
+		UDynamicMesh* TargetMesh,
+		float MaxDistance,
+		int32 RayCount,
+		float ConeAngle)
 {
-	if (TargetMesh == nullptr)
+	if (DynamicMeshActor == nullptr || TargetMesh == nullptr)
 	{
 		UGeometryScriptDebug* Debug = nullptr;
-		const FText ErrorMsg = FText::FromString("GenerateConeArea: TargetMesh is Null");
+		const FText ErrorMsg = FText::FromString("GenerateConeArea: DynamicMeshActor or TargetMesh is Null");
 		UE::Geometry::AppendError(Debug, EGeometryScriptErrorType::InvalidInputs, ErrorMsg);
 		return TargetMesh;
 	}
+
+	MaxDistance = FMath::Max(100.0, MaxDistance);
+	RayCount = FMath::Max(3, RayCount);
+	ConeAngle = FMath::Max(15, ConeAngle);
 
 	TargetMesh->Reset();
 	FDynamicMesh3* Mesh = TargetMesh->GetMeshPtr();
 
 	TArray<FVector3d> Vertices;
-	Vertices.Add(FVector3d(Location));
+	Vertices.Add(FVector3d(FVector::ZeroVector));
 
-	FVector ForwardVector = Rotator.Vector();
-
+	FVector Location = DynamicMeshActor->GetActorLocation();
+	FVector ForwardVector = DynamicMeshActor->GetActorForwardVector();
+	FVector RightVector = DynamicMeshActor->GetActorRightVector();
+	
 	for (int32 i = 0; i < RayCount; i++)
 	{
-		float CurrentAngle = (float)i / RayCount * 2 * PI;
+		float CurrentAngle = (float)i / RayCount * 360.f;
+		
+		FVector RayDir = ForwardVector.RotateAngleAxis(ConeAngle, RightVector);
+		RayDir = RayDir.RotateAngleAxis(CurrentAngle, ForwardVector);
+		RayDir.Normalize();
 
-		FVector RayDir = ForwardVector.RotateAngleAxis(Angle, FVector::UpVector);
-		RayDir = RayDir.RotateAngleAxis(CurrentAngle * 180.f / PI, ForwardVector);
-
+		FVector Start = Location;
+		FVector End = Location + RayDir * MaxDistance;
+		
+		FHitResult OutHit;
+		FCollisionQueryParams Params;
+		Params.bTraceComplex = true;
+		Params.AddIgnoredActor(DynamicMeshActor);
+		
 		FWorldContext* WorldContext = GEngine->GetWorldContextFromGameViewport(GEngine->GameViewport);
 		UWorld* World = WorldContext->World();
-
-		FHitResult HitResult;
-		FCollisionQueryParams QueryParams;
-		// QueryParams.bTraceComplex = true;
 		
-		if (World && World->LineTraceSingleByChannel(
-			HitResult,
-			Location,
-			Location + RayDir * MaxDistance,
-			ECC_Visibility,
-			QueryParams))
+		if (World && World->LineTraceSingleByChannel(OutHit, Start, End, ECC_Visibility, Params))
 		{
-			Vertices.Add(FVector3d(HitResult.Location));
+			FVector LocalPoint = DynamicMeshActor->GetActorTransform().InverseTransformPosition(OutHit.ImpactPoint);
+			Vertices.Add(FVector3d(LocalPoint));
 		}
 		else
 		{
-			Vertices.Add(FVector3d(Location + RayDir * MaxDistance));
+			FVector LocalPoint = DynamicMeshActor->GetActorTransform().InverseTransformPosition(End);
+			Vertices.Add(FVector3d(LocalPoint));
 		}
 	}
 
@@ -75,8 +85,6 @@ UDynamicMesh* UGeoScriptBPLibrary::GenerateConeArea(
 	}
 
 	Mesh->AppendTriangle(VertexIndices[0], VertexIndices[RayCount], VertexIndices[1]);
-
-	UE::Geometry::FMeshNormals::QuickComputeVertexNormals(*Mesh);
 	
 	return TargetMesh;
 }
