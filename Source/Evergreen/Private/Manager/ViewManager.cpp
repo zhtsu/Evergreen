@@ -228,7 +228,7 @@ void UViewManager::ChangeCameraParamsTo(ECameraViewType ViewType, bool bBlend, b
 	}
 }
 
-void UViewManager::ChangeCameraTo(const FString& CameraID, bool& Success)
+void UViewManager::ChangeCameraTo(const FString& CameraID, bool& Success, FViewTargetTransitionParams TransitionParams)
 {
 	AEvergreenCamera* Camera = AEvergreenCamera::FindFirstFixedCamera(CameraID);
 	if (!Camera)
@@ -239,6 +239,7 @@ void UViewManager::ChangeCameraTo(const FString& CameraID, bool& Success)
 
 	if (AEvergreenPlayerController* PlayerController = UEvergreenGameInstance::GetEvergreenPlayerController())
 	{
-		PlayerController->SetViewTarget(Camera);
+		PlayerController->SetViewTarget(Camera, TransitionParams);
+		Success = true;
 	}
 }

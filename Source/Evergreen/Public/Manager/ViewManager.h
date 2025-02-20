@@ -71,7 +71,7 @@ public:
 	void ChangeCameraParamsTo(ECameraViewType ViewType, bool bBlend = true, bool bAllowMove = true);
 
 	UFUNCTION(BlueprintCallable)
-	void ChangeCameraTo(const FString& CameraID, bool& Success);
+	void ChangeCameraTo(const FString& CameraID, bool& Success, FViewTargetTransitionParams TransitionParams = FViewTargetTransitionParams());
 
 	void SetThirdPersonPlayer(class AEvergreenCharacter* InThirdPersonPlayer)
 	{
