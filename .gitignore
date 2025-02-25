@@ -15,6 +15,7 @@ Build/
 **/Binaries/
 **/Intermediate/
 
+Content/__ExternalActors__/
 Content/Collections/
 Content/Developers/
 Content/Evergreen/Assets/
