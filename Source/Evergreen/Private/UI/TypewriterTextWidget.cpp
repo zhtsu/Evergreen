@@ -43,6 +43,7 @@ void UTypewriterTextWidget::Show(bool bAutoPlay, bool bFadeIn)
 	{
 		StartTimestamp = UKismetSystemLibrary::GetGameTimeInSeconds(GetWorld());
 		Text->SetText(FText());
+		bAutoHideEnabled = false;
 		bPlaying = true;
 	}
 	else

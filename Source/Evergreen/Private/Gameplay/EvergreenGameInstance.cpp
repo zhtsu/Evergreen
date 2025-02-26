@@ -40,7 +40,7 @@ void UEvergreenGameInstance::SetEvergreenPlayerController(AEvergreenPlayerContro
 	EvergreenPlayerController = InPlayerController;
 }
 
-void UEvergreenGameInstance::ChangeEvergreenGameModeTo(EEvergreenGameMode InGameMode)
+void UEvergreenGameInstance::ChangeEvergreenGameMode(EEvergreenGameMode InGameMode)
 {
 	if (CurrentGameMode == InGameMode) return;
 	
@@ -49,10 +49,18 @@ void UEvergreenGameInstance::ChangeEvergreenGameModeTo(EEvergreenGameMode InGame
 
 	if (InGameMode == EEvergreenGameMode::Interaction)
 	{
+		EvergreenPlayerController->bEnableClickEvents = true;
+		EvergreenPlayerController->bEnableMouseOverEvents = true;
+		EvergreenPlayerController->bShowMouseCursor = true;
+		
 		EvergreenPlayerController->PossessInteractionPlayer();
 	}
 	else if (InGameMode == EEvergreenGameMode::ThirdPerson)
 	{
+		EvergreenPlayerController->bEnableClickEvents = false;
+		EvergreenPlayerController->bEnableMouseOverEvents = false;
+		EvergreenPlayerController->bShowMouseCursor = false;
+		
 		EvergreenPlayerController->PossessThirdPersonPlayer();
 	}
 }

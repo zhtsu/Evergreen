@@ -23,7 +23,8 @@ public class Evergreen : ModuleRules
 			"MovieScene",
 			"CinematicCamera",
 			"DeveloperSettings",
-			"CommonUI"
+			"CommonUI",
+			"AudioModulation"
 		});
 
 		if (Target.bBuildEditor)

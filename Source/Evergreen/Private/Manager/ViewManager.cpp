@@ -200,7 +200,7 @@ void UViewManager::AdjustCameraBoomLength_ThirdPerson(float Length, bool bAllowM
 	}
 }
 
-void UViewManager::ChangeCameraParamsTo(ECameraViewType ViewType, bool bBlend, bool bAllowMove)
+void UViewManager::ChangeCameraParams(ECameraViewType ViewType, bool bBlend, bool bAllowMove)
 {
 	FCameraParams TargetCameraParams;
 
@@ -228,7 +228,7 @@ void UViewManager::ChangeCameraParamsTo(ECameraViewType ViewType, bool bBlend, b
 	}
 }
 
-void UViewManager::ChangeCameraTo(const FString& CameraID, bool& Success, FViewTargetTransitionParams TransitionParams)
+void UViewManager::ChangeCamera(const FString& CameraID, bool& Success, FViewTargetTransitionParams TransitionParams)
 {
 	AEvergreenCamera* Camera = AEvergreenCamera::FindFirstFixedCamera(CameraID);
 	if (!Camera)

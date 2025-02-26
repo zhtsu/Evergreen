@@ -49,10 +49,6 @@ void AEvergreenPawn::BeginPlay()
 	UEvergreenGameInstance* EGI = UEvergreenGameInstance::GetEvergreenGameInstance();
 	if (AEvergreenPlayerController* EPC = UEvergreenGameInstance::GetEvergreenPlayerController())
 	{
-		EPC->bEnableClickEvents = true;
-		EPC->bEnableMouseOverEvents = true;
-		EPC->bShowMouseCursor = true;
-		
 		EPC->SetInteractionPlayer(this);
 	}
 	if (UViewManager* ViewManager = EGI->GetSubsystem<UViewManager>())

@@ -39,7 +39,4 @@ private:
 
 	UPROPERTY()
 	AEvergreenPawn* InteractionPlayer;
-
-	void SwitchToThirdPersonMode();
-	void SwitchToInteractionMode();
 };

@@ -68,10 +68,10 @@ public:
 	void AdjustCameraBoomLength_ThirdPerson(float Length = -1.f, bool bAllowMove = true);
 
 	UFUNCTION(BlueprintCallable)
-	void ChangeCameraParamsTo(ECameraViewType ViewType, bool bBlend = true, bool bAllowMove = true);
+	void ChangeCameraParams(ECameraViewType ViewType, bool bBlend = true, bool bAllowMove = true);
 
 	UFUNCTION(BlueprintCallable)
-	void ChangeCameraTo(const FString& CameraID, bool& Success, FViewTargetTransitionParams TransitionParams = FViewTargetTransitionParams());
+	void ChangeCamera(const FString& CameraID, bool& Success, FViewTargetTransitionParams TransitionParams = FViewTargetTransitionParams());
 
 	void SetThirdPersonPlayer(class AEvergreenCharacter* InThirdPersonPlayer)
 	{
