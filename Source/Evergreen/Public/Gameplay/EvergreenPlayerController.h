@@ -17,26 +17,14 @@ public:
 	UFUNCTION(BlueprintPure)
 	FORCEINLINE class AEvergreenCharacter* GetThirdPersonPlayer() const { return ThirdPersonPlayer; }
 
-	UFUNCTION(BlueprintPure)
-	FORCEINLINE class AEvergreenPawn* GetInteractionPlayer() const { return InteractionPlayer; }
-
 	void SetThirdPersonPlayer(AEvergreenCharacter* InThirdPersonPlayer)
 	{
 		ThirdPersonPlayer = InThirdPersonPlayer;
 	}
 
-	void SetInteractionPlayer(AEvergreenPawn* InInteractionPlayer)
-	{
-		InteractionPlayer = InInteractionPlayer;
-	}
-
-	void PossessThirdPersonPlayer();
-	void PossessInteractionPlayer();
+	void SetPlayerHiddenInGame(bool bHide);
 	
 private:
 	UPROPERTY()
 	AEvergreenCharacter* ThirdPersonPlayer;
-
-	UPROPERTY()
-	AEvergreenPawn* InteractionPlayer;
 };

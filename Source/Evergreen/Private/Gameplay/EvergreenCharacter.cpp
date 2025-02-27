@@ -7,7 +7,6 @@
 #include "Gameplay/EvergreenGameInstance.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
-#include "Gameplay/EvergreenPawn.h"
 #include "CineCameraComponent.h"
 #include "Common/AssetPathHub.h"
 #include "Common/CommonMacro.h"
@@ -75,15 +74,6 @@ void AEvergreenCharacter::BeginPlay()
 		ViewManager->SetThirdPersonPlayer(this);
 	if (UUIManager* UIManager = EGI->GetSubsystem<UUIManager>())
 		UIManager->SetThirdPersonPlayer(this);
-
-	AEvergreenPlayerController* EPC = UEvergreenGameInstance::GetEvergreenPlayerController();
-	if (EPC && !EPC->GetInteractionPlayer())
-	{
-		if (AEvergreenPawn* InteractionPlayer = Cast<AEvergreenPawn>(GetWorld()->SpawnActor(InteractorClass)))
-		{
-			InteractionPlayer->SetActorTransform(GetActorTransform());
-		}
-	}
 }
 
 void AEvergreenCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)

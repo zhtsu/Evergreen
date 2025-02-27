@@ -41,10 +41,10 @@ public:
 	static void PlayCutscene(class ULevelSequence* LevelSequence, class ALevelSequenceActor*& LevelSequenceActor, class ULevelSequencePlayer*& LevelSequencePlayer);
 
 	UFUNCTION(BlueprintCallable)
-	void SetCameraOffsetFollowCursorEnabled(bool bEnabled);
+	void SetCameraOffsetFollowMouseEnabled(bool bEnabled);
 
 	UFUNCTION(BlueprintPure)
-	bool GetCameraOffsetFollowCursorEnabled() const;
+	bool GetCameraOffsetFollowMouseEnabled() const;
 
 	UFUNCTION(BlueprintCallable)
 	void SetCameraOffsetScale_X(float Scale);
@@ -77,18 +77,10 @@ public:
 	{
 		ThirdPersonPlayer = InThirdPersonPlayer;
 	}
-
-	void SetInteractionPlayer(class AEvergreenPawn* InInteractionPlayer)
-	{
-		InteractionPlayer = InInteractionPlayer;
-	}
 	
 private:
 	UPROPERTY()
 	AEvergreenCharacter* ThirdPersonPlayer;
-
-	UPROPERTY()
-	AEvergreenPawn* InteractionPlayer;
 
 	UPROPERTY()
 	UObject* CurrentObservedObject = nullptr;
@@ -97,4 +89,8 @@ private:
 	
 	void CallOnStartObserve();
 	void CallOnAttainPlayerView();
+
+	bool bCameraOffsetFollowMouseEnabled = false;
+	float CameraOffsetScale_X = 0.1f;
+	float CameraOffsetScale_Y = 0.1f;
 };

@@ -5,35 +5,19 @@
 
 #include "Gameplay/EvergreenCharacter.h"
 #include "Gameplay/EvergreenGameInstance.h"
-#include "Gameplay/EvergreenPawn.h"
 
 AEvergreenPlayerController::AEvergreenPlayerController()
 {
 	UEvergreenGameInstance::SetEvergreenPlayerController(this);
 }
 
-void AEvergreenPlayerController::PossessThirdPersonPlayer()
+void AEvergreenPlayerController::SetPlayerHiddenInGame(bool bHide)
 {
 	if (ThirdPersonPlayer)
 	{
-		Possess(ThirdPersonPlayer);
-
-		if (ThirdPersonPlayer)
+		if (ThirdPersonPlayer->GetMesh())
 		{
-			ThirdPersonPlayer->GetMesh()->SetHiddenInGame(false);
-		}
-	}
-}
-
-void AEvergreenPlayerController::PossessInteractionPlayer()
-{
-	if (InteractionPlayer)
-	{
-		Possess(InteractionPlayer);
-
-		if (ThirdPersonPlayer && InteractionPlayer)
-		{
-			ThirdPersonPlayer->GetMesh()->SetHiddenInGame(true);
+			ThirdPersonPlayer->GetMesh()->SetHiddenInGame(bHide);
 		}
 	}
 }

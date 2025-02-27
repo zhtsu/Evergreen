@@ -20,11 +20,6 @@ public:
 	{
 		ThirdPersonPlayer = InThirdPersonPlayer;
 	}
-
-	void SetInteractionPlayer(class AEvergreenPawn* InInteractionPlayer)
-	{
-		InteractionPlayer = InInteractionPlayer;
-	}
 	
 	UFUNCTION(BlueprintCallable)
 	UCommonActivatableWidget* OpenUI(
@@ -55,7 +50,4 @@ private:
 
 	UPROPERTY()
 	AEvergreenCharacter* ThirdPersonPlayer;
-
-	UPROPERTY()
-	AEvergreenPawn* InteractionPlayer;
 };

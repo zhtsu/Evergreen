@@ -4,6 +4,7 @@
 #include "Gameplay/EvergreenGameInstance.h"
 
 #include "GameFramework/GameUserSettings.h"
+#include "Gameplay/EvergreenCharacter.h"
 #include "Gameplay/EvergreenPlayerController.h"
 
 UEvergreenGameInstance* UEvergreenGameInstance::Singleton = nullptr;
@@ -42,7 +43,7 @@ void UEvergreenGameInstance::SetEvergreenPlayerController(AEvergreenPlayerContro
 
 void UEvergreenGameInstance::ChangeEvergreenGameMode(EEvergreenGameMode InGameMode)
 {
-	if (CurrentGameMode == InGameMode) return;
+	if (CurrentGameMode == InGameMode || !EvergreenPlayerController) return;
 	
 	CurrentGameMode = InGameMode;
 	OnGameModeChanged.Broadcast(CurrentGameMode);
@@ -52,16 +53,16 @@ void UEvergreenGameInstance::ChangeEvergreenGameMode(EEvergreenGameMode InGameMo
 		EvergreenPlayerController->bEnableClickEvents = true;
 		EvergreenPlayerController->bEnableMouseOverEvents = true;
 		EvergreenPlayerController->bShowMouseCursor = true;
-		
-		EvergreenPlayerController->PossessInteractionPlayer();
+
+		EvergreenPlayerController->SetPlayerHiddenInGame(true);
 	}
 	else if (InGameMode == EEvergreenGameMode::ThirdPerson)
 	{
 		EvergreenPlayerController->bEnableClickEvents = false;
 		EvergreenPlayerController->bEnableMouseOverEvents = false;
 		EvergreenPlayerController->bShowMouseCursor = false;
-		
-		EvergreenPlayerController->PossessThirdPersonPlayer();
+
+		EvergreenPlayerController->SetPlayerHiddenInGame(false);
 	}
 }
 

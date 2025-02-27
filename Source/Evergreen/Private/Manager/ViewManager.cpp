@@ -8,10 +8,8 @@
 #include "Common/CommonMacro.h"
 #include "Gameplay/EvergreenGameInstance.h"
 #include "Interface/ObservableInterface.h"
-#include "Camera/CameraActor.h"
-#include "..\..\Public\Config\EvergreenCameraSettings.h"
+#include "Config/EvergreenCameraSettings.h"
 #include "Gameplay/EvergreenCharacter.h"
-#include "Gameplay/EvergreenPawn.h"
 #include "Gameplay/EvergreenPlayerController.h"
 #include "World/EvergreenCamera.h"
 
@@ -113,58 +111,34 @@ void UViewManager::CallOnAttainPlayerView()
 	EGI->SetCurrentGamePlayState(EGamePlayState::Exploring);
 }
 
-void UViewManager::SetCameraOffsetFollowCursorEnabled(bool bEnabled)
+void UViewManager::SetCameraOffsetFollowMouseEnabled(bool bEnabled)
 {
-	if (InteractionPlayer)
-	{
-		InteractionPlayer->SetCameraOffsetFollowCursorEnabled(bEnabled);
-	}
+	bCameraOffsetFollowMouseEnabled = bEnabled;
 }
 
 void UViewManager::SetCameraOffsetScale_X(float Scale)
 {
-	if (InteractionPlayer)
-	{
-		InteractionPlayer->SetCameraOffsetScale_X(Scale);
-	}
+	CameraOffsetScale_X = Scale;
 }
 
 void UViewManager::SetCameraOffsetScale_Y(float Scale)
 {
-	if (InteractionPlayer)
-	{
-		InteractionPlayer->SetCameraOffsetScale_Y(Scale);
-	}
+	CameraOffsetScale_Y = Scale;
 }
 
-bool UViewManager::GetCameraOffsetFollowCursorEnabled() const
+bool UViewManager::GetCameraOffsetFollowMouseEnabled() const
 {
-	if (InteractionPlayer)
-	{
-		return InteractionPlayer->GetCameraOffsetFollowCursorEnabled();
-	}
-	
-	return false;
+	return bCameraOffsetFollowMouseEnabled;
 }
 
 float UViewManager::GetCameraOffsetScale_X() const
 {
-	if (InteractionPlayer)
-	{
-		return InteractionPlayer->GetCameraOffsetScale_X();
-	}
-	
-	return 0.f;
+	return CameraOffsetScale_X;
 }
 
 float UViewManager::GetCameraOffsetScale_Y() const
 {
-	if (InteractionPlayer)
-	{
-		return InteractionPlayer->GetCameraOffsetScale_Y();
-	}
-	
-	return 0.f;
+	return CameraOffsetScale_Y;
 }
 
 void UViewManager::RotateCameraBoomYaw_ThirdPerson(float Yaw, bool bAllowMove)
