@@ -13,6 +13,8 @@ class EVERGREEN_API AEvergreenPlayerController : public APlayerController
 	
 public:
 	AEvergreenPlayerController();
+
+	void BeginPlay() override;
 	
 	UFUNCTION(BlueprintPure)
 	FORCEINLINE class AEvergreenCharacter* GetThirdPersonPlayer() const { return ThirdPersonPlayer; }

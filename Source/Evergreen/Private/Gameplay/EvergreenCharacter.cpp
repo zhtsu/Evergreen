@@ -74,6 +74,13 @@ void AEvergreenCharacter::BeginPlay()
 		ViewManager->SetThirdPersonPlayer(this);
 	if (UUIManager* UIManager = EGI->GetSubsystem<UUIManager>())
 		UIManager->SetThirdPersonPlayer(this);
+
+	if (APlayerController* PlayerController = Cast<APlayerController>(GetController()))
+	{
+		PlayerController->bEnableClickEvents = false;
+		PlayerController->bEnableMouseOverEvents = false;
+		PlayerController->bShowMouseCursor = false;
+	}
 }
 
 void AEvergreenCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)

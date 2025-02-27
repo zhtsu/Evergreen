@@ -3,12 +3,20 @@
 
 #include "Gameplay/EvergreenPlayerController.h"
 
+#include "Gameplay/EvergreenCameraModifier.h"
 #include "Gameplay/EvergreenCharacter.h"
 #include "Gameplay/EvergreenGameInstance.h"
 
 AEvergreenPlayerController::AEvergreenPlayerController()
 {
 	UEvergreenGameInstance::SetEvergreenPlayerController(this);
+}
+
+void AEvergreenPlayerController::BeginPlay()
+{
+	Super::BeginPlay();
+
+	PlayerCameraManager->AddNewCameraModifier(UEvergreenCameraModifier::StaticClass());
 }
 
 void AEvergreenPlayerController::SetPlayerHiddenInGame(bool bHide)

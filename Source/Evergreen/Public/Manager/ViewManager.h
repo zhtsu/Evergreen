@@ -90,7 +90,7 @@ private:
 	void CallOnStartObserve();
 	void CallOnAttainPlayerView();
 
-	bool bCameraOffsetFollowMouseEnabled = false;
+	bool bCameraOffsetFollowMouseEnabled = true;
 	float CameraOffsetScale_X = 0.1f;
 	float CameraOffsetScale_Y = 0.1f;
 };
