@@ -77,9 +77,11 @@ void AEvergreenCharacter::BeginPlay()
 
 	if (APlayerController* PlayerController = Cast<APlayerController>(GetController()))
 	{
-		PlayerController->bEnableClickEvents = false;
-		PlayerController->bEnableMouseOverEvents = false;
-		PlayerController->bShowMouseCursor = false;
+		bool bEnableMouseEvent = EGI->IsInteractionMode();
+		
+		PlayerController->bEnableClickEvents = bEnableMouseEvent;
+		PlayerController->bEnableMouseOverEvents = bEnableMouseEvent;
+		PlayerController->bShowMouseCursor = bEnableMouseEvent;
 	}
 }
 

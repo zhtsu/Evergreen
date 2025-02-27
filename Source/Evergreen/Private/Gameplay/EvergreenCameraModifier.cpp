@@ -20,6 +20,7 @@ void UEvergreenCameraModifier::ModifyCamera(float DeltaTime, FVector ViewLocatio
 	
 	if (!ViewManager->GetCameraOffsetFollowMouseEnabled()) return;
 	if (!UEvergreenGameInstance::GetEvergreenGameInstance()->IsInteractionMode()) return;
+	if (!UEvergreenGameInstance::GetEvergreenGameInstance()->IsAllowInput()) return;
 	
 	AEvergreenPlayerController* PlayerController = EGI->GetEvergreenPlayerController();
 	if (!PlayerController) return;
