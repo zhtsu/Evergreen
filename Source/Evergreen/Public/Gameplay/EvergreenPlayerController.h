@@ -19,6 +19,9 @@ public:
 	UFUNCTION(BlueprintPure)
 	FORCEINLINE class AEvergreenCharacter* GetThirdPersonPlayer() const { return ThirdPersonPlayer; }
 
+	UFUNCTION(Blueprintable)
+	void SetMousePosition(const FVector2D& Position);
+
 	void SetThirdPersonPlayer(AEvergreenCharacter* InThirdPersonPlayer)
 	{
 		ThirdPersonPlayer = InThirdPersonPlayer;

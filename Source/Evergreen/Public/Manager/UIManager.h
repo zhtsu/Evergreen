@@ -22,11 +22,11 @@ public:
 	}
 	
 	UFUNCTION(BlueprintCallable)
-	UCommonActivatableWidget* OpenUI(
+	UEvergreenWidgetBase* OpenUI(
 		UPARAM(meta=(AllowAbstract=false)) TSubclassOf<UEvergreenWidgetBase> WidgetClass);
 
 	UFUNCTION(BlueprintCallable)
-	UCommonActivatableWidget* OpenUniqueUI(
+	UEvergreenWidgetBase* OpenUniqueUI(
 		UPARAM(meta=(AllowAbstract=false)) TSubclassOf<UEvergreenWidgetBase> WidgetClass,
 		bool& Success);
 	
@@ -36,6 +36,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void CloseUniqueUI(
 		UPARAM(meta=(AllowAbstract=false)) TSubclassOf<UEvergreenWidgetBase> WidgetClassToRemove,
+		bool bResetMousePosition,
 		bool& Success);
 	
 private:

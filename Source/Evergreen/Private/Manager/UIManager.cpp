@@ -5,6 +5,9 @@
 #include "Manager/UIManager.h"
 
 #include "CommonActivatableWidget.h"
+#include "Gameplay/EvergreenGameInstance.h"
+#include "Gameplay/EvergreenPlayerController.h"
+#include "Manager/ViewManager.h"
 #include "UI/RootCanvasWidget.h"
 
 UUIManager::UUIManager()
@@ -13,7 +16,7 @@ UUIManager::UUIManager()
 	UniqueWidgetMap = TMap<TSubclassOf<UEvergreenWidgetBase>, UEvergreenWidgetBase*>();
 }
 
-UCommonActivatableWidget* UUIManager::OpenUI(TSubclassOf<UEvergreenWidgetBase> WidgetClass)
+UEvergreenWidgetBase* UUIManager::OpenUI(TSubclassOf<UEvergreenWidgetBase> WidgetClass)
 {
 	if (RootCanvas)
 	{
@@ -21,16 +24,23 @@ UCommonActivatableWidget* UUIManager::OpenUI(TSubclassOf<UEvergreenWidgetBase> W
 		if (Widget)
 		{
 			WidgetMap.Add(Widget->GetUniqueID(), Widget);
+			return Widget;
 		}
 	}
 
 	return nullptr;
 }
 
-UCommonActivatableWidget* UUIManager::OpenUniqueUI(TSubclassOf<UEvergreenWidgetBase> WidgetClass, bool& Success)
+UEvergreenWidgetBase* UUIManager::OpenUniqueUI(TSubclassOf<UEvergreenWidgetBase> WidgetClass, bool& Success)
 {
 	if (RootCanvas && UniqueWidgetMap.Find(WidgetClass) == nullptr)
 	{
+		UViewManager* ViewManager = UEvergreenGameInstance::GetEvergreenGameInstance()->GetSubsystem<UViewManager>();
+		if (ViewManager)
+		{
+			ViewManager->SetCameraOffsetFollowMouseEnabled(false);
+		}
+		
 		Success = true;
 
 		UEvergreenWidgetBase* Widget = Cast<UEvergreenWidgetBase>(RootCanvas->PushWidgetToStack(WidgetClass));
@@ -55,16 +65,34 @@ void UUIManager::CloseUI(UEvergreenWidgetBase* WidgetToRemove)
 	}
 }
 
-void UUIManager::CloseUniqueUI(TSubclassOf<UEvergreenWidgetBase> WidgetClassToRemove, bool& Success)
+void UUIManager::CloseUniqueUI(TSubclassOf<UEvergreenWidgetBase> WidgetClassToRemove, bool bResetMousePosition, bool& Success)
 {
 	if (RootCanvas && UniqueWidgetMap.Find(WidgetClassToRemove) != nullptr)
 	{
+		UViewManager* ViewManager = UEvergreenGameInstance::GetEvergreenGameInstance()->GetSubsystem<UViewManager>();
+		if (ViewManager)
+		{
+			ViewManager->SetCameraOffsetFollowMouseEnabled(true);
+		}
+		
 		Success = true;
 		
 		UCommonActivatableWidget* Widget = *UniqueWidgetMap.Find(WidgetClassToRemove);
 		RootCanvas->RemoveWidgetFromStack(*Widget);
 		
 		UniqueWidgetMap.Remove(WidgetClassToRemove);
+
+		if (bResetMousePosition)
+		{
+			AEvergreenPlayerController* EPC = UEvergreenGameInstance::GetEvergreenGameInstance()->GetEvergreenPlayerController();
+
+			FIntPoint ViewportSize;
+			EPC->GetViewportSize(ViewportSize.X, ViewportSize.Y);
+	
+			FVector2D ViewportCenter = FVector2D(ViewportSize) * 0.5;
+			
+			EPC->SetMousePosition(ViewportCenter);
+		}
 	}
 
 	Success = false;

@@ -19,6 +19,14 @@ void AEvergreenPlayerController::BeginPlay()
 	PlayerCameraManager->AddNewCameraModifier(UEvergreenCameraModifier::StaticClass());
 }
 
+void AEvergreenPlayerController::SetMousePosition(const FVector2D& Position)
+{
+	if (FViewport* Viewport = GetLocalPlayer()->ViewportClient->Viewport)
+	{
+		Viewport->SetMouse(Position.X, Position.Y);
+	}
+}
+
 void AEvergreenPlayerController::SetPlayerHiddenInGame(bool bHide)
 {
 	if (ThirdPersonPlayer)
