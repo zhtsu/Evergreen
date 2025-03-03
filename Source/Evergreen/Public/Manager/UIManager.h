@@ -37,6 +37,7 @@ public:
 	void CloseUniqueUI(
 		UPARAM(meta=(AllowAbstract=false)) TSubclassOf<UEvergreenWidgetBase> WidgetClassToRemove,
 		bool bResetMousePosition,
+		bool bEnableCameraOffset,
 		bool& Success);
 	
 private:

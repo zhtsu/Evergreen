@@ -65,14 +65,20 @@ void UUIManager::CloseUI(UEvergreenWidgetBase* WidgetToRemove)
 	}
 }
 
-void UUIManager::CloseUniqueUI(TSubclassOf<UEvergreenWidgetBase> WidgetClassToRemove, bool bResetMousePosition, bool& Success)
+void UUIManager::CloseUniqueUI(TSubclassOf<UEvergreenWidgetBase> WidgetClassToRemove,
+	bool bResetMousePosition,
+	bool bEnableCameraOffset,
+	bool& Success)
 {
 	if (RootCanvas && UniqueWidgetMap.Find(WidgetClassToRemove) != nullptr)
 	{
 		UViewManager* ViewManager = UEvergreenGameInstance::GetEvergreenGameInstance()->GetSubsystem<UViewManager>();
 		if (ViewManager)
 		{
-			ViewManager->SetCameraOffsetFollowMouseEnabled(true);
+			if (bEnableCameraOffset)
+			{
+				ViewManager->SetCameraOffsetFollowMouseEnabled(true);
+			}
 		}
 		
 		Success = true;
@@ -85,13 +91,7 @@ void UUIManager::CloseUniqueUI(TSubclassOf<UEvergreenWidgetBase> WidgetClassToRe
 		if (bResetMousePosition)
 		{
 			AEvergreenPlayerController* EPC = UEvergreenGameInstance::GetEvergreenGameInstance()->GetEvergreenPlayerController();
-
-			FIntPoint ViewportSize;
-			EPC->GetViewportSize(ViewportSize.X, ViewportSize.Y);
-	
-			FVector2D ViewportCenter = FVector2D(ViewportSize) * 0.5;
-			
-			EPC->SetMousePosition(ViewportCenter);
+			EPC->SetMousePosition(EPC->GetViewportCenter());
 		}
 	}
 

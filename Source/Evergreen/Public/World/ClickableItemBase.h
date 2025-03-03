@@ -48,6 +48,12 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void HideHoverOnlyWidget();
+
+	UFUNCTION(BlueprintCallable)
+	FORCEINLINE void SetClickable(bool bEnabled) { bClickable = bEnabled; }
+
+	UFUNCTION(BlueprintPure)
+	FORCEINLINE bool GetClickable() const { return bClickable; }
 	
 private:
 	UFUNCTION()
@@ -61,4 +67,6 @@ private:
 
 	UFUNCTION()
 	void OnUnhoverNative(UPrimitiveComponent* TouchedComponent);
+
+	bool bClickable = true;
 };

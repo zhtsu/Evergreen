@@ -99,6 +99,8 @@ void AClickableItemBase::OnClickNative(UPrimitiveComponent* TouchedComponent, FK
 {
 	UEvergreenGameInstance* EGI = UEvergreenGameInstance::GetEvergreenGameInstance();
 	if (!EGI->IsAllowInput()) return;
+
+	if (!bClickable) return;
 	
 	Execute_OnClick(this);
 }
@@ -108,6 +110,8 @@ void AClickableItemBase::OnReleaseNative(UPrimitiveComponent* TouchedComponent, 
 	UEvergreenGameInstance* EGI = UEvergreenGameInstance::GetEvergreenGameInstance();
 	if (!EGI->IsAllowInput()) return;
 
+	if (!bClickable) return;
+
 	Execute_OnRelease(this);
 }
 
@@ -115,6 +119,8 @@ void AClickableItemBase::OnHoverNative(UPrimitiveComponent* TouchedComponent)
 {
 	UEvergreenGameInstance* EGI = UEvergreenGameInstance::GetEvergreenGameInstance();
 	if (!EGI->IsAllowInput()) return;
+
+	if (!bClickable) return;
 	
 	Execute_OnHover(this);
 }
@@ -123,6 +129,8 @@ void AClickableItemBase::OnUnhoverNative(UPrimitiveComponent* TouchedComponent)
 {
 	UEvergreenGameInstance* EGI = UEvergreenGameInstance::GetEvergreenGameInstance();
 	if (!EGI->IsAllowInput()) return;
+
+	if (!bClickable) return;
 	
 	Execute_OnUnhover(this);
 }
