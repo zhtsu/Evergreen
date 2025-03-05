@@ -29,9 +29,9 @@ class UEvergreenCameraSettings : public UDeveloperSettings
 public:
 	virtual FName GetContainerName() const override { return TEXT("Project"); }
 	virtual FName GetCategoryName() const override { return TEXT("Project"); }
-	virtual FName GetSectionName() const override { return TEXT("EvergreenView"); }
+	virtual FName GetSectionName() const override { return TEXT("EvergreenCamera"); }
 	
-	static UEvergreenCameraSettings* GetEvergreenCameraSettings()
+	static UEvergreenCameraSettings* Get()
 	{
 		return GetMutableDefault<UEvergreenCameraSettings>();
 	}

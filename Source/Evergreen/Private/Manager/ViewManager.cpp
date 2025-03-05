@@ -178,7 +178,7 @@ void UViewManager::ChangeCameraParams(ECameraViewType ViewType, bool bBlend, boo
 {
 	FCameraParams TargetCameraParams;
 
-	UEvergreenCameraSettings* ECS = UEvergreenCameraSettings::GetEvergreenCameraSettings();
+	UEvergreenCameraSettings* ECS = UEvergreenCameraSettings::Get();
 	if (!ECS || !ThirdPersonPlayer) return;
 	
 	if (ViewType == ECameraViewType::SuperFarView) TargetCameraParams = ECS->SuperFarView;
