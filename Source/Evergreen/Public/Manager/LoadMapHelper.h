@@ -15,13 +15,19 @@ class ULoadMapHelper : public UGameInstanceSubsystem
 
 public:
 	UFUNCTION(BlueprintCallable)
-	static void AsyncLoadMap(TSoftObjectPtr<UWorld> TargetMap);
+	static void AsyncLoadMap(TSoftObjectPtr<UWorld> TargetMap, bool bShowLoadingWidget = true);
 
 	UFUNCTION(BlueprintCallable)
 	static void StartAsyncLoadMap_CallInTransitMap(const FOnMapLoadFinished& OnFinished);
 
-	UFUNCTION(BlueprintPure)
-	static float GetLoadMapProgress();
+	UFUNCTION(BlueprintCallable)
+	void ShowLoadingWidget();
+
+	UFUNCTION(BlueprintCallable)
+	void HideLoadingWidget();
+	
+	// UFUNCTION(BlueprintPure)
+	// static float GetLoadMapProgress();
 	
 private:
 	UPROPERTY()

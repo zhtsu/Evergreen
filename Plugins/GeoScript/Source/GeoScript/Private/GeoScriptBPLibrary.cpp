@@ -2,7 +2,6 @@
 
 #include "GeoScriptBPLibrary.h"
 
-#include "Editor.h"
 #include "UDynamicMesh.h"
 #include "DynamicMesh/MeshNormals.h"
 #include "GeometryScript/GeometryScriptTypes.h"

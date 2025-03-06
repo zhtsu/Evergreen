@@ -10,22 +10,15 @@
 #include "Gameplay/EvergreenGameInstance.h"
 #include "Kismet/GameplayStatics.h"
 
-void ULoadMapHelper::AsyncLoadMap(TSoftObjectPtr<UWorld> TargetMap)
+void ULoadMapHelper::AsyncLoadMap(TSoftObjectPtr<UWorld> TargetMap, bool bShowLoadingWidget)
 {
 	UEvergreenGameInstance* EGI = UEvergreenGameInstance::GetEvergreenGameInstance();
 	
 	if (ULoadMapHelper* LMH = EGI->GetSubsystem<ULoadMapHelper>())
 	{
 		LMH->LoadedMap = TargetMap;
-		
-		if (TSubclassOf<UUserWidget> LoadingWidgetClass = UEvergreenLoadingSettings::Get()->LoadingWidgetClass)
-		{
-			if (!LMH->LoadingWidget)
-			{
-				LMH->LoadingWidget = CreateWidget(EGI, LoadingWidgetClass);
-				EGI->GetGameViewportClient()->AddViewportWidgetContent(LMH->LoadingWidget->TakeWidget());
-			}
-		}
+
+		if (bShowLoadingWidget) LMH->ShowLoadingWidget();
 
 		TSoftObjectPtr<UWorld> TransitMap = UEvergreenLoadingSettings::Get()->TransitMap;
 		if (!TransitMap.ToSoftObjectPath().IsNull())
@@ -52,24 +45,42 @@ void ULoadMapHelper::StartAsyncLoadMap_CallInTransitMap(const FOnMapLoadFinished
 	}
 }
 
-float ULoadMapHelper::GetLoadMapProgress()
+void ULoadMapHelper::ShowLoadingWidget()
 {
 	UEvergreenGameInstance* EGI = UEvergreenGameInstance::GetEvergreenGameInstance();
-	if (ULoadMapHelper* LMH = EGI->GetSubsystem<ULoadMapHelper>())
+	
+	if (TSubclassOf<UUserWidget> LoadingWidgetClass = UEvergreenLoadingSettings::Get()->LoadingWidgetClass)
 	{
-		if (LMH->LoadHandle.IsValid())
+		if (!LoadingWidget)
 		{
-			return LMH->LoadHandle->GetProgress();
+			LoadingWidget = CreateWidget(EGI, LoadingWidgetClass);
+			EGI->GetGameViewportClient()->AddViewportWidgetContent(LoadingWidget->TakeWidget());
 		}
 	}
-
-	return -1.f;
 }
+
+void ULoadMapHelper::HideLoadingWidget()
+{
+	UEvergreenGameInstance* EGI = UEvergreenGameInstance::GetEvergreenGameInstance();
+	
+	EGI->GetGameViewportClient()->RemoveViewportWidgetContent(LoadingWidget->TakeWidget());
+}
+
+// float ULoadMapHelper::GetLoadMapProgress()
+// {
+// 	UEvergreenGameInstance* EGI = UEvergreenGameInstance::GetEvergreenGameInstance();
+// 	if (ULoadMapHelper* LMH = EGI->GetSubsystem<ULoadMapHelper>())
+// 	{
+// 		if (LMH->LoadHandle.IsValid())
+// 		{
+// 			return LMH->LoadHandle->GetProgress();
+// 		}
+// 	}
+//
+// 	return -1.f;
+// }
 
 void ULoadMapHelper::OnFinishedCallback()
 {
 	OnLoadMapFinished.ExecuteIfBound(LoadedMap);
-	
-	UEvergreenGameInstance* EGI = UEvergreenGameInstance::GetEvergreenGameInstance();
-	EGI->GetGameViewportClient()->RemoveViewportWidgetContent(LoadingWidget->TakeWidget());
 }

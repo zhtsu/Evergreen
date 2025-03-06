@@ -4,8 +4,12 @@
 #include "Gameplay/EvergreenGameInstance.h"
 
 #include "GameFramework/GameUserSettings.h"
-#include "Gameplay/EvergreenCharacter.h"
 #include "Gameplay/EvergreenPlayerController.h"
+
+#if WITH_EDITOR
+#else
+	#include "Common/StringTableHelper.h"
+#endif
 
 UEvergreenGameInstance* UEvergreenGameInstance::Singleton = nullptr;
 AEvergreenPlayerController* UEvergreenGameInstance::EvergreenPlayerController = nullptr;
@@ -43,10 +47,11 @@ void UEvergreenGameInstance::SetEvergreenPlayerController(AEvergreenPlayerContro
 
 void UEvergreenGameInstance::ChangeEvergreenGameMode(EEvergreenGameMode InGameMode)
 {
-	if (CurrentGameMode == InGameMode || !EvergreenPlayerController) return;
-	
-	CurrentGameMode = InGameMode;
-	OnGameModeChanged.Broadcast(CurrentGameMode);
+	if (CurrentGameMode != InGameMode)
+	{
+		CurrentGameMode = InGameMode;
+		OnGameModeChanged.Broadcast(CurrentGameMode);
+	}
 
 	if (InGameMode == EEvergreenGameMode::Interaction)
 	{

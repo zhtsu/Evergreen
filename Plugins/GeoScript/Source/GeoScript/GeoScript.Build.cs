@@ -36,7 +36,6 @@ public class GeoScript : ModuleRules
 			{
 				"CoreUObject",
 				"Engine",
-				"UnrealEd",
 				"Slate",
 				"SlateCore",
 				"GeometryCore",

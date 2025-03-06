@@ -20,9 +20,6 @@ public:
 	FORCEINLINE FString GetCameraID() const { return CameraID; }
 	
 private:
-	UPROPERTY(VisibleDefaultsOnly, Category = "EvergreenCamera", meta = (AllowPrivateAccess))
-	UBillboardComponent* Logo;
-
 	UPROPERTY(BlueprintReadOnly, EditInstanceOnly, meta = (AllowPrivateAccess))
 	FString CameraID;
 

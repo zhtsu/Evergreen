@@ -7,10 +7,6 @@
 
 AEvergreenCamera::AEvergreenCamera(const FObjectInitializer& ObjectInitializer) : ACineCameraActor(ObjectInitializer)
 {
-	Logo = CreateDefaultSubobject<UBillboardComponent>(TEXT("Logo"));
-	Logo->bIsEditorOnly = true;
-	Logo->SetupAttachment(RootComponent);
-
 	EvergreenCameras.Add(this);
 }
 
