@@ -143,6 +143,9 @@ public:
 	FIntPoint GetCurrentScreenResolution() const { return CurrentScreenResolution; }
 
 	UFUNCTION(BlueprintPure)
+	FString GetCurrentScreenResolutionAsString() const;
+
+	UFUNCTION(BlueprintPure)
 	FString GetCurrentIetfLanguageTag() const { return CurrentIetfLanguageTag; }
 	
 private:

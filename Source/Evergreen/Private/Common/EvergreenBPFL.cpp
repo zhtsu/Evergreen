@@ -2,6 +2,7 @@
 
 #include "Common/EvergreenBPFL.h"
 
+#include "AudioDevice.h"
 #include "Blueprint/UserWidget.h"
 #include "Engine/TextureRenderTarget2D.h"
 #include "Slate/WidgetRenderer.h"
@@ -52,4 +53,92 @@ UTexture2D* UEvergreenBPFL::GenerateTextureFromWidget(UUserWidget* Widget, const
 	WidgetRenderer.Reset();
 
 	return Texture;
+}
+
+UAudioComponent* UEvergreenBPFL::SpawnSoundAttached_NoPlay(USoundBase* Sound, USceneComponent* AttachToComponent,
+	FName AttachPointName, FVector Location, FRotator Rotation, EAttachLocation::Type LocationType,
+	bool bStopWhenAttachedToDestroyed, float VolumeMultiplier, float PitchMultiplier,
+	USoundAttenuation* AttenuationSettings, USoundConcurrency* ConcurrencySettings, bool bAutoDestroy)
+{
+	if (!Sound)
+	{
+		return nullptr;
+	}
+
+	if (!AttachToComponent)
+	{
+		UE_LOG(LogScript, Warning, TEXT("UGameplayStatics::SpawnSoundAttached: NULL AttachComponent specified! Trying to spawn sound [%s],"), *Sound->GetName());
+		return nullptr;
+	}
+
+	UWorld* const ThisWorld = AttachToComponent->GetWorld();
+	if (ThisWorld && ThisWorld->IsNetMode(NM_DedicatedServer))
+	{
+		// FAudioDevice::CreateComponent will fail to create the AudioComponent in a real dedicated server, but we need to check netmode here for Editor support.
+		return nullptr;
+	}
+
+	// Location used to check whether to create a component if out of range
+	FVector TestLocation = Location;
+	if (LocationType == EAttachLocation::KeepRelativeOffset)
+	{
+		if (AttachPointName != NAME_None)
+		{
+			TestLocation = AttachToComponent->GetSocketTransform(AttachPointName).TransformPosition(Location);
+		}
+		else
+		{
+			TestLocation = AttachToComponent->GetComponentTransform().TransformPosition(Location);
+		}
+	}
+	else if (LocationType == EAttachLocation::SnapToTarget || LocationType == EAttachLocation::SnapToTargetIncludingScale)
+	{
+		// If AttachPointName is NAME_None, will return just the component position
+		TestLocation = AttachToComponent->GetSocketLocation(AttachPointName);
+	}
+
+	FAudioDevice::FCreateComponentParams Params(ThisWorld, AttachToComponent->GetOwner());
+	Params.SetLocation(TestLocation);
+	Params.bStopWhenOwnerDestroyed = bStopWhenAttachedToDestroyed;
+	Params.AttenuationSettings = AttenuationSettings;
+
+	if (ConcurrencySettings)
+	{
+		Params.ConcurrencySet.Add(ConcurrencySettings);
+	}
+
+	UAudioComponent* AudioComponent = FAudioDevice::CreateComponent(Sound, Params);
+	if (AudioComponent)
+	{
+		if (UWorld* ComponentWorld = AudioComponent->GetWorld())
+		{
+			const bool bIsInGameWorld = ComponentWorld->IsGameWorld();
+
+			if (LocationType == EAttachLocation::SnapToTarget || LocationType == EAttachLocation::SnapToTargetIncludingScale)
+			{
+				AudioComponent->AttachToComponent(AttachToComponent, FAttachmentTransformRules::SnapToTargetNotIncludingScale, AttachPointName);
+			}
+			else
+			{
+				AudioComponent->AttachToComponent(AttachToComponent, FAttachmentTransformRules::KeepRelativeTransform, AttachPointName);
+				if (LocationType == EAttachLocation::KeepWorldPosition)
+				{
+					AudioComponent->SetWorldLocationAndRotation(Location, Rotation);
+				}
+				else
+				{
+					AudioComponent->SetRelativeLocationAndRotation(Location, Rotation);
+				}
+			}
+
+			AudioComponent->SetVolumeMultiplier(VolumeMultiplier);
+			AudioComponent->SetPitchMultiplier(PitchMultiplier);
+			AudioComponent->bAllowSpatialization = Params.ShouldUseAttenuation();
+			AudioComponent->bIsUISound = !bIsInGameWorld;
+			AudioComponent->bAutoDestroy = bAutoDestroy;
+			AudioComponent->SubtitlePriority = Sound->GetSubtitlePriority();
+		}
+	}
+
+	return AudioComponent;
 }

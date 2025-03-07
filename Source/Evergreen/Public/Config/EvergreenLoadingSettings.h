@@ -20,13 +20,7 @@ public:
 	{
 		return GetMutableDefault<UEvergreenLoadingSettings>();
 	}
-
-	UPROPERTY(Config, EditAnywhere, BlueprintReadWrite, Category = "Loading")
-	TSoftObjectPtr<UWorld> TransitMap = nullptr;
-
+	
 	UPROPERTY(Config, EditAnywhere, BlueprintReadWrite, Category = "Loading")
 	TSubclassOf<UUserWidget> LoadingWidgetClass = nullptr;
-
-	UPROPERTY(Config, EditAnywhere, BlueprintReadWrite, Category = "Loading")
-	float DelayTimeOfLoadingWidget = 1.0;
 };

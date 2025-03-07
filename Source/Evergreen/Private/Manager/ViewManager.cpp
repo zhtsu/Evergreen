@@ -38,12 +38,15 @@ void UViewManager::Observe(UObject* ObservableObject, FViewTargetTransitionParam
 	
 	if (APlayerController* PlayerController = EGI->GetPrimaryPlayerController())
 	{
-		EGI->SetCurrentGamePlayState(EGamePlayState::Cutscene);
 		CurrentObservedObject = ObservableObject;
 		AEvergreenCamera* TargetViewCamera = IObservableInterface::Execute_GetViewTarget(ObservableObject);
 		if (!TargetViewCamera) return;
 		
 		PlayerController->SetViewTarget(Cast<AActor>(TargetViewCamera), ViewTargetTransitionParams);
+
+		if (ViewTargetTransitionParams.BlendTime <= 0.f) return;
+
+		EGI->SetCurrentGamePlayState(EGamePlayState::Cutscene);
 
 		if (TimerHandle.IsValid()) GetWorld()->GetTimerManager().ClearTimer(TimerHandle);
 		GetWorld()->GetTimerManager().SetTimer(
@@ -60,8 +63,6 @@ void UViewManager::SetToPlayerView(FViewTargetTransitionParams ViewTargetTransit
 	{
 		if (APawn* Player = PlayerController->GetPawn())
 		{
-			EGI->SetCurrentGamePlayState(EGamePlayState::Cutscene);
-
 			if (CurrentObservedObject)
 			{
 				IObservableInterface::Execute_OnEndObserve(CurrentObservedObject);
@@ -69,6 +70,10 @@ void UViewManager::SetToPlayerView(FViewTargetTransitionParams ViewTargetTransit
 			}
 			
 			PlayerController->SetViewTarget(Player, ViewTargetTransitionParams);
+
+			if (ViewTargetTransitionParams.BlendTime <= 0.f) return;
+
+			EGI->SetCurrentGamePlayState(EGamePlayState::Cutscene);
 			
 			if (TimerHandle.IsValid()) GetWorld()->GetTimerManager().ClearTimer(TimerHandle);
 			GetWorld()->GetTimerManager().SetTimer(
@@ -97,10 +102,11 @@ void UViewManager::PlayCutscene(ULevelSequence* LevelSequence, ALevelSequenceAct
 
 void UViewManager::CallOnStartObserve()
 {
+	UEvergreenGameInstance* EGI = UEvergreenGameInstance::GetEvergreenGameInstance();
+	EGI->SetCurrentGamePlayState(EGamePlayState::Observing);
+	
 	if (CurrentObservedObject)
 	{
-		UEvergreenGameInstance* EGI = UEvergreenGameInstance::GetEvergreenGameInstance();
-		EGI->SetCurrentGamePlayState(EGamePlayState::Observing);
 		IObservableInterface::Execute_OnStartObserve(CurrentObservedObject);
 	}
 }
@@ -213,7 +219,17 @@ void UViewManager::ChangeCamera(const FString& CameraID, bool& Success, FViewTar
 
 	if (AEvergreenPlayerController* PlayerController = UEvergreenGameInstance::GetEvergreenPlayerController())
 	{
-		PlayerController->SetViewTarget(Camera, TransitionParams);
 		Success = true;
+
+		PlayerController->SetViewTarget(Camera, TransitionParams);
+
+		if (TransitionParams.BlendTime <= 0.f) return;
+		
+		UEvergreenGameInstance* EGI = UEvergreenGameInstance::GetEvergreenGameInstance();
+		EGI->SetCurrentGamePlayState(EGamePlayState::Cutscene);
+
+		if (TimerHandle.IsValid()) GetWorld()->GetTimerManager().ClearTimer(TimerHandle);
+		GetWorld()->GetTimerManager().SetTimer(
+			TimerHandle, this, &UViewManager::CallOnAttainPlayerView, TransitionParams.BlendTime);
 	}
 }

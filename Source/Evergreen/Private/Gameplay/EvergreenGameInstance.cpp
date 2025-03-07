@@ -163,3 +163,8 @@ void UEvergreenGameInstance::SetGameLanguage(FString IetfLanguageTag)
 	CurrentIetfLanguageTag = IetfLanguageTag;
 	OnGameLanguageChanged.Broadcast(CurrentIetfLanguageTag);
 }
+
+FString UEvergreenGameInstance::GetCurrentScreenResolutionAsString() const
+{
+	return FString::FromInt(CurrentScreenResolution.X) + "x" + FString::FromInt(CurrentScreenResolution.Y);
+}
